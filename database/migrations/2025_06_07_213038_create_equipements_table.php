@@ -20,8 +20,7 @@ return new class extends Migration
                 $table->date('date_acquisition');
                 $table->string('image_path');
                 $table->foreignId('categorie_id')->constrained()->onDelete('cascade');
-
-                $table->foreignId('user_id')->constrained()->onDelete('cascade');
+                $table->foreignId('user_id')->constrained()->onDelete('cascade')->nullable();
 
                 $table->timestamps();
         });

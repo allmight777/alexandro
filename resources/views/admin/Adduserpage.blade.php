@@ -655,8 +655,8 @@
                           <select class="form-select" id="role" required name="role">
                             <option value="" selected disabled>Sélectionnez un rôle</option>
                             <option value="admin">Administrateur</option>
-                            <option value="manager">Gestionnaire</option>
-                            <option value="utilisateur">Employé</option>
+                            <option value="gestionnaire">Gestionnaire</option>
+                            <option value="employé">Employé</option>
                           </select>
                            @error('role')
                                <span class="text-danger">{{$message}}</span>

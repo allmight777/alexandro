@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\Isemp;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,11 +19,17 @@ Route::get('/', function () {
 //      return  view("admin.homedash");
 // });
 Route::middleware(['auth'])->group(function () {
-    Route::view('/dashboard/admin', 'admin.homedash');
+    Route::view('/dashboard/admin', 'admin.homedash')->middleware([IsAdmin::class]);
     Route::view('/dashboard/gestionnaire', 'gestionnaire.homedash')->name('dashboard.gestionnaire');
-    Route::view('/dashboard/employe', 'employee.homedash')->name('dashboard.employe');
 });
+Route::get('/dashboard/employe', function () {
+    // ou toute autre variable que tu veux passer
+    $user = Auth::user();
 
+    return view('employee.homedash', [
+        'user' => $user,
+    ]);
+})->name('dashboard.employe')->middleware([Isemp::class]);
 Route::get('/redirect-by-role', function () {
     $role = Auth::user()->role;
     return match ($role) {
