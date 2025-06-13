@@ -762,7 +762,7 @@
                                                         class="form-label required-label">Nom</label>
                                                     <input type="text" class="form-control" id="lastName"
                                                         placeholder="Entrez le nom" required name="nom"
-                                                        value="{{ $user->enom }}">
+                                                        value="{{ $user->nom }}">
                                                     @error('nom')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror

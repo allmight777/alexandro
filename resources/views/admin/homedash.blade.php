@@ -392,7 +392,12 @@
             </a>
           </li>
            <li class="nav-item">
-             <button type="submit" class="btn btn-danger">Deconnexion</button>
+            <form action="{{route("logout")}}" method="POST">
+               @csrf
+               @method("post")
+               <button type="submit" class="btn btn-danger">Deconnexion</button>
+
+            </form>
           </li>
         </ul>
       </nav>

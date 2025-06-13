@@ -215,16 +215,27 @@
                     <form method="POST" action="{{ route('Postlogin') }}">
                         @method('POST')
                         @csrf
+                        @if ($errors->has('email'))
+                            <div class="alert alert-danger">
+                                {{ $errors->first('email') }}
+                            </div>
+                        @endif
+
 
                         <div class="form-group">
                             <input type="email" class="form-control form-control-lg" id="emailInput" name="email"
                                 placeholder="Email ou nom d'utilisateur" required>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group position-relative">
                             <input type="password" class="form-control form-control-lg" id="passwordInput"
                                 name="password" placeholder="Mot de passe" required>
+                            <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                style="cursor: pointer;" onclick="togglePassword()">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </span>
                         </div>
+
 
                         <button type="submit" class="btn btn-login">
                             CONNEXION
@@ -302,6 +313,23 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
