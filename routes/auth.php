@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
 
     
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])
+           ->name('Postlogin');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
@@ -59,4 +60,4 @@ Route::get('login', [AuthenticatedSessionController::class, 'create'])
 Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register')->middleware(['auth', IsAdmin::class]);
 Route::post('register', [RegisteredUserController::class, 'store'])
-       ->middleware(['auth', IsAdmin::class]);
+       ->middleware(['auth', IsAdmin::class])->name("registerPost");

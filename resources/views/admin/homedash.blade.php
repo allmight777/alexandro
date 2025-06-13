@@ -335,7 +335,7 @@
             </a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="{{url('/dashboard/admin')}}">
               <span class="menu-title">Tableau de bord</span>
               <i class="mdi mdi-home menu-icon"></i>
             </a>
@@ -348,9 +348,8 @@
             </a>
             <div class="collapse" id="user-management">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="users-list.html">Liste des utilisateurs</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route('showusers')}}">Liste des utilisateurs</a></li>
                 <li class="nav-item"> <a class="nav-link" href="{{route('register')}}">Ajouter un utilisateur</a></li>
-                <li class="nav-item"> <a class="nav-link" href="users-roles.html">Gestion des rôles</a></li>
               </ul>
             </div>
           </li>
