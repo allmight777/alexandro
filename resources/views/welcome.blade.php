@@ -341,7 +341,7 @@
                     <h1 class="display-4 fw-bold mb-4">Optimisez votre parc <br>matériel avec <span class="text-warning">TOOLZY</span></h1>
                     <p class="lead mb-5">La solution complète pour une gestion efficace et traçable de votre inventaire professionnel</p>
                     <div class="d-flex flex-wrap gap-3">
-                        <a href="" class="btn btn-accent btn-lg px-5 py-3 pulse-animation">
+                        <a href="{{route('login')}}" class="btn btn-accent btn-lg px-5 py-3 pulse-animation">
                             <i class="fas fa-play-circle me-2"></i>Commencer
                         </a>
                     </div>

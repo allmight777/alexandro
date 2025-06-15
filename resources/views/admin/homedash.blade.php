@@ -362,7 +362,7 @@
             <div class="collapse" id="equipment-management">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="equipment-list.html">Inventaire</a></li>
-                <li class="nav-item"> <a class="nav-link" href="equipment-add.html">Ajouter un équipement</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route("addToolpage")}}">Ajouter un équipement</a></li>
                 <li class="nav-item"> <a class="nav-link" href="equipment-categories.html">Catégories</a></li>
               </ul>
             </div>

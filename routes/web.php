@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
 
 
 Route::prefix("dashboard")->middleware(['auth', IsAdmin::class])->group(function () {
-    Route::get('/list_users', [AdminController::class, "showusers"])->middleware(['auth', IsAdmin::class])
+    Route::get('/list_users', [AdminController::class, "showusers"])
         ->name("showusers");
     Route::get('/edituser/{user}', [AdminController::class, "edituserpage"])
         ->name('edituser')
@@ -57,6 +57,10 @@ Route::prefix("dashboard")->middleware(['auth', IsAdmin::class])->group(function
         ->middleware(['auth', IsAdmin::class]);
     Route::put('editusers/{user}', [AdminController::class, "ModifyUser"])
         ->name('putuser');
+    Route::get("/add_tool", [AdminController::class, "addToolpage"])
+        ->name('addToolpage');
+    Route::post('/addtool', [AdminController::class, "addTool"])
+        ->name('addTool');
 });
 
 //deleteuser

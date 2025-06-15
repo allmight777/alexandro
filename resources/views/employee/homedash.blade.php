@@ -95,7 +95,7 @@
                       <div class="preview-thumbnail">
                           <div class="preview-icon bg-warning">
                             <i class="mdi mdi-alert mx-0"></i>
-                          </div>
+                          </div>  
                       </div>
                       <div class="preview-item-content">
                           <h6 class="preview-subject font-weight-normal">Panne signalée</h6>

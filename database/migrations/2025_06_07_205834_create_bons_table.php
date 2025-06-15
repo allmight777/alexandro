@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('bons', function (Blueprint $table) {
+        Schema::create('bons', function (Blueprint $table) {
             $table->id();
             $table->string("agent_telephone");
             $table->longText('motif');
             $table->string('statut'); // Exemple : en attente, approuvé, rejeté
             $table->string("rit");    // Renommé sans majuscules
-            $table->foreignId('user_id')->constrained()->onDelete('cascade')->nullable();
-            $table->foreignId('collaborateur_externe_id')->constrained()->onDelete('cascade')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('collaborateur_externe_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
-        
     }
 
     /**
