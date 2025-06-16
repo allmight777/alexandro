@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
   <!-- endinject -->
   <!-- inject:css -->
   <link rel="stylesheet" href="css/style.css">
@@ -361,12 +362,53 @@
             </a>
             <div class="collapse" id="equipment-management">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="equipment-list.html">Inventaire</a></li>
-                <li class="nav-item"> <a class="nav-link" href="equipment-add.html">Ajouter un équipement</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route("ShowToolpage")}}">Inventaire</a></li>
+                <li class="nav-item"> <a class="nav-link" href="{{route("addToolpage")}}">Ajouter un équipement</a></li>
                 <li class="nav-item"> <a class="nav-link" href="equipment-categories.html">Catégories</a></li>
               </ul>
             </div>
           </li>
+          <!-- Section Equipements en Pannes -->
+          <li class="nav-item">
+            <a class="nav-link" href="equipment-out-of-service.html">
+              <span class="menu-title">Equipements en Pannes</span>
+              <i class="mdi mdi-alert-circle-outline menu-icon"></i>
+            </a>
+          </li>
+          
+          <!-- Section Equipements Perdus -->
+          <!-- Section Equipements Perdus -->
+            <li class="nav-item">
+              <a class="nav-link" href="equipment-lost.html">
+                <span class="menu-title">Equipements Perdus</span>
+                 <i class="mdi mdi-emoticon-sad-outline menu-icon"></i>
+              </a>
+            </li>
+          
+          <!-- Section Demande D'equipement -->
+          <li class="nav-item">
+            <a class="nav-link" href="equipment-request.html">
+              <span class="menu-title">Demande D'équipement</span>
+              <i class="mdi mdi-cart-outline menu-icon"></i>
+            </a>
+          </li>
+          
+          <!-- Section Collaborateurs externes -->
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#external-collaborators" aria-expanded="false" aria-controls="external-collaborators">
+              <span class="menu-title">Collaborateurs externes</span>
+              <i class="menu-arrow"></i>
+              <i class="mdi mdi-account-network menu-icon"></i>
+            </a>
+            <div class="collapse" id="external-collaborators">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="external-collaborator-add.html">Ajouter</a></li>
+                <li class="nav-item"> <a class="nav-link" href="external-collaborator-remove.html">Supprimer</a></li>
+                <li class="nav-item"> <a class="nav-link" href="external-collaborator-generate.html">Générer bon</a></li>
+              </ul>
+            </div>
+          </li>
+          
           <li class="nav-item">
             <a class="nav-link" href="assignments.html">
               <span class="menu-title">Affectations</span>
@@ -396,7 +438,6 @@
                @csrf
                @method("post")
                <button type="submit" class="btn btn-danger">Deconnexion</button>
-
             </form>
           </li>
         </ul>
@@ -679,5 +720,4 @@
   </script>
   <!-- End custom js for this page-->
 </body>
-
 </html>
