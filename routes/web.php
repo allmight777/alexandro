@@ -61,6 +61,14 @@ Route::prefix("dashboard")->middleware(['auth', IsAdmin::class])->group(function
         ->name('addToolpage');
     Route::post('/addtool', [AdminController::class, "addTool"])
         ->name('addTool');
+    Route::get('/list_equip', [AdminController::class, "ShowToolpage"])
+        ->name("ShowToolpage");
+    Route::get('/put_tool_page/{equipement}', [AdminController::class, "putToolpage"])
+        ->name("putToolpage");
+    Route::put('/put_tool/{equipement}', [AdminController::class, "putTool"])
+        ->name("putTool");
+    Route::get("/delete_tool/{equipement}", [AdminController::class, "DeleteTool"])
+        ->name("DeleteTool");
 });
 
 //deleteuser

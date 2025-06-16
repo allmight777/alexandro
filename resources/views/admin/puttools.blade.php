@@ -4,7 +4,7 @@
   <base href="/public">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Toolzy - Administration</title>
+  <title>Toolzy - Modification d'équipement</title>
   <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -458,6 +458,15 @@
     .alert-green {
       background:rgb(121, 168, 121);
     }
+    
+    /* Preview image style */
+    .image-preview {
+      max-width: 200px;
+      max-height: 200px;
+      margin-top: 10px;
+      display: block;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -559,13 +568,13 @@
             <div class="collapse show" id="equipment-management">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> 
-                  <a class="nav-link" href="{{route("ShowToolpage")}}">Inventaire</a>
-                </li>
-                <li class="nav-item active"> 
-                  <a class="nav-link" href="equipment-add.html">Ajouter équipement</a>
+                  <a class="nav-link" href="{{ route("ShowToolpage") }}">Inventaire</a>
                 </li>
                 <li class="nav-item"> 
-                  <a class="nav-link" href="equipment-categories.html">Modifer equipement</a>
+                  <a class="nav-link" href="equipment-add.html">Ajouter équipement</a>
+                </li>
+                <li class="nav-item active"> 
+                  <a class="nav-link" href="equipment-categories.html">Modifier équipement</a>
                 </li>
               </ul>
             </div>
@@ -658,7 +667,7 @@
                 </div>
               @endsession
               
-              <!-- Formulaire d'ajout d'équipement -->
+              <!-- Formulaire de modification d'équipement -->
               <div class="card form-card">
                 <div class="form-header">
                   <div class="d-flex align-items-center">
@@ -666,22 +675,22 @@
                       <i class="mdi mdi-laptop"></i>
                     </div>
                     <div>
-                      <h4 class="mb-0">Ajouter un nouvel équipement</h4>
-                      <p class="mb-0">Remplissez les détails de l'équipement à ajouter à l'inventaire</p>
+                      <h4 class="mb-0">Modifier l'équipement</h4>
+                      <p class="mb-0">Modifiez les détails de l'équipement dans l'inventaire</p>
                     </div>
                   </div>
                 </div>
                 <div class="form-body">
-                  <form method="POST" action="{{route('addTool')}}" enctype="multipart/form-data">
-                    @method("POST")
+                  <form method="POST" action="{{ route('putTool',$equipement->id) }}" enctype="multipart/form-data">
+                    @method("PUT")
                     @csrf
                     <div class="row mb-4">
                       <div class="col-md-6">
                         <div class="mb-3">
                           <label for="equipmentName" class="form-label required-label">Nom de l'équipement</label>
-                          <input type="text" class="form-control" id="equipmentName" placeholder="Entrez le nom de l'équipement" required name="nom">
+                          <input type="text" class="form-control" id="equipmentName" placeholder="Entrez le nom de l'équipement" required name="nom" value="{{ $equipement->nom }}">
                           @error('nom')
-                            <span class="text-danger">{{$message}}</span>
+                            <span class="text-danger">{{ $message }}</span>
                           @enderror
                         </div>
                       </div>
@@ -689,14 +698,14 @@
                         <div class="mb-3">
                           <label for="equipmentState" class="form-label required-label">État</label>
                           <select class="form-select" id="equipmentState" required name="etat">
-                            <option value="" selected disabled>Sélectionnez un état</option>
-                            <option value="disponible">Disponible</option>
-                            <option value="usagé">Usagé</option>
-                            <option value="en panne">En panne</option>
-                            <option value="réparé">Réparé</option>
+                            <option value="" disabled>Sélectionnez un état</option>
+                            <option value="disponible" {{ $equipement->etat == 'disponible' ? 'selected' : '' }}>Disponible</option>
+                            <option value="usagé" {{ $equipement->etat == 'usagé' ? 'selected' : '' }}>Usagé</option>
+                            <option value="en panne" {{ $equipement->etat == 'en panne' ? 'selected' : '' }}>En panne</option>
+                            <option value="réparé" {{ $equipement->etat == 'réparé' ? 'selected' : '' }}>Réparé</option>
                           </select>
                           @error('etat')
-                            <span class="text-danger">{{$message}}</span>
+                            <span class="text-danger">{{ $message }}</span>
                           @enderror
                         </div>
                       </div>
@@ -706,23 +715,25 @@
                       <div class="col-md-6">
                         <div class="mb-3">
                           <label for="equipmentBrand" class="form-label">Marque</label>
-                          <input type="text" class="form-control" id="equipmentBrand" placeholder="Entrez la marque" name="marque">
+                          <input type="text" class="form-control" id="equipmentBrand" placeholder="Entrez la marque" name="marque" value="{{ $equipement->marque }}">
                           @error('marque')
-                            <span class="text-danger">{{$message}}</span>
+                            <span class="text-danger">{{ $message }}</span>
                           @enderror
                         </div>
                       </div>
                       <div class="col-md-6">
                         <div class="mb-3">
                           <label for="equipmentCategory" class="form-label required-label">Catégorie</label>
-                          <select class="form-select" id="equipmentCategory" required name="categorie">
-                            <option value="" selected disabled>Sélectionnez une catégorie</option>
-                            @foreach ($categories as $cat )
-                                      <option value="{{$cat->nom}}">{{$cat->nom }}</option>                          
+                          <select class="form-select" id="equipmentCategory" required name="categorie_id">
+                            <option value="" disabled>Sélectionnez une catégorie</option>
+                             @foreach ($categories as $cat)
+                                    <option value="{{ $cat->id }}" {{ $equipement->categorie_id == $cat->id ? 'selected' : '' }}>
+                                        {{ $cat->nom }}
+                                    </option>
                             @endforeach
                           </select>
                           @error('categorie')
-                            <span class="text-danger">{{$message}}</span>
+                            <span class="text-danger">{{ $message }}</span>
                           @enderror
                         </div>
                       </div>
@@ -732,9 +743,9 @@
                       <div class="col-12">
                         <div class="mb-3">
                           <label for="equipmentDescription" class="form-label">Description</label>
-                          <textarea class="form-control" id="equipmentDescription" rows="3" placeholder="Entrez une description de l'équipement" name="description"></textarea>
+                          <textarea class="form-control" id="equipmentDescription" rows="3" placeholder="Entrez une description de l'équipement" name="description">{{ $equipement->description }}</textarea>
                           @error('description')
-                            <span class="text-danger">{{$message}}</span>
+                            <span class="text-danger">{{ $message }}</span>
                           @enderror
                         </div>
                       </div>
@@ -744,37 +755,56 @@
                       <div class="col-md-6">
                         <div class="mb-3">
                           <label for="acquisitionDate" class="form-label">Date d'acquisition</label>
-                          <input type="date" class="form-control" id="acquisitionDate" name="date_acquisition">
+                          <input type="date" class="form-control" id="acquisitionDate" name="date_acquisition" value="{{ $equipement->date_acquisition}}">
                           @error('date_acquisition')
-                            <span class="text-danger">{{$message}}</span>
+                            <span class="text-danger">{{ $message }}</span>
                           @enderror
                         </div>
                       </div>
                       <div class="col-md-6">
-                        <div class="mb-3">
-                          <label for="equipmentImage" class="form-label">Image de l'équipement</label>
-                          <input type="file" class="form-control" id="equipmentImage" accept="image/*" name="image_path">
-                          @error('image_path')
-                            <span class="text-danger">{{$message}}</span>
-                          @enderror
-                        </div>
-                      </div>
+                            <div class="mb-3">
+                                <label for="equipmentImage" class="form-label">Image de l'équipement</label>
+                                <input type="file" class="form-control" id="equipmentImage" accept="image/*" name="image_path" onchange="previewImage(this)" value="">
+                                @error('image_path')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                                @if($equipement->image_path)
+                                    <div class="mt-2">
+                                        <small class="text-muted">Image actuelle :</small>
+                                        <img id="imagePreview" src="{{ asset('/' . $equipement->image_path) }}" 
+                                            alt="Image actuelle" 
+                                            class="img-thumbnail mt-1" 
+                                            style="max-width: 150px; max-height: 150px; display: block;">
+                                    </div>
+                                @else
+                                    <img id="imagePreview" src="" alt="Aperçu de l'image" 
+                                        class="img-thumbnail mt-2" 
+                                        style="max-width: 150px; max-height: 150px; display: none;">
+                                @endif
+                            </div>
+                       </div>
+
                     </div>
                     
                     <div class="form-footer">
-                      <div class="d-flex justify-content-end">
-                        <button type="reset" class="btn btn-reset me-3">
-                          <i class="mdi mdi-refresh me-1"></i> Réinitialiser
-                        </button>
-                        <button type="submit" class="btn btn-submit">
-                          <i class="mdi mdi-plus-circle me-1"></i> Ajouter l'équipement
-                        </button>
+                      <div class="d-flex justify-content-between">
+                        <a href="{{ route('ShowToolpage') }}" class="btn btn-reset">
+                          <i class="mdi mdi-arrow-left me-1"></i> Retour
+                        </a>
+                        <div>
+                          <button type="reset" class="btn btn-reset me-3">
+                            <i class="mdi mdi-refresh me-1"></i> Réinitialiser
+                          </button>
+                          <button type="submit" class="btn btn-submit">
+                            <i class="mdi mdi-content-save me-1"></i> Enregistrer les modifications
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </form>
                 </div>
               </div>
-              <!-- Fin du formulaire d'ajout d'équipement -->
+              <!-- Fin du formulaire de modification d'équipement -->
             </div>
           </div>
         </div>
@@ -846,6 +876,7 @@
           trigger.setAttribute('aria-expanded', 'true');
         }
       });
+      
       // Submenu active state
       const subMenuLinks = document.querySelectorAll('.sub-menu .nav-link');
       subMenuLinks.forEach(function(link) {
@@ -862,6 +893,25 @@
         document.querySelector('form').reset();
       });
     });
+    
+    // Image preview function
+    function previewImage(input) {
+      const preview = document.getElementById('imagePreview');
+      const file = input.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      }
+      
+      if (file) {
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = "";
+        preview.style.display = 'none';
+      }
+    }
   </script>
 </body>
 </html>

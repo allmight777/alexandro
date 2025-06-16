@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EditRequest;
+use App\Http\Requests\UpdateEquipementRequest;
 use App\Models\Categorie;
 use App\Models\Equipement;
 use App\Models\User;
@@ -79,5 +80,35 @@ class AdminController extends Controller
     }
     $equipement->save();
     return redirect()->back()->with('success', 'Équipement ajouté avec succès.');
+  }
+  public function ShowToolpage()
+  {
+    $equipements = Equipement::with('categorie')->get();
+    return view("admin.listtools", compact("equipements"));
+  }
+  public function putToolpage(Equipement $equipement)
+  {
+    $categories = Categorie::all();
+    return view("admin.puttools", compact('equipement', 'categories'));
+  }
+  public function putTool(UpdateEquipementRequest $request, Equipement $equipement)
+  {
+    $equipement->nom = $request->nom;
+    $equipement->etat = $request->etat;
+    $equipement->marque = $request->marque;
+    $equipement->description = $request->description;
+    $equipement->date_acquisition = $request->date_acquisition;
+    if ($request->hasFile('image_path')) {
+      $imagePath = $request->file('image_path')->store('pictures/equipments', 'public');
+      $equipement->image_path = $imagePath;
+    }
+    $equipement->save();
+
+    return redirect()->back()->with('success', 'Équipement mis à jour avec succès.');
+  }
+  public function DeleteTool(Equipement $equipement)
+  {
+    $equipement->delete();
+    return  redirect()->back();
   }
 }
