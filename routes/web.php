@@ -52,5 +52,39 @@ Route::prefix("dashboard")->middleware(['auth', IsAdmin::class])->group(function
         ->name('putuser');
 });
 
+use App\Http\Middleware\GestionnaireMiddleware;
+
+Route::middleware(['auth', GestionnaireMiddleware::class])->group(function () {
+    // Gestion équipements
+    Route::get('/equipements', [EquipementController::class, 'index'])->name('equipements.index');
+    Route::get('/equipements/create', [EquipementController::class, 'create'])->name('equipements.create');
+    Route::post('/equipements', [EquipementController::class, 'store'])->name('equipements.store');
+    Route::get('/equipements/{id}/edit', [EquipementController::class, 'edit'])->name('equipements.edit');
+    Route::put('/equipements/{id}', [EquipementController::class, 'update'])->name('equipements.update');
+    Route::delete('/equipements/{id}', [EquipementController::class, 'destroy'])->name('equipements.destroy');
+
+    // Consulter demandes
+    Route::get('/demandes', [DemandeController::class, 'index'])->name('demandes.index');
+
+    // Gérer bons (sortie et entrée)
+    Route::get('/bons', [BonController::class, 'index'])->name('bons.index');
+    Route::get('/bons/create', [BonController::class, 'create'])->name('bons.create');
+    Route::post('/bons', [BonController::class, 'store'])->name('bons.store');
+
+    // Affecter équipement
+    Route::get('/affectations', [AffectationController::class, 'index'])->name('affectations.index');
+    Route::get('/affectations/create', [AffectationController::class, 'create'])->name('affectations.create');
+    Route::post('/affectations', [AffectationController::class, 'store'])->name('affectations.store');
+
+    // Consulter pannes
+    Route::get('/pannes', [PanneController::class, 'index'])->name('pannes.index');
+
+    // Soumettre rapport
+    Route::get('/rapports', [RapportController::class, 'index'])->name('rapports.index');
+    Route::get('/rapports/create', [RapportController::class, 'create'])->name('rapports.create');
+    Route::post('/rapports', [RapportController::class, 'store'])->name('rapports.store');
+});
+
+
 //deleteuser
 require __DIR__ . '/auth.php';
