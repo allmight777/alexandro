@@ -83,7 +83,7 @@ class AdminController extends Controller
   }
   public function ShowToolpage()
   {
-    $equipements = Equipement::with('categorie')->get();
+    $equipements = Equipement::with('categorie')->paginate(2);
     return view("admin.listtools", compact("equipements"));
   }
   public function putToolpage(Equipement $equipement)

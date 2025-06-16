@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\EmployeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\Isemp;
@@ -21,21 +22,15 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::view('/dashboard/admin', 'admin.homedash')->middleware([IsAdmin::class]);
     Route::view('/dashboard/gestionnaire', 'gestionnaire.homedash')->name('dashboard.gestionnaire');
+    Route::get('/dashboard/employee',[EmployeController::class,"index"])->name('dashboard.employee')->middleware([Isemp::class]);
 });
-Route::get('/dashboard/employe', function () {
-    // ou toute autre variable que tu veux passer
-    $user = Auth::user();
 
-    return view('employee.homedash', [
-        'user' => $user,
-    ]);
-})->name('dashboard.employe')->middleware([Isemp::class]);
 Route::get('/redirect-by-role', function () {
     $role = Auth::user()->role;
     return match ($role) {
         'admin' => redirect('/dashboard/admin'),
         'gestionnaire' => redirect('/dashboard/gestionnaire'),
-        default => redirect('/dashboard/employe'),
+        'employé' => redirect('/dashboard/employee'),
     };
 })->middleware(['auth'])->name('verifylogin');
 
@@ -46,7 +41,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::prefix("dashboard")->middleware(['auth', IsAdmin::class])->group(function () {
+Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(function () {
     Route::get('/list_users', [AdminController::class, "showusers"])
         ->name("showusers");
     Route::get('/edituser/{user}', [AdminController::class, "edituserpage"])
@@ -61,7 +56,7 @@ Route::prefix("dashboard")->middleware(['auth', IsAdmin::class])->group(function
         ->name('addToolpage');
     Route::post('/addtool', [AdminController::class, "addTool"])
         ->name('addTool');
-    Route::get('/list_equip', [AdminController::class, "ShowToolpage"])
+    Route::get('/list_equip', [AdminController::class, "ShowTooAsdlpage"])
         ->name("ShowToolpage");
     Route::get('/put_tool_page/{equipement}', [AdminController::class, "putToolpage"])
         ->name("putToolpage");
@@ -70,6 +65,10 @@ Route::prefix("dashboard")->middleware(['auth', IsAdmin::class])->group(function
     Route::get("/delete_tool/{equipement}", [AdminController::class, "DeleteTool"])
         ->name("DeleteTool");
 });
-
+Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function(){
+    Route::get('/demande-equipement', [EmployeController::class, 'ShowAskpage'])->name('demande.equipement');
+    Route::get('/signaler-panne', [EmployeController::class, 'signalerPanne'])->name('signaler.panne');
+    Route::get('/equipements-assignes', [EmployeController::class, 'equipementsAssignes'])->name('equipements.assignes');
+});
 //deleteuser
 require __DIR__ . '/auth.php';
