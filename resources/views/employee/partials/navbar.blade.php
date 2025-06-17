@@ -83,36 +83,37 @@
         </div>
     </nav>
     <nav class="bottom-navbar">
-        <div class="container">
-            <ul class="nav page-navigation">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('dashboard.employee') ? 'active' : '' }}"
-                        href="{{ route('dashboard.employee') }}">
-                        <i class="mdi mdi-view-dashboard menu-icon"></i>
-                        <span class="menu-title">Tableau de bord</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('demande.equipement') ? 'active' : '' }}"
-                        href="{{ route('demande.equipement') }}">
-                        <i class="mdi mdi-laptop menu-icon"></i>
-                        <span class="menu-title">Demander équipement</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('signaler-panne') ? 'active' : '' }}" href="/signaler-panne">
-                        <i class="mdi mdi-alert-circle menu-icon"></i>
-                        <span class="menu-title">Signaler pannes</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('equipements-assignes') ? 'active' : '' }}"
-                        href="/equipements-assignes">
-                        <i class="mdi mdi-format-list-bulleted menu-icon"></i>
-                        <span class="menu-title">Équipements assignés</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <div class="container">
+        <ul class="nav page-navigation">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('dashboard.employee') ? 'active' : '' }}"
+                    href="{{ route('dashboard.employee') }}">
+                    <i class="mdi mdi-view-dashboard menu-icon"></i>
+                    <span class="menu-title">Tableau de bord</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('demande.equipement') ? 'active' : '' }}"
+                    href="{{ route('demande.equipement') }}">
+                    <i class="mdi mdi-laptop menu-icon"></i>
+                    <span class="menu-title">Demander équipement</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('signaler-panne') ? 'active' : '' }}" href="{{ url('signaler-panne') }}">
+                    <i class="mdi mdi-alert-circle menu-icon"></i>
+                    <span class="menu-title">Signaler pannes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('equipements-assignes') ? 'active' : '' }}"
+                    href="{{ url('equipements-assignes') }}">
+                    <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+                    <span class="menu-title">Équipements assignés</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
 </div>

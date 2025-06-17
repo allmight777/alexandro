@@ -16,7 +16,7 @@ class Isemp
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role === 'employé') {
+        if (Auth::check() && Auth::user()->role === 'employée') {
             return $next($request);
         }
 

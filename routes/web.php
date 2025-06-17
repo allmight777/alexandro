@@ -22,15 +22,15 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::view('/dashboard/admin', 'admin.homedash')->middleware([IsAdmin::class]);
     Route::view('/dashboard/gestionnaire', 'gestionnaire.homedash')->name('dashboard.gestionnaire');
-    Route::get('/dashboard/employee',[EmployeController::class,"index"])->name('dashboard.employee')->middleware([Isemp::class]);
 });
+Route::get('/dashboard/employee',[EmployeController::class,"index"])->name('dashboard.employee');
 
 Route::get('/redirect-by-role', function () {
     $role = Auth::user()->role;
     return match ($role) {
         'admin' => redirect('/dashboard/admin'),
         'gestionnaire' => redirect('/dashboard/gestionnaire'),
-        'employé' => redirect('/dashboard/employee'),
+        'employée' => redirect('/dashboard/employee'),
     };
 })->middleware(['auth'])->name('verifylogin');
 
@@ -56,7 +56,7 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
         ->name('addToolpage');
     Route::post('/addtool', [AdminController::class, "addTool"])
         ->name('addTool');
-    Route::get('/list_equip', [AdminController::class, "ShowTooAsdlpage"])
+    Route::get('/list_equip', [AdminController::class, "ShowToolpage"])
         ->name("ShowToolpage");
     Route::get('/put_tool_page/{equipement}', [AdminController::class, "putToolpage"])
         ->name("putToolpage");
@@ -64,9 +64,15 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
         ->name("putTool");
     Route::get("/delete_tool/{equipement}", [AdminController::class, "DeleteTool"])
         ->name("DeleteTool");
+    Route::get("/demandes_list",[AdminController::class,"ShowAllAsk"])
+        ->name("liste.demandes");
+
+
+
 });
 Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function(){
     Route::get('/demande-equipement', [EmployeController::class, 'ShowAskpage'])->name('demande.equipement');
+    Route::post("/demande-equipement-soumise",[EmployeController::class,"SubmitAsk"])->name("demande.soumise");
     Route::get('/signaler-panne', [EmployeController::class, 'signalerPanne'])->name('signaler.panne');
     Route::get('/equipements-assignes', [EmployeController::class, 'equipementsAssignes'])->name('equipements.assignes');
 });

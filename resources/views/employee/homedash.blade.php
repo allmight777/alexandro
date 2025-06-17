@@ -66,16 +66,20 @@
   <body>
     <div class="container-scroller">
       <!-- partial:partials/_horizontal-navbar.html -->
-       @include("employee.navbar")
+       @include("employee.partials.navbar")
       <!-- partial -->
       <div class="container-fluid page-body-wrapper">
-              @include("employee.main-panel")
-       
+            @yield('content')
+      
       </div>
+       <!-- partial:partials/_footer.html -->
+        @include("employee.partials.footer")
+    <!-- partial -->
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
     <!-- base:js -->
+    @yield('scripts')
     <script src="/vendors1/base/vendor.bundle.base.js"></script>
     <!-- endinject -->
     <!-- Plugin js for this page-->
