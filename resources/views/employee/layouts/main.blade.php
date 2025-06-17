@@ -97,6 +97,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+<<<<<<< HEAD
                                      @foreach ($demandes as $demande)
                                           <tr>
                                             <td>{{$demande->created_at}}</td>
@@ -104,6 +105,23 @@
                                             <td><label class="badge badge-info">{{$demande->statut}}</label></td>
                                         </tr>
                                      @endforeach
+=======
+                                        <tr>
+                                            <td>15/06/2023</td>
+                                            <td>Demande souris ergonomique</td>
+                                            <td><label class="badge badge-info">En attente</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>10/06/2023</td>
+                                            <td>Réparation téléphone</td>
+                                            <td><label class="badge badge-success">Résolu</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>05/06/2023</td>
+                                            <td>Demande clavier</td>
+                                            <td><label class="badge badge-success">Approuvé</label></td>
+                                        </tr>
+>>>>>>> af758dea731329e7bba6b46a89107155913363fd
                                     </tbody>
                                 </table>
                             </div>

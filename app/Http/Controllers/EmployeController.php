@@ -15,7 +15,11 @@ class EmployeController extends Controller
     {
         // ou toute autre variable que tu veux passer
         $user = Auth::user();
+<<<<<<< HEAD
         $demandes=Demande::all();
+=======
+
+>>>>>>> af758dea731329e7bba6b46a89107155913363fd
         return view('employee.layouts.main', [
             'user' => $user,
             'demandes'=>$demandes,
@@ -25,6 +29,7 @@ class EmployeController extends Controller
         $equipements= Equipement::where('etat', 'Disponible')->get();
         $user = Auth::user();
         return view("employee.layouts.askpage",compact('user','equipements'));
+<<<<<<< HEAD
     }
     public function SubmitAsk(Request $request){
         $user=Auth::user();
@@ -47,6 +52,8 @@ class EmployeController extends Controller
             return back()->with("success","Demande envoyé avec succès");
         }  
 
+=======
+>>>>>>> af758dea731329e7bba6b46a89107155913363fd
     }
     public function signalerPanne()  {
        
