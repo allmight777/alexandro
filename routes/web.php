@@ -7,6 +7,65 @@ use App\Http\Middleware\Isemp;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\Equipement;
+
+
+use App\Http\Controllers\EquipementController;
+use App\Http\Controllers\DemandeController;
+use App\Http\Controllers\BonController;
+use App\Http\Controllers\AffectationController;
+use App\Http\Controllers\PanneController;
+use App\Http\Controllers\RapportController;
+
+use App\Http\Controllers\GestionnaireController;
+
+// Ajoutez cette route avant le middleware général
+Route::get('/dashboard', function () {
+    return redirect()->route('dashboard.gestionnaire'); // Ou votre logique de redirection par rôle
+})->name('dashboard')->middleware('auth');
+
+
+
+// Route::middleware(['auth', 'checkRole:gestionnaire'])->group(function () {
+Route::middleware(['auth', GestionnaireMiddleware::class])->group(function () {
+    
+    Route::view('/dashboard/admin', 'admin.homedash')->name('dashboard.admin');
+    Route::view('/dashboard/gestionnaire', 'gestionnaire.homedash')->name('dashboard.gestionnaire');
+
+    Route::get('/tools/add', [EquipementController::class, 'create'])
+        ->name('tools.add')
+        ->middleware('can:create,App\Models\Equipement');
+
+
+    Route::get('/tools/list', [EquipementController::class, 'index'])
+        ->name('tools.list')
+        ->middleware('can:viewAny,' . Equipement::class);
+
+    Route::get('/tools/edit/{id}', [EquipementController::class, 'edit'])
+        ->name('tools.edit')
+        ->middleware('can:update,equipement');
+
+    Route::put('/tools/update/{id}', [EquipementController::class, 'update'])
+        ->name('tools.update')
+        ->middleware('can:update,equipement');
+
+    // Route::get('/tools/add', [EquipementController::class, 'create'])->name('tools.add');
+
+    // Route::get('/tools/list', [EquipementController::class, 'index'])->name('tools.list');
+    // Route::get('/tools/edit/{id}', [EquipementController::class, 'edit'])->name('tools.edit');
+    // Route::put('/tools/update/{id}', [EquipementController::class, 'update'])->name('tools.update');
+    
+
+    // Route::get('equipements/create', [EquipementController::class, 'create'])->name('equipements.create');
+    // Route::post('equipements', [EquipementController::class, 'store'])->name('equipements.store');
+    // Route::get('equipements', [EquipementController::class, 'index'])->name('equipements.index');
+    // Route::get('demandes', [DemandeController::class, 'index']);
+    Route::resource('bons', BonController::class);
+    Route::resource('affectations', AffectationController::class);
+    // Route::get('pannes', [PanneController::class, 'index']);
+    Route::resource('rapports', RapportController::class);
+});
+
 
 Route::get('/', function () {
     return view('welcome');
