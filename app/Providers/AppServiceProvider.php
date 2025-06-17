@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
-
+use Illuminate\Pagination\Paginator;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -24,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
         Validator::replacer('auth.failed', function () {
             return 'Adresse e-mail ou mot de passe incorrect.';
         });
+        Paginator::useBootstrap(); 
     }
 }
