@@ -14,14 +14,14 @@ class EmployeController extends Controller
         // ou toute autre variable que tu veux passer
         $user = Auth::user();
 
-        return view('employee.homedash', [
+        return view('employee.layouts.main', [
             'user' => $user,
         ]);
     }
     public function ShowAskpage(){
         $equipements= Equipement::where('etat', 'Disponible')->get();
         $user = Auth::user();
-        return view("employee.askpage",compact('user','equipements'));
+        return view("employee.layouts.askpage",compact('user','equipements'));
     }
     public function signalerPanne()  {
         
