@@ -79,6 +79,7 @@
     </div>
     <!-- container-scroller -->
     <!-- base:js -->
+    @yield('scripts')
     <script src="/vendors1/base/vendor.bundle.base.js"></script>
     <!-- endinject -->
     <!-- Plugin js for this page-->

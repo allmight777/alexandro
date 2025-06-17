@@ -11,4 +11,10 @@ class Equipement extends Model
     {
         return $this->belongsTo(Categorie::class);
     }
+    public function demandes(){
+
+            return $this->belongsToMany(Demande::class,"equipement_demandés")
+                       ->withPivot('nbr_equipement'); 
+        
+    }
 }

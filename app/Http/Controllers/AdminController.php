@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EditRequest;
 use App\Http\Requests\UpdateEquipementRequest;
 use App\Models\Categorie;
+use App\Models\Demande;
 use App\Models\Equipement;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -110,5 +111,10 @@ class AdminController extends Controller
   {
     $equipement->delete();
     return  redirect()->back();
+  }
+  public function ShowAllAsk() {
+    $demandes = Demande::with('equipements')->latest()->get();
+    return view("admin.asklist",compact("demandes"));
+
   }
 }

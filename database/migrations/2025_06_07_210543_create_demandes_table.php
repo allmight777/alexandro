@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string("lieu");
             $table->longText("motif");
+            $table->enum('statut', ['en_attente', 'acceptee', 'rejetee'])->default('en_attente');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
