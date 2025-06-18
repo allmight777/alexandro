@@ -11,56 +11,46 @@ use Illuminate\Support\Facades\Auth;
 class EmployeController extends Controller
 {
     //
-   public function index()
+    public function index()
     {
         // ou toute autre variable que tu veux passer
         $user = Auth::user();
-<<<<<<< HEAD
-        $demandes=Demande::all();
-=======
+        $demandes = Demande::all();
 
->>>>>>> af758dea731329e7bba6b46a89107155913363fd
+
         return view('employee.layouts.main', [
             'user' => $user,
-            'demandes'=>$demandes,
+            'demandes' => $demandes,
         ]);
     }
-    public function ShowAskpage(){
-        $equipements= Equipement::where('etat', 'Disponible')->get();
+    public function ShowAskpage()
+    {
+        $equipements = Equipement::where('etat', 'Disponible')->get();
         $user = Auth::user();
-        return view("employee.layouts.askpage",compact('user','equipements'));
-<<<<<<< HEAD
+        return view("employee.layouts.askpage", compact('user', 'equipements'));
     }
-    public function SubmitAsk(Request $request){
-        $user=Auth::user();
-        $demande=new Demande();
-        $demande->lieu=$request->lieu;
-        $demande->motif=$request->motif;
-        $demande->user_id=$user->id;
+    public function SubmitAsk(Request $request)
+    {
+        $user = Auth::user();
+        $demande = new Demande();
+        $demande->lieu = $request->lieu;
+        $demande->motif = $request->motif;
+        $demande->user_id = $user->id;
         $demande->save();
-        if($demande->save()){
-            $equipements=$request->equipements;
-            $quantity=$request->quantites;
-            foreach($equipements as $index=>$equipement_id){
-              $qte=$quantity[$index];
-              $equipements_ask=new EquipementDemandé();
-              $equipements_ask->demande_id=$demande->id;
-              $equipements_ask->equipement_id=$equipement_id;
-              $equipements_ask->nbr_equipement=$qte;
-              $equipements_ask->save();
+        if ($demande->save()) {
+            $equipements = $request->equipements;
+            $quantity = $request->quantites;
+            foreach ($equipements as $index => $equipement_id) {
+                $qte = $quantity[$index];
+                $equipements_ask = new EquipementDemandé();
+                $equipements_ask->demande_id = $demande->id;
+                $equipements_ask->equipement_id = $equipement_id;
+                $equipements_ask->nbr_equipement = $qte;
+                $equipements_ask->save();
             }
-            return back()->with("success","Demande envoyé avec succès");
-        }  
-
-=======
->>>>>>> af758dea731329e7bba6b46a89107155913363fd
+            return back()->with("success", "Demande envoyé avec succès");
+        }
     }
-    public function signalerPanne()  {
-       
-    }
-    public function equipementsAssignes(){
-        
-    }
-    
-
+    public function signalerPanne() {}
+    public function equipementsAssignes() {}
 }

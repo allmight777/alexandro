@@ -15,7 +15,7 @@ class AdminController extends Controller
 {
   public function showusers()
   {
-    $users = User::all();
+    $users = User::where("role", "!=", "admin")->get();
     return view("admin.listuserpage", compact("users"));
   }
   public function edituserpage(User $user)
@@ -112,9 +112,21 @@ class AdminController extends Controller
     $equipement->delete();
     return  redirect()->back();
   }
-  public function ShowAllAsk() {
-    $demandes = Demande::with('equipements')->latest()->get();
-    return view("admin.asklist",compact("demandes"));
-
+  public function ShowAllAsk()
+  {
+    $demandes = Demande::with('equipements')->where("statut", "=", "en_attente")->latest()->get();
+    return view("admin.asklist", compact("demandes"));
+  }
+  public function CheckAsk(Demande $demande)
+  {
+    $demande->statut = "acceptee";
+    $demande->save();
+    return redirect()->back();
+  }
+  public function CancelAsk(Demande $demande)
+  {
+    $demande->statut = "rejetee";
+    $demande->save();
+    return redirect()->back();
   }
 }

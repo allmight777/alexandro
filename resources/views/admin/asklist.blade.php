@@ -24,7 +24,7 @@
                             </td>
                             <td>{{ $demande->motif }}</td>
                             <td class="text-center">
-                                <form action="" method="POST" class="d-inline">
+                                <form action="{{ route('valider.demande',$demande->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-success me-1">
@@ -32,7 +32,7 @@
                                     </button>
                                 </form>
 
-                                <form action="**" method="POST" class="d-inline">
+                                <form action="{{ route("refuser.demande",$demande->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('PUT')
                                     <button type="submit" class="btn btn-sm btn-danger">
