@@ -54,4 +54,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Equipement::class, "affectations")
             ->withPivot("date_retour");
     }
+    public function pannes(){
+        return $this->hasMany(Panne::class);
+    }
+   
 }

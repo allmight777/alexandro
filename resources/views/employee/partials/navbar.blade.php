@@ -100,7 +100,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('signaler-panne') ? 'active' : '' }}" href="{{ url('signaler-panne') }}">
+                <a class="nav-link {{ request()->routeIs('signaler.panne') ? 'active' : '' }}" href="{{ route('signaler.panne') }}">
                     <i class="mdi mdi-alert-circle menu-icon"></i>
                     <span class="menu-title">Signaler pannes</span>
                 </a>

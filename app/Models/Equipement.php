@@ -22,4 +22,8 @@ class Equipement extends Model
         return $this->belongsToMany(User::class, "affectations")
             ->withPivot('date_retour');
     }
+    public function pannes(){
+        return $this->hasMany(Panne::class);
+    }
+   
 }

@@ -15,6 +15,7 @@
             @endif
 
             {{-- Tableau --}}
+         @if(count($equipements)>0)
             <div class="table-responsive">
                 <table class="table table-striped align-middle">
                     <thead class="table-light">
@@ -36,12 +37,16 @@
                             </td>
                             <td>{{ $eq->pivot->date_retour }}</td>
                         </tr>
+                  
                      @endforeach
 
                         {{-- Ajoute ici ta boucle avec les données --}}
                     </tbody>
                 </table>
             </div>
+            @else
+                 <span>Aucun equipement pour le moment</span>
+            @endif
             @foreach ($equipements as $eq)
                     <div class="modal fade" id="imageModal{{$eq->id}}" tabindex="-1" aria-labelledby="imageModalLabel{{$eq->id}}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">

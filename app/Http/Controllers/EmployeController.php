@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Demande;
 use App\Models\Equipement;
 use App\Models\EquipementDemandé;
+use App\Models\Panne;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -50,11 +52,28 @@ class EmployeController extends Controller
             return back()->with("success", "Demande envoyé avec succès");
         }
     }
-    public function signalerPanne() {}
+    public function signalerPanne() {
+        $user = Auth::user();
+        $equipements_user=$user->equipements;
+        return view ("employee.layouts.panne",compact("user","equipements_user"));
+    }
+
+   public function HandlePanne(Request $request){
+     $user=Auth::user();  
+     $panne=new Panne();
+     $panne->equipement_id=$request->equipement_id;
+     $panne->user_id=$user->id;
+     $panne->description=$request->description;
+     $panne->save();
+     return redirect()->back()->with("success","Panne siagnlée avec succès");
+
+
+   }
     public function equipementsAssignes()
     {
         $user = Auth::user();
-        $equipements = $user->equipements;
+        
+        $equipements = $user->equipement;
         return view("employee.layouts.assign", compact("user", "equipements"));
     }
 }
