@@ -36,7 +36,6 @@ class EmployeController extends Controller
         $demande->lieu = $request->lieu;
         $demande->motif = $request->motif;
         $demande->user_id = $user->id;
-        $demande->save();
         if ($demande->save()) {
             $equipements = $request->equipements;
             $quantity = $request->quantites;
@@ -52,5 +51,10 @@ class EmployeController extends Controller
         }
     }
     public function signalerPanne() {}
-    public function equipementsAssignes() {}
+    public function equipementsAssignes()
+    {
+        $user = Auth::user();
+        $equipements = $user->equipements;
+        return view("employee.layouts.assign", compact("user", "equipements"));
+    }
 }

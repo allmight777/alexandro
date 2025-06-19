@@ -70,6 +70,10 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
         ->name("valider.demande");
     Route::put("/cancel_demande/{demande}", [AdminController::class, "CancelAsk"])
         ->name("refuser.demande");
+    Route::get('/affectation', [AdminController::class, "Showaffectation"])
+        ->name('page.affectation');
+    Route::post('/afectation-post', [AdminController::class, "HandleAffectation"])
+        ->name("handle.affectation");
 });
 Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function () {
     Route::get('/demande-equipement', [EmployeController::class, 'ShowAskpage'])->name('demande.equipement');

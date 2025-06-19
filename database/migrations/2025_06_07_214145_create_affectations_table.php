@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('equipement_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->date('date_affectation');
             $table->date('date_retour')->nullable();
             $table->timestamps();
         });

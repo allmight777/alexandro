@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EditRequest;
 use App\Http\Requests\UpdateEquipementRequest;
+use App\Models\Affectation;
+use App\Models\Bon;
 use App\Models\Categorie;
 use App\Models\Demande;
 use App\Models\Equipement;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
@@ -128,5 +131,47 @@ class AdminController extends Controller
     $demande->statut = "rejetee";
     $demande->save();
     return redirect()->back();
+  }
+  public function Showaffectation()
+  {
+    //formulaire avec select employée, select pour equipements,motif text area,date de retour
+    //recuperer la liste des employées && equipements
+    //pour l'insertion il faut les tables:affectations,bon,equipement(MAJ),
+    $equipements = Equipement::all();
+    $employes = User::where("role", "=", "employé")->get();
+    return view("admin.affectation", compact('equipements', 'employes'));
+  }
+
+  public function HandleAffectation(Request $request)
+  {
+    DB::beginTransaction(); // start transaction
+
+    try {
+      //Enregistrer les affectations d'équipements
+      foreach ($request->equipements as $index => $equipement_id) {
+        $affectation = new Affectation();
+        $affectation->equipement_id = $equipement_id;
+        $affectation->date_retour = $request->dates_retour[$index];
+        $affectation->user_id = $request->employe_id;
+        $equipementChange = Equipement::where("id", "=", $equipement_id)->first();
+        $equipementChange->etat = "usagé";
+        $equipementChange->save();
+        $affectation->save();
+      }
+
+
+      // 
+      $bon = new Bon();
+      $bon->user_id = $request->employe_id;
+      $bon->motif = $request->motif;
+      $bon->statut = "sortie";
+      $bon->save();
+
+      DB::commit();
+      return redirect()->back()->with("success", "Affectation réussie avec succès");
+    } catch (\Exception $e) {
+      DB::rollBack(); //
+      return redirect()->back()->with("error", "Une erreur est survenue : " . $e->getMessage());
+    }
   }
 }

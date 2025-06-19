@@ -91,10 +91,10 @@
         </li>
 
         {{-- Tu continues pour les autres sections de la même façon --}}
-
+        
         {{-- Affectation Équipement --}}
-        <li class="nav-item">
-            <a class="nav-link" href="affectation.html">
+        <li class="nav-item {{ request()->routeIs("page.affectation") ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route("page.affectation") }}">
                 <span class="menu-title">Affectation Équipement</span>
                 <i class="mdi mdi-swap-horizontal menu-icon"></i>
             </a>
