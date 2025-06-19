@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Affectation;
+use App\Models\Equipement;
+use App\Models\User;
+
 
 class AffectationController extends Controller
 {
@@ -11,7 +15,8 @@ class AffectationController extends Controller
      */
     public function index()
     {
-        //
+        $affectations = Affectation::with(['equipement', 'user'])->get();
+        return view('gestionnaire.affectations.index', compact('affectations'));
     }
 
     /**
@@ -19,7 +24,10 @@ class AffectationController extends Controller
      */
     public function create()
     {
-        //
+        $equipements = Equipement::where('etat', 'disponible')->get();
+        $employes = User::where('role', 'employe')->get();
+
+        return view('gestionnaire.affectations.create', compact('equipements', 'employes'));
     }
 
     /**
@@ -27,7 +35,24 @@ class AffectationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'equipement_id' => 'required|exists:equipements,id',
+            'user_id' => 'required|exists:users,id',
+            'date_affectation' => 'required|date',
+            'date_retour' => 'nullable|date|after_or_equal:date_affectation',
+        ]);
+
+        Affectation::create($request->all());
+
+        // Marquer l'équipement comme indisponible
+        $equipement = Equipement::find($request->equipement_id);
+        $equipement->disponible = false;
+        $equipement->save();
+
+        return redirect()->back()->with('success', 'Équipement affecté avec succès.');
+
+
+        // return redirect()->route('gestionnaire.affectations.index')->with('success', 'Équipement affecté avec succès.');
     }
 
     /**

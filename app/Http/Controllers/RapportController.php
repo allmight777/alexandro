@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+
+use Illuminate\Support\Facades\Auth;
+use App\Models\Rapport;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 
 class RapportController extends Controller
 {
@@ -11,15 +17,18 @@ class RapportController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $user = auth()->user();
+        $rapports = Rapport::where('user_id', $user->id)->latest()->get();
 
+        return view('gestionnaire.rapports.index', compact('rapports'));
+
+    }
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        return view('gestionnaire.rapports.create');
     }
 
     /**
@@ -27,38 +36,75 @@ class RapportController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'contenu' => 'required|string',
+        ]);
+
+        $contenu = $request->contenu;
+        $user = auth()->user();
+
+        // Générer le PDF
+        $pdf = Pdf::loadView('gestionnaire.rapports.pdf', compact('contenu', 'user'));
+
+        // Enregistrer le PDF dans le dossier public/storage/rapports/
+        $filename = 'rapport_' . now()->format('Ymd_His') . '.pdf';
+        $path = 'rapports/' . $filename;
+
+        Storage::disk('public')->put($path, $pdf->output());
+
+        // Enregistrer dans la base de données
+        Rapport::create([
+            'contenu' => $contenu,
+            'user_id' => $user->id,
+            'file_path' => $path,
+        ]);
+        return redirect()->back()->with('success', 'Rapport généré et soumis avec succès.');
+
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+
+
+    public function download($id)
     {
-        //
+        $rapport = Rapport::findOrFail($id);
+        $user = Auth::user(); // Récupération de l'utilisateur connecté
+
+        $contenu = $rapport->contenu; // si tu veux afficher le contenu dans le PDF
+
+        return PDF::loadView('gestionnaire.rapports.pdf', compact('rapport', 'user', 'contenu'))
+                ->download('rapport_' . $rapport->id . '.pdf');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+    // /**
+    //  * Display the specified resource.
+    // //  */
+    // public function show(string $id)
+    // {
+    //     //
+    // }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    // /**
+    //  * Show the form for editing the specified resource.
+    //  */
+    // public function edit(string $id)
+    // {
+    //     //
+    // }
+
+    // /**
+    //  * Update the specified resource in storage.
+    //  */
+    // public function update(Request $request, string $id)
+    // {
+    //     //
+    // }
+
+    // /**
+    //  * Remove the specified resource from storage.
+    //  */
+    // public function destroy(string $id)
+    // {
+    //     //
+    // }
 }

@@ -3,27 +3,16 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GestionnaireMiddleware
 {
-    /**
-     * Handle an incoming request.
-     */
-    public function handle(Request $request, Closure $next)
+    public function handle($request, Closure $next)
     {
-        // Vérifie si l'utilisateur est connecté
-        if (!auth()->check()) {
-            return redirect('/login'); // ou la route de connexion
+        if (Auth::check() && Auth::user()->role === 'gestionnaire') {
+            return $next($request);
         }
 
-        // Vérifie si l'utilisateur a le rôle gestionnaire ou admin
-        $user = auth()->user();
-
-        if ($user->role !== 'gestionnaire' && $user->role !== 'admin') {
-            abort(403, 'Accès interdit'); // interdiction d'accès
-        }
-
-        return $next($request);
+        abort(403, 'Accès refusé.');
     }
 }

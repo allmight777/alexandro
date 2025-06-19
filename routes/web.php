@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\Equipement;
 
-
+use App\Http\Middleware\GestionnaireMiddleware;
 use App\Http\Controllers\EquipementController;
 use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\BonController;
@@ -27,28 +27,174 @@ Route::get('/dashboard', function () {
 
 
 
+
 // Route::middleware(['auth', 'checkRole:gestionnaire'])->group(function () {
 Route::middleware(['auth', GestionnaireMiddleware::class])->group(function () {
     
     Route::view('/dashboard/admin', 'admin.homedash')->name('dashboard.admin');
     Route::view('/dashboard/gestionnaire', 'gestionnaire.homedash')->name('dashboard.gestionnaire');
 
+    
     Route::get('/tools/add', [EquipementController::class, 'create'])
-        ->name('tools.add')
-        ->middleware('can:create,App\Models\Equipement');
-
+        ->name('gestionnaire.tools.add')
+        ->middleware([GestionnaireMiddleware::class]);
+    
 
     Route::get('/tools/list', [EquipementController::class, 'index'])
-        ->name('tools.list')
-        ->middleware('can:viewAny,' . Equipement::class);
+        ->name('gestionnaire.tools.list')
+        ->middleware([GestionnaireMiddleware::class]);
+        // ------------------------------------------------------------------
+        // ---------------------------------------------------------------
+    Route::post('/tools/store', [EquipementController::class, 'store'])
+        ->name('storeTool')
+        ->middleware([GestionnaireMiddleware::class]);
 
-    Route::get('/tools/edit/{id}', [EquipementController::class, 'edit'])
-        ->name('tools.edit')
-        ->middleware('can:update,equipement');
+
+    Route::get('/tools/edit/{id}', [EquipementController::class, 'put'])
+        ->name('tools.put')
+        ->middleware([GestionnaireMiddleware::class]);
 
     Route::put('/tools/update/{id}', [EquipementController::class, 'update'])
-        ->name('tools.update')
-        ->middleware('can:update,equipement');
+        ->name('gestionnaire.tools.update')
+        ->middleware([GestionnaireMiddleware::class]);
+   
+
+        Route::get('/tools/panne', [EquipementController::class, 'showPanne'])
+    ->name('gestionnaire.tools.panne')
+    ->middleware([GestionnaireMiddleware::class]);
+
+
+    // Affichage du formulaire (GET)
+    Route::get('/dashboard/gestionnaire/addtool', [GestionnaireController::class, 'showAddToolForm'])
+        ->name('gestionnaire.addtool.form')
+        ->middleware([GestionnaireMiddleware::class]);
+
+    // Traitement du formulaire (POST)
+    Route::post('/dashboard/gestionnaire/addtool', [GestionnaireController::class, 'storeTool'])
+        ->name('gestionnaire.addtool.store')
+        ->middleware([GestionnaireMiddleware::class]);
+
+         
+});
+
+
+
+// --------------------------------------Demandes----------------------------------------------------
+Route::prefix(prefix: 'gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
+   
+    Route::get('/gestionnaire/demandes', [DemandeController::class, 'index'])
+        ->name('gestionnaire.demandes.index')
+        ->middleware([GestionnaireMiddleware::class]);
+     
+    Route::post('/gestionnaire/demandes/{demande}/assigner', [GestionnaireController::class, 'assignerDemande'])
+         ->name('gestionnaire.demandes.affecter');
+});
+    // Route::get('/categories/create', [CategorieController::class, 'create'])
+    //     ->name('gestionnaire.categories.create')
+    //     ->middleware([GestionnaireMiddleware::class]);  
+
+
+
+    // Route::get('/categories/list', [CategorieController::class, 'index'])
+    //     ->name('gestionnaire.categories.index')
+    //     ->middleware([GestionnaireMiddleware::class]);
+
+    // Route::get('/categories/edit/{id}', [CategorieController::class, 'edit'])
+    //     ->name('gestionnaire.categories.edit')
+    //     ->middleware([GestionnaireMiddleware::class]);
+    
+    // Route::post('/categories/store', [CategorieController::class, 'store'])
+    //     ->name('gestionnaire.categories.store')
+    //     ->middleware([GestionnaireMiddleware::class]);
+
+    // Route::put('/categories/update/{id}', [CategorieController::class, 'update'])
+    //     ->name('gestionnaire.categories.update')
+    //     ->middleware([GestionnaireMiddleware::class]);
+
+    // Route::delete('/categories/delete/{id}', [CategorieController::class, 'destroy'])
+    //     ->name('gestionnaire.categories.delete')
+    //     ->middleware([GestionnaireMiddleware::class]);
+
+
+        // --------------------------Affectations-----------------------------------------
+
+Route::middleware(['auth', GestionnaireMiddleware::class])->prefix('gestionnaire')->group(function () {
+    Route::get('/affectations', [AffectationController::class, 'index'])
+        ->name('gestionnaire.affectations.index')
+        ->middleware([GestionnaireMiddleware::class]);
+
+    Route::get('/affectations/create', [AffectationController::class, 'create'])
+        ->name('gestionnaire.affectations.create')
+        ->middleware([GestionnaireMiddleware::class]);
+
+    Route::post('/affectations', [AffectationController::class, 'store'])
+        ->name('gestionnaire.affectations.store')
+        ->middleware([GestionnaireMiddleware::class]);
+
+});
+
+
+
+Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
+
+    Route::get('/rapports/create', [RapportController::class, 'create'])
+        ->name('gestionnaire.rapports.create')
+        ->middleware([GestionnaireMiddleware::class]);
+
+    Route::post('/rapports', [RapportController::class, 'store'])
+        ->name('gestionnaire.rapports.store')
+        ->middleware([GestionnaireMiddleware::class]);
+
+    Route::get('/rapports', [RapportController::class, 'index'])
+        ->name('gestionnaire.rapports.index')
+        ->middleware([GestionnaireMiddleware::class]);
+
+    Route::get('/rapports/{id}/download', [RapportController::class, 'download'])
+        ->name('gestionnaire.rapports.download')
+        ->middleware([GestionnaireMiddleware::class]);
+
+});
+
+
+// ----------------------------------------------Affectation---------------------------------------------------------
+Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
+    Route::get('/gestionnaire/affectations/create', [AffectationController::class, 'create'])
+        ->name('affectations.create')
+        ->middleware([GestionnaireMiddleware::class]);
+
+    Route::post('/gestionnaire/affectations', [AffectationController::class, 'store'])
+        ->name('affectations.store')
+        ->middleware([GestionnaireMiddleware::class]);
+
+});
+
+
+// Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
+//     Route::get('/rapports/create', [RapportController::class, 'create'])->name('gestionnaire.rapports.create');
+//     Route::post('/rapports', [RapportController::class, 'store'])->name('gestionnaire.rapports.store');
+//     Route::get('/rapports', [RapportController::class, 'index'])->name('gestionnaire.rapports.index');
+//     Route::get('/rapports/{id}/download', [RapportController::class, 'download'])->name('gestionnaire.rapports.download');
+// });
+
+    
+    
+    
+ 
+
+    // Route::get('/tools/list', [EquipementController::class, 'index'])
+    //     ->name('tools.list')
+    //     ->middleware('can:viewAny,' . Equipement::class);
+
+    // Route::get('/tools/edit/{id}', [EquipementController::class, 'edit'])
+    //     ->name('tools.edit')
+    //     ->middleware('can:update,equipement');
+
+    // Route::put('/tools/update/{id}', [EquipementController::class, 'update'])
+    //     ->name('tools.update')
+    //     ->middleware('can:update,equipement');
+
+
+
 
     // Route::get('/tools/add', [EquipementController::class, 'create'])->name('tools.add');
 
@@ -62,10 +208,12 @@ Route::middleware(['auth', GestionnaireMiddleware::class])->group(function () {
     // Route::get('equipements', [EquipementController::class, 'index'])->name('equipements.index');
     // Route::get('demandes', [DemandeController::class, 'index']);
     Route::resource('bons', BonController::class);
+
     Route::resource('affectations', AffectationController::class);
+
     // Route::get('pannes', [PanneController::class, 'index']);
     Route::resource('rapports', RapportController::class);
-});
+
 
 
 Route::get('/', function () {
@@ -89,7 +237,7 @@ Route::get('/redirect-by-role', function () {
     return match ($role) {
         'admin' => redirect('/dashboard/admin'),
         'gestionnaire' => redirect('/dashboard/gestionnaire'),
-        'employée' => redirect('/dashboard/employee'),
+        'employé' => redirect('/dashboard/employee'),
     };
 })->middleware(['auth'])->name('verifylogin');
 
@@ -129,49 +277,13 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
 
 
 });
-<<<<<<< HEAD
 
-use App\Http\Middleware\GestionnaireMiddleware;
-
-Route::middleware(['auth', GestionnaireMiddleware::class])->group(function () {
-    // Gestion équipements
-    Route::get('/equipements', [EquipementController::class, 'index'])->name('equipements.index');
-    Route::get('/equipements/create', [EquipementController::class, 'create'])->name('equipements.create');
-    Route::post('/equipements', [EquipementController::class, 'store'])->name('equipements.store');
-    Route::get('/equipements/{id}/edit', [EquipementController::class, 'edit'])->name('equipements.edit');
-    Route::put('/equipements/{id}', [EquipementController::class, 'update'])->name('equipements.update');
-    Route::delete('/equipements/{id}', [EquipementController::class, 'destroy'])->name('equipements.destroy');
-
-    // Consulter demandes
-    Route::get('/demandes', [DemandeController::class, 'index'])->name('demandes.index');
-
-    // Gérer bons (sortie et entrée)
-    Route::get('/bons', [BonController::class, 'index'])->name('bons.index');
-    Route::get('/bons/create', [BonController::class, 'create'])->name('bons.create');
-    Route::post('/bons', [BonController::class, 'store'])->name('bons.store');
-
-    // Affecter équipement
-    Route::get('/affectations', [AffectationController::class, 'index'])->name('affectations.index');
-    Route::get('/affectations/create', [AffectationController::class, 'create'])->name('affectations.create');
-    Route::post('/affectations', [AffectationController::class, 'store'])->name('affectations.store');
-
-    // Consulter pannes
-    Route::get('/pannes', [PanneController::class, 'index'])->name('pannes.index');
-
-    // Soumettre rapport
-    Route::get('/rapports', [RapportController::class, 'index'])->name('rapports.index');
-    Route::get('/rapports/create', [RapportController::class, 'create'])->name('rapports.create');
-    Route::post('/rapports', [RapportController::class, 'store'])->name('rapports.store');
-});
-
-
-=======
 Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function(){
     Route::get('/demande-equipement', [EmployeController::class, 'ShowAskpage'])->name('demande.equipement');
     Route::post("/demande-equipement-soumise",[EmployeController::class,"SubmitAsk"])->name("demande.soumise");
     Route::get('/signaler-panne', [EmployeController::class, 'signalerPanne'])->name('signaler.panne');
     Route::get('/equipements-assignes', [EmployeController::class, 'equipementsAssignes'])->name('equipements.assignes');
 });
->>>>>>> 64f44eaae7d0827b9efc3da84b1bfabba747696a
+
 //deleteuser
 require __DIR__ . '/auth.php';
