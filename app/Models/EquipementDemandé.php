@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EquipementDemandé extends Model
+class EquipementsDemandé extends Model
 {
     public function demande()
 {

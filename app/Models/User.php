@@ -49,4 +49,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function equipements()
+    {
+        return $this->belongsToMany(Equipement::class, "affectations")
+            ->withPivot("date_retour");
+    }
+    public function pannes(){
+        return $this->hasMany(Panne::class);
+    }
+   
 }

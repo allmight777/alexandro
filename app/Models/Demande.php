@@ -25,9 +25,9 @@ class Demande extends Model
     return $this->belongsTo(User::class);
 }
 
-public function equipementsDemandes()
+public function equipements()
 {
-    return $this->hasMany(EquipementDemande::class);
+    return $this->hasMany(EquipementDemandé::class);
 }
 
 }

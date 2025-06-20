@@ -11,7 +11,7 @@ class DemandeController extends Controller
  
     public function index()
     {
-    $demandes = Demande::with(['user', 'equipementsDemandes.equipement'])
+    $demandes = Demande::with(['user', 'EquipementsDemandé.equipement'])
         ->orderBy('created_at', 'desc')
         ->get();
 

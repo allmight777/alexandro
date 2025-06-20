@@ -4,18 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EditRequest;
 use App\Http\Requests\UpdateEquipementRequest;
+use App\Models\Affectation;
+use App\Models\Bon;
 use App\Models\Categorie;
+use App\Models\CollaborateurExterne;
 use App\Models\Demande;
 use App\Models\Equipement;
+use App\Models\Panne;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
   public function showusers()
   {
-    $users = User::all();
+    $users = User::where("role", "!=", "admin")->get();
     return view("admin.listuserpage", compact("users"));
   }
   public function edituserpage(User $user)
@@ -114,9 +120,106 @@ class AdminController extends Controller
     $equipement->delete();
     return  redirect()->back();
   }
-  public function ShowAllAsk() {
-    $demandes = Demande::with('equipements')->latest()->get();
-    return view("admin.asklist",compact("demandes"));
+  public function ShowAllAsk()
+  {
+    $demandes = Demande::with('equipements')->where("statut", "=", "en_attente")->latest()->get();
+    return view("admin.asklist", compact("demandes"));
+  }
+  public function CheckAsk(Demande $demande)
+
+  {
+    $demande->statut = "acceptee";
+    $demande->save();
+    return redirect()->back();
+  }
+  public function CancelAsk(Demande $demande)
+  {
+    $demande->statut = "rejetee";
+    $demande->save();
+    return redirect()->back();
+  }
+  public function Showaffectation()
+  {
+    //formulaire avec select employée, select pour equipements,motif text area,date de retour
+    //recuperer la liste des employées && equipements
+    //pour l'insertion il faut les tables:affectations,bon,equipement(MAJ),
+    $equipements_groupes = Categorie::with("equipement")->get();
+    $employes = User::where("role", "=", "employé")->get();
+    return view("admin.affectation", compact('equipements_groupes', 'employes'));
+  }
+
+  public function HandleAffectation(Request $request)
+  {
+    DB::beginTransaction(); // start transaction
+
+    try {
+      //Enregistrer les affectations d'équipements
+      foreach ($request->equipements as $index => $equipement_id) {
+        $affectation = new Affectation();
+        $affectation->equipement_id = $equipement_id;
+        $affectation->date_retour = $request->dates_retour[$index];
+        $affectation->user_id = $request->employe_id;
+        $equipementChange = Equipement::where("id", "=", $equipement_id)->first();
+        $equipementChange->etat = "usagé";
+        $equipementChange->save();
+        $affectation->save();
+      }
+
+
+      // 
+      $bon = new Bon();
+      $bon->user_id = $request->employe_id;
+      $bon->motif = $request->motif;
+      $bon->statut = "sortie";
+      $bon->save();
+
+      DB::commit();
+      return redirect()->back()->with("success", "Affectation réussie avec succès");
+    } catch (\Exception $e) {
+      DB::rollBack(); //
+      return redirect()->back()->with("error", "Une erreur est survenue : " . $e->getMessage());
+    }
+  }
+  public function Showpannes(){
+     $pannes = Panne::with(['equipement', 'user'])->latest()->get();
+     return view("admin.pannelist",compact('pannes'));
+
+  }
+  public function ShowToollost(){
+      $equipement_lost = Affectation::with(["equipement","user"])
+       ->where('date_retour', '<', Carbon::now())
+        ->get(); 
+    return view("admin.lost_tools",compact("equipement_lost"));
+
+  }
+  public function CollaboratorsPage(){
+    
+    return view("admin.collaborator_external");
+
+  }
+  public function HandleCollaborator(Request $request){
+      $request->validate([
+        'nom' => 'required|string|max:255',
+        'prenom' => 'required|string|max:255',
+        'chemin_carte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+    ]);
+    $collaborator=new CollaborateurExterne();
+    $collaborator->nom=$request->nom;
+    $collaborator->prenom=$request->prenom;
+    $cheminCarte = $request->file('chemin_carte')->store('cartes_identite', 'public');
+    $collaborator->carte_chemin=$cheminCarte;
+    $collaborator->save();
+    return redirect()->back()->with('success', 'Collaborateur ajouté avec succès.');
+
+  }
+  public function ShowListCollaborator(){
+    $collaborateurs=CollaborateurExterne::all();
+    return view("admin.list_collaborator",compact('collaborateurs'));
+
+  }
+  public function destroy(CollaborateurExterne $CollaborateurExterne){
+        $CollaborateurExterne->delete();
+        return redirect()->back();
 
   }
 }

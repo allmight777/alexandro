@@ -8,9 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Affectation extends Model
 {
+<<<<<<< HEAD
     protected $fillable = [
         'equipement_id', 'user_id', 'date_affectation', 'date_retour'
     ];
+=======
+    //
+>>>>>>> origin/xandrodev
 
     public function equipement()
     {

@@ -69,20 +69,19 @@
         </li>
 
         {{-- Le reste des liens, tu peux faire pareil --}}
-        <li class="nav-item {{ request()->is('equipment-out-of-service') ? 'active' : '' }}">
-            <a class="nav-link" href="equipment-out-of-service.html">
+        <li class="nav-item  {{ request()->routeIs("equipements.pannes") ? 'active' : '' }}">
+            <a class="nav-link" href="{{route("equipements.pannes")}}">
                 <span class="menu-title">Equipements en Pannes</span>
                 <i class="mdi mdi-alert-circle-outline menu-icon"></i>
             </a>
         </li>
 
-        <li class="nav-item {{ request()->is('equipment-lost') ? 'active' : '' }}">
-            <a class="nav-link" href="equipment-lost.html">
+        <li class="nav-item ">
+            <a class="nav-link {{ request()->routeIs("tools.lost") ? 'active' : '' }}" href="{{route('tools.lost')}}">
                 <span class="menu-title">Equipements Perdus</span>
                 <i class="mdi mdi-emoticon-sad-outline menu-icon"></i>
             </a>
         </li>
-
         <li class="nav-item {{ request()->routeIs("liste.demandes") ? 'active' : '' }}">
             <a class="nav-link" href="{{route("liste.demandes")}}">
                 <span class="menu-title">Demande D'équipement</span>
@@ -91,10 +90,10 @@
         </li>
 
         {{-- Tu continues pour les autres sections de la même façon --}}
-
+        
         {{-- Affectation Équipement --}}
-        <li class="nav-item">
-            <a class="nav-link" href="affectation.html">
+        <li class="nav-item {{ request()->routeIs("page.affectation") ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route("page.affectation") }}">
                 <span class="menu-title">Affectation Équipement</span>
                 <i class="mdi mdi-swap-horizontal menu-icon"></i>
             </a>
@@ -108,7 +107,7 @@
             </a>
         </li>
 
-        {{-- Collaborateurs Externes --}}
+        {{-- Collaborateurs Externes CollaboratorsPage" --}}
         <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#collab-externes" aria-expanded="false"
                 aria-controls="collab-externes">
@@ -118,11 +117,11 @@
             </a>
             <div class="collapse" id="collab-externes">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link" href="collaborateurs-ajouter.html">Ajouter</a>
+                    <li class="nav-item {{ request()->routeIs('CollaboratorsPage') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{route("CollaboratorsPage")}}">Ajouter</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="collaborateurs-liste.html">Liste</a>
+                    <li class="nav-item  {{ request()->routeIs('ShowListCollaborator') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{route('ShowListCollaborator')}}">Liste</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="collaborateurs-bon.html">Bon</a>
