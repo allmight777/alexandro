@@ -87,6 +87,11 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
          ->name("collaborateurs.destroy");
     Route::get('/list_bon',[AdminController::class,"ShowBons"])
          ->name("liste.bons");
+    Route::get('/bon_collaborator_external',[AdminController::class,"CreateBon"])
+        ->name("CreateBon");
+    Route::post("/post_bon_collaborator_external",[AdminController::class,"HandleBon"])
+         ->name("HandleBon");
+    
     
 });
 Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function () {

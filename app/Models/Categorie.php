@@ -11,4 +11,7 @@ class Categorie extends Model
     {
         return $this->hasMany(Equipement::class);
     }
+
+    
+
 }

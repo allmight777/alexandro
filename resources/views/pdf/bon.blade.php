@@ -11,7 +11,7 @@
     </style>
 </head>
 <body>
-    <div class="title">Bon d’entrée de matériel</div>
+    <div class="title">Bon {{$type}} de matériel</div>
     <p><strong>Numéro du bon :</strong> {{ $numero_bon }}</p>
     <p><strong>Date :</strong> {{ $date }}</p>
     <p><strong>Nom et Prénom :</strong> {{ $nom }} {{ $prenom }}</p>

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Affectation extends Model
 {
-    //
+    //A
 
     public function equipement()
     {
@@ -17,4 +17,8 @@ class Affectation extends Model
     {
         return $this->belongsTo(User::class);
     }
+   
+
+   
+
 }

@@ -44,7 +44,7 @@
 
         {{-- Gestion Équipements --}}
         @php
-            $equipActive = request()->routeIs('ShowToolpage') || request()->routeIs('addToolpage');
+            $equipActive = request()->routeIs('ShowToolpage') || request()->routeIs('addToolpage')||request()->routeIs('liste.bons');
         @endphp
         <li class="nav-item {{ $equipActive ? 'active' : '' }}">
             <a class="nav-link" data-toggle="collapse" href="#equipment-management"
@@ -122,8 +122,8 @@
                     <li class="nav-item  {{ request()->routeIs('ShowListCollaborator') ? 'active' : '' }}">
                         <a class="nav-link" href="{{route('ShowListCollaborator')}}">Liste</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="collaborateurs-bon.html">Bon</a>
+                    <li class="nav-item  {{ request()->routeIs('CreateBon') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{route('CreateBon')}}">Bon</a>
                     </li>
                 </ul>
             </div>

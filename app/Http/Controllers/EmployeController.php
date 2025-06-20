@@ -27,7 +27,7 @@ class EmployeController extends Controller
     }
     public function ShowAskpage()
     {
-        $equipements = Equipement::where('etat', 'Disponible')->get();
+        $equipements = Equipement::all();
         $user = Auth::user();
         return view("employee.layouts.askpage", compact('user', 'equipements'));
     }
@@ -71,8 +71,7 @@ class EmployeController extends Controller
    }
     public function equipementsAssignes()
     {
-        $user = Auth::user();
-        
+        $user = Auth::user();       
         $equipements = $user->equipement;
         return view("employee.layouts.assign", compact("user", "equipements"));
     }

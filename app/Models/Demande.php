@@ -14,4 +14,6 @@ class Demande extends Model
             ->withPivot('nbr_equipement')  // Important pour accéder à la quantité
             ->withTimestamps();      // Si tu utilises les timestamps sur ta table pivot
     }
+
+    
 }
