@@ -85,6 +85,8 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
         ->name("ShowListCollaborator");
     Route::get("/delete_collaborator/{CollaborateurExterne}",[AdminController::class,"destroy"])
          ->name("collaborateurs.destroy");
+    Route::get('/list_bon',[AdminController::class,"ShowBons"])
+         ->name("liste.bons");
     
 });
 Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function () {

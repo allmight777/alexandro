@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EditRequest;
@@ -12,11 +11,13 @@ use App\Models\Demande;
 use App\Models\Equipement;
 use App\Models\Panne;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
   public function showusers()
@@ -80,13 +81,34 @@ class AdminController extends Controller
     $equipement->categorie_id = Categorie::where('nom', $request->categorie)->value('id');
     // Gestion de l'image si elle est envoyée
     if ($request->hasFile('image_path')) {
-      $file = $request->file('image_path');
-      $filename = time() . '_' . $file->getClientOriginalName();
-      $file->move(public_path('pictures/equipements'), $filename);
-      $equipement->image_path = 'pictures/equipements/' . $filename;
+        $file = $request->file('image_path');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('pictures/equipements'), $filename);
+        $equipement->image_path = 'pictures/equipements/' . $filename;
     }
     $equipement->save();
-    return redirect()->back()->with('success', 'Équipement ajouté avec succès.');
+   
+    $user = Auth::user();
+    $bon=new Bon();
+    $bon->motif='Ajout de nouvel équipement : ' . $equipement->nom;
+    $bon->user_id=$user->id;
+    $bon->statut="entrée";
+    $pdfName = 'bon_entree_' . $equipement->id . '.pdf';
+    $pdfPath = 'bon_entree/' . $pdfName;
+    $bon->fichier_pdf=$pdfPath;
+    $bon->save();
+    $pdf = Pdf::loadView('pdf.bon_entree', [
+        'date' => now()->format('d/m/Y'),
+        'nom' => $user->nom ?? 'Admin',
+        'prenom' => $user->prenom ?? '',
+        'motif' => 'Ajout de nouvel équipement : ' . $equipement->nom,
+        'numero_bon' => $bon->id
+    ]);
+    Storage::disk('public')->put($pdfPath, $pdf->output());
+
+    return redirect()->back() // ou ->back()
+        ->with('success', 'Équipement ajouté avec succès.')
+        ->with('pdf', asset('storage/' . $pdfPath));
   }
   public function ShowToolpage()
   {
@@ -218,6 +240,10 @@ class AdminController extends Controller
   public function destroy(CollaborateurExterne $CollaborateurExterne){
         $CollaborateurExterne->delete();
         return redirect()->back();
+
+  }
+  public function ShowBons(){
+    return view("admin.list_bons");
 
   }
 }

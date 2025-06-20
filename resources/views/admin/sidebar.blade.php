@@ -61,13 +61,12 @@
                     <li class="nav-item {{ request()->routeIs('addToolpage') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('addToolpage') }}">Ajouter un équipement</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="equipment-categories.html">Catégories</a>
+                    <li class="nav-item {{ request()->routeIs('liste.bons') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{route('liste.bons')}}">BONS</a>
                     </li>
                 </ul>
             </div>
         </li>
-
         {{-- Le reste des liens, tu peux faire pareil --}}
         <li class="nav-item  {{ request()->routeIs("equipements.pannes") ? 'active' : '' }}">
             <a class="nav-link" href="{{route("equipements.pannes")}}">
