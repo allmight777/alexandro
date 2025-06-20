@@ -152,10 +152,13 @@
             <div class="collapse" id="collab-externes">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="collaborateurs-ajouter.html">Ajouter</a>
+                        <a class="nav-link" href="{{ route('gestionnaire.collaborateurs.create') }}">Ajouter</a>
+
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="collaborateurs-liste.html">Liste</a>
+                        <!-- <a class="nav-link" href="collaborateurs-liste.html">Liste</a> -->
+                        <a class="nav-link" href="{{ route('gestionnaire.collaborateurs.index') }}">Liste</a>
+
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="collaborateurs-bon.html">Bon</a>

@@ -1,34 +1,64 @@
 @extends('gestionnaire.affectations.layouts.gestionlay')
 
 @section('content')
-    <h2>Liste des affectations</h2>
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Liste des affectations</h4>
+            <a href="{{ route('gestionnaire.affectations.create') }}" class="btn btn-light btn-sm">
+                <i class="bi bi-plus-circle"></i> Nouvelle affectation
+            </a>
+        </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Équipement</th>
-                <th>Employé</th>
-                <th>Date d'affectation</th>
-                <th>Date de retour</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($affectations as $affectation)
-                <tr>
-                    <td>{{ $affectation->id }}</td>
-                    <td>{{ $affectation->equipement->nom ?? 'N/A' }}</td>
-                    <td>{{ $affectation->user->name ?? 'N/A' }}</td>
-                    <td>{{ $affectation->date_affectation }}</td>
-                    <td>{{ $affectation->date_retour ?? '-' }}</td>
-                    <td>
-                        <!-- boutons Modifier / Supprimer selon ton besoin -->
-                        <a href="#">Modifier</a> |
-                        <a href="#">Supprimer</a>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        <div class="card-body">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                </div>
+            @endif
+
+            @if($affectations->isEmpty())
+                <div class="alert alert-info">Aucune affectation enregistrée pour le moment.</div>
+            @else
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Équipement</th>
+                                <th>Employé</th>
+                                <th>Date de retour</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($affectations as $index => $affectation)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $affectation->equipement->nom ?? 'N/A' }}</td>
+                                    <td>{{ $affectation->user->nom ?? 'N/A' }} {{ $affectation->user->prenom ?? '' }}</td>
+                                    <td>{{ $affectation->date_retour ?? '-' }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-warning me-1">
+                                            <i class="bi bi-pencil-square"></i> Modifier
+                                        </a>
+                                        <form action="#" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette affectation ?')">
+                                                <i class="bi bi-trash"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
 @endsection

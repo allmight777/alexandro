@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EquipementsDemandé extends Model
+class EquipementDemandé extends Model
 {
     public function demande()
 {
@@ -16,4 +16,16 @@ public function equipement()
     return $this->belongsTo(Equipement::class);
 }
 
+
+
 }
+
+// public function up()
+// {
+//     Schema::table('equipement_demandés', function (Blueprint $table) {
+//         $table->unsignedBigInteger('demande_id')->nullable();
+
+//         $table->foreign('demande_id')
+//               ->references('id')->on('demandes')
+//               ->onDelete('cascade');
+//     });

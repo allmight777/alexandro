@@ -1,4 +1,4 @@
-@extends('admin.layouts.adminlay')
+@extends('gestionnaire.collaborateurs.layouts.gestionlay')
 
 @section('content')
 <div class="container mt-5">
@@ -26,7 +26,8 @@
                                     <td>{{ $collaborateur->nom }}</td>
                                     <td>{{ $collaborateur->prenom }}</td>
                                     <td>
-                                        <form action="{{ route('collaborateurs.destroy', $collaborateur->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce collaborateur ?')">
+                                        <!-- <form action="{{ route('gestionnaire.collaborateurs.destroy', $collaborateur) }}" method="POST"></form> -->
+                                        <form action="{{ route('gestionnaire.collaborateurs.destroy', $collaborateur->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce collaborateur ?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm">

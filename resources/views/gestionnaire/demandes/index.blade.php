@@ -1,31 +1,59 @@
 @extends('gestionnaire.demandes.layouts.gestionlay')
 
+
 @section('content')
-<div class="container">
-    <h2 class="mb-4">Liste des demandes des employés</h2>
+    <div class="container mt-4">
+        <h4 class="mb-4 fw-bold text-primary">Liste des demandes d’équipement</h4>
 
-    @forelse($demandes as $demande)
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5>Demande #{{ $demande->id }}</h5>
-                <p><strong>Employé :</strong> {{ $demande->user->name }}</p>
-                <p><strong>Lieu :</strong> {{ $demande->lieu }}</p>
-                <p><strong>Motif :</strong> {{ $demande->motif }}</p>
-                <p><strong>Statut :</strong> {{ ucfirst($demande->statut) }}</p>
+        <div class="table-responsive">
+            <table class="table table-striped align-middle table-bordered shadow-sm">
+                <thead class="table-primary">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Équipement(s) demandés</th>
+                        <th scope="col">Motif</th>
+                        <th scope="col" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($demandes as $demande)
+                        <tr>
+                            <td>{{ $demande->created_at->format('d/m/Y H:i') }}</td>
+                            <td>
+                                @foreach($demande->equipements as $equipement)
+                                    {{ $equipement->nom }} ({{ $equipement->pivot->nbr_equipement }})<br>
+                                @endforeach
+                            </td>
+                            <td>{{ $demande->motif }}</td>
+                            <td class="text-center">
+                                <form action="{{ route('valider.demande',$demande->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-success me-1">
+                                        <i class="mdi mdi-check-circle-outline"></i> Valider
+                                    </button>
+                                </form>
 
-                <h6>Équipements demandés :</h6>
-                <ul>
-                    @foreach($demande->equipementsDemandes as $ed)
-                        <li>
-                            {{ $ed->equipement->nom }} — Quantité : {{ $ed->nbr_equipement }}
-                            (État : {{ $ed->equipement->etat }})
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
+                                <form action="{{ route("refuser.demande",$demande->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="mdi mdi-close-circle-outline"></i> Rejeter
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Aucune demande pour le moment.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-    @empty
-        <div class="alert alert-info">Aucune demande n’a encore été soumise.</div>
-    @endforelse
-</div>
+    </div>
 @endsection
+
+
+
+

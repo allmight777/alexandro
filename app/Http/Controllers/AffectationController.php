@@ -27,7 +27,16 @@ class AffectationController extends Controller
         $equipements = Equipement::where('etat', 'disponible')->get();
         $employes = User::where('role', 'employe')->get();
 
-        return view('gestionnaire.affectations.create', compact('equipements', 'employes'));
+        $equipements_groupes = Categorie::with(['equipements' => function($query) {
+        $query->where('etat', 'disponible');
+    }])->has('equipements')->get();
+
+        // return view('gestionnaire.affectations.create', compact('equipements', 'employes'));
+        return view('gestionnaire.affectations.create', [
+        'equipements_groupes' => $equipements_groupes,
+        'equipements' => $equipements,
+        'employes' => $employes
+    ]);
     }
 
     /**
@@ -38,7 +47,6 @@ class AffectationController extends Controller
         $request->validate([
             'equipement_id' => 'required|exists:equipements,id',
             'user_id' => 'required|exists:users,id',
-            'date_affectation' => 'required|date',
             'date_retour' => 'nullable|date|after_or_equal:date_affectation',
         ]);
 

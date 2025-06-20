@@ -88,31 +88,26 @@ Route::prefix(prefix: 'gestionnaire')->middleware(['auth', GestionnaireMiddlewar
     Route::post('/gestionnaire/demandes/{demande}/assigner', [GestionnaireController::class, 'assignerDemande'])
          ->name('gestionnaire.demandes.affecter');
 });
-    // Route::get('/categories/create', [CategorieController::class, 'create'])
-    //     ->name('gestionnaire.categories.create')
-    //     ->middleware([GestionnaireMiddleware::class]);  
 
-
-
-    // Route::get('/categories/list', [CategorieController::class, 'index'])
-    //     ->name('gestionnaire.categories.index')
-    //     ->middleware([GestionnaireMiddleware::class]);
-
-    // Route::get('/categories/edit/{id}', [CategorieController::class, 'edit'])
-    //     ->name('gestionnaire.categories.edit')
-    //     ->middleware([GestionnaireMiddleware::class]);
+// ----------------------------------------------collabo-----------------------------------------
+Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
+    // Page d'ajout
+    Route::get("/collaborateurs/external", [GestionnaireController::class, "CollaboratorsPage"])
+        ->name('gestionnaire.collaborateurs.create');
     
-    // Route::post('/categories/store', [CategorieController::class, 'store'])
-    //     ->name('gestionnaire.categories.store')
-    //     ->middleware([GestionnaireMiddleware::class]);
+    // Traitement du formulaire
+    Route::post("/collaborateurs", [GestionnaireController::class, "HandleCollaborator"])
+        ->name('gestionnaire.collaborateurs.store');
+    
+    // Liste des collaborateurs
+    Route::get("/collaborateurs", [GestionnaireController::class, "ShowListCollaborator"])
+        ->name('gestionnaire.collaborateurs.index');
+    
+    // Suppression
+    Route::delete("/collaborateurs/{collaborateur}", [GestionnaireController::class, "destroy"])
+        ->name('gestionnaire.collaborateurs.destroy');
+});
 
-    // Route::put('/categories/update/{id}', [CategorieController::class, 'update'])
-    //     ->name('gestionnaire.categories.update')
-    //     ->middleware([GestionnaireMiddleware::class]);
-
-    // Route::delete('/categories/delete/{id}', [CategorieController::class, 'destroy'])
-    //     ->name('gestionnaire.categories.delete')
-    //     ->middleware([GestionnaireMiddleware::class]);
 
 
         // --------------------------Affectations-----------------------------------------
@@ -131,7 +126,6 @@ Route::middleware(['auth', GestionnaireMiddleware::class])->prefix('gestionnaire
         ->middleware([GestionnaireMiddleware::class]);
 
 });
-
 
 
 Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
@@ -154,18 +148,6 @@ Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class
 
 });
 
-
-// ----------------------------------------------Affectation---------------------------------------------------------
-Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
-    Route::get('/gestionnaire/affectations/create', [AffectationController::class, 'create'])
-        ->name('affectations.create')
-        ->middleware([GestionnaireMiddleware::class]);
-
-    Route::post('/gestionnaire/affectations', [AffectationController::class, 'store'])
-        ->name('affectations.store')
-        ->middleware([GestionnaireMiddleware::class]);
-
-});
 
 
 // Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {

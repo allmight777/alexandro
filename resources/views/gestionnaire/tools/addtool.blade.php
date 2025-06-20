@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <div class="form-body">
-                    <form method="POST" action="{{ route('addTool') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('addTool') }}" method="POST" enctype="multipart/form-data">
                         @method('POST')
                         @csrf
                         <div class="row mb-4">

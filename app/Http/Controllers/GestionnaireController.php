@@ -53,4 +53,63 @@ class GestionnaireController extends Controller
         
         return back()->with('success', 'Demande assignée avec succès');
     }
+
+
+
+    // ------------------------------------------------------------------------------------------------------------
+    public function CollaboratorsPage()
+    {
+    return view('gestionnaire.collaborateurs.collaborator_external');
+    }
+
+    public function HandleCollaborator(Request $request)
+    {
+    // Logique de traitement
+    }
+
+    public function ShowListCollaborator()
+    {   
+    $collaborateurs = collaborateur_externes::all();
+    return view('gestionnaire.collaborateurs.collaborator_external', compact('collaborateurs'));
+    }
+
+    public function destroy(collaborateur_externes $collaborateur)
+    {
+    $collaborateur->delete();
+    return back()->with('success', 'Collaborateur supprimé avec succès');
+    }   
+    
+  public function HandleAffectation(Request $request)
+  {
+    DB::beginTransaction(); // start transaction
+
+    try {
+      //Enregistrer les affectations d'équipements
+      foreach ($request->equipements as $index => $equipement_id) {
+        $affectation = new Affectation();
+        $affectation->equipement_id = $equipement_id;
+        $affectation->date_retour = $request->dates_retour[$index];
+        $affectation->user_id = $request->employe_id;
+        $equipementChange = Equipement::where("id", "=", $equipement_id)->first();
+        $equipementChange->etat = "usagé";
+        $equipementChange->save();
+        $affectation->save();
+      }
+
+
+      // 
+      $bon = new Bon();
+      $bon->user_id = $request->employe_id;
+      $bon->motif = $request->motif;
+      $bon->statut = "sortie";
+      $bon->save();
+
+      DB::commit();
+      return redirect()->back()->with("success", "Affectation réussie avec succès");
+     } catch (\Exception $e) {
+      DB::rollBack(); //
+      return redirect()->back()->with("error", "Une erreur est survenue : " . $e->getMessage());
+     } 
+    }
+
 }
