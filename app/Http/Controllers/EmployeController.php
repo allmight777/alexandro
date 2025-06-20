@@ -75,4 +75,7 @@ class EmployeController extends Controller
         $equipements = $user->equipement;
         return view("employee.layouts.assign", compact("user", "equipements"));
     }
+    public function DeleteBon(){
+        
+    }
 }

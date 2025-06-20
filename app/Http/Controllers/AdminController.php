@@ -190,11 +190,16 @@ class AdminController extends Controller
       foreach ($request->equipements as $index => $equipement_id) {
         $affectation = new Affectation();
         $affectation->equipement_id = $equipement_id;
-        $affectation->date_retour = $request->dates_retour[$index];
+        $rawDate = $request->dates_retour[$index] ?? null;
+        $affectation->date_retour = !empty($rawDate) ? $rawDate : null;;
         $affectation->user_id = $request->employe_id;
 
         $equipementChange = Equipement::find($equipement_id);
-        $equipementChange->etat = "usagé";
+          if($rawDate===NULL){
+             $equipementChange->etat = "disponible";
+        } else{
+             $equipementChange->etat = "usagé";
+        }
         $equipementChange->save();
 
         $affectation->save();
@@ -241,9 +246,11 @@ class AdminController extends Controller
   }
   public function ShowToollost()
   {
-    $equipement_lost = Affectation::with(["equipement", "user"])
-      ->where('date_retour', '<', Carbon::now())
-      ->get();
+    $equipement_lost = Affectation::with(['equipement', 'user'])
+    ->where('date_retour', '<', now()->startOfDay()) // pour ignorer l'heure
+    ->get();
+
+      // Assurez-vous que le nom de colonne est correct ('date_retour' et non 'date_retourne')
     return view("admin.lost_tools", compact("equipement_lost"));
   }
   public function CollaboratorsPage()
@@ -318,5 +325,33 @@ class AdminController extends Controller
     return redirect()->back()
       ->with('success', 'Bon attribueé aux collaborateurs externe avec succès.')
       ->with('pdf', asset('storage/' . $pdfPath));
+  }
+  public function BackTool(Affectation $affectation){
+    $affectation->date_retour = now();
+    $affectation->save();
+
+    $equipement = $affectation->equipement;
+    $user = $affectation->user;
+
+    $pdfName = 'retour_perdu_' . $equipement->id . '.pdf';
+    $pdfPath = 'retour_perdu/' . $pdfName;
+
+    $pdf = Pdf::loadView('pdf.retour_perdu', [
+        'date' => now(),
+        'nom' => $user->nom,
+        'prenom' => $user->prenom,
+        'equipement' => $equipement->nom,
+    ]);
+
+    Storage::disk('public')->put($pdfPath, $pdf->output());
+
+    return redirect()->back()
+        ->with('success', 'Retour du matériel effectué. Un PDF de confirmation a été généré.')
+        ->with('pdf', asset('storage/' . $pdfPath));
+
+  }
+  public function DeleteBon(Bon $bon){
+       $bon->delete();
+       return redirect()->back();
   }
 }

@@ -91,7 +91,10 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
         ->name("CreateBon");
     Route::post("/post_bon_collaborator_external",[AdminController::class,"HandleBon"])
          ->name("HandleBon");
-    
+    Route::post("/back_tool/{affectation}",[AdminController::class,"BackTool"])
+           ->name("affectation.retourner");
+    Route::delete("/delete/{bon}",[AdminController::class,"DeleteBon"])
+           ->name("delete.bon");
     
 });
 Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function () {

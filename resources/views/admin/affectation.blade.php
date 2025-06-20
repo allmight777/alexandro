@@ -1,5 +1,4 @@
 @extends('admin.layouts.adminlay')
-
 @section('content')
     @php $hasEquipementDispo = false; @endphp
     @php $optionsHtml = ''; @endphp
@@ -76,7 +75,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label>Date de retour</label>
-                                <input type="date" name="dates_retour[]" class="form-control" required>
+                                <input type="date" name="dates_retour[]" class="form-control" >
                             </div>
                             <div class="col-md-2 d-flex align-items-end">
                                 <button type="button" class="btn btn-danger btn-sm remove-btn">Supprimer</button>
@@ -142,4 +141,18 @@
             });
         });
     </script>
+@endpush
+@push('scripts')
+    @if(session('pdf'))
+        <script>
+            window.onload = function () {
+                const link = document.createElement('a');
+                link.href = "{{ session('pdf') }}";
+                link.download = "";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        </script>
+    @endif
 @endpush

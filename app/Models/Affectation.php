@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Affectation extends Model
 {
-    //A
+    //
+    protected $casts = [
+        'date_retour' => 'datetime',
+    ];
 
     public function equipement()
     {
@@ -17,8 +20,4 @@ class Affectation extends Model
     {
         return $this->belongsTo(User::class);
     }
-   
-
-   
-
 }
