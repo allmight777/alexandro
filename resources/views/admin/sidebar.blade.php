@@ -44,7 +44,10 @@
 
         {{-- Gestion Équipements --}}
         @php
-            $equipActive = request()->routeIs('ShowToolpage') || request()->routeIs('addToolpage')||request()->routeIs('liste.bons');
+            $equipActive =
+                request()->routeIs('ShowToolpage') ||
+                request()->routeIs('addToolpage') ||
+                request()->routeIs('liste.bons');
         @endphp
         <li class="nav-item {{ $equipActive ? 'active' : '' }}">
             <a class="nav-link" data-toggle="collapse" href="#equipment-management"
@@ -62,45 +65,63 @@
                         <a class="nav-link" href="{{ route('addToolpage') }}">Ajouter un équipement</a>
                     </li>
                     <li class="nav-item {{ request()->routeIs('liste.bons') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{route('liste.bons')}}">BONS</a>
+                        <a class="nav-link" href="{{ route('liste.bons') }}">BONS</a>
                     </li>
                 </ul>
             </div>
         </li>
         {{-- Le reste des liens, tu peux faire pareil --}}
-        <li class="nav-item  {{ request()->routeIs("equipements.pannes") ? 'active' : '' }}">
-            <a class="nav-link" href="{{route("equipements.pannes")}}">
+        <li class="nav-item  {{ request()->routeIs('equipements.pannes') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('equipements.pannes') }}">
                 <span class="menu-title">Equipements en Pannes</span>
                 <i class="mdi mdi-alert-circle-outline menu-icon"></i>
             </a>
         </li>
 
         <li class="nav-item ">
-            <a class="nav-link {{ request()->routeIs("tools.lost") ? 'active' : '' }}" href="{{route('tools.lost')}}">
+            <a class="nav-link {{ request()->routeIs('tools.lost') ? 'active' : '' }}"
+                href="{{ route('tools.lost') }}">
                 <span class="menu-title">Equipements Perdus</span>
                 <i class="mdi mdi-emoticon-sad-outline menu-icon"></i>
             </a>
         </li>
-        <li class="nav-item {{ request()->routeIs("liste.demandes") ? 'active' : '' }}">
-            <a class="nav-link" href="{{route("liste.demandes")}}">
+        <li class="nav-item {{ request()->routeIs('liste.demandes') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('liste.demandes') }}">
                 <span class="menu-title">Demande D'équipement</span>
                 <i class="mdi mdi-cart-outline menu-icon"></i>
             </a>
         </li>
 
         {{-- Tu continues pour les autres sections de la même façon --}}
-        
+
         {{-- Affectation Équipement --}}
-        <li class="nav-item {{ request()->routeIs("page.affectation") ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route("page.affectation") }}">
-                <span class="menu-title">Affectation Équipement</span>
-                <i class="mdi mdi-swap-horizontal menu-icon"></i>
+        {{-- Affectation Équipement (avec sous-menu) --}}
+        @php
+            $affectationActive = request()->routeIs('page.affectation') || request()->routeIs('page.listeAffectations');
+        @endphp
+
+        <li class="nav-item {{ $affectationActive ? 'active' : '' }}">
+            <a class="nav-link" data-toggle="collapse" href="#affectation-management"
+                aria-expanded="{{ $affectationActive ? 'true' : 'false' }}" aria-controls="affectation-management">
+                <span class="menu-title">Affectation Équipements</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-transfer menu-icon"></i>
             </a>
+            <div class="collapse {{ $affectationActive ? 'show' : '' }}" id="affectation-management">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item {{ request()->routeIs('page.affectation') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('page.affectation') }}">➕ Nouvelle affectation</a>
+                    </li>
+                    <li class="nav-item {{ request()->routeIs('page.listeAffectations') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{ route('page.listeAffectations') }}">📄 Liste des affectations</a>
+                    </li>
+                </ul>
+            </div>
         </li>
 
         {{-- Rapports --}}
-        <li class="nav-item">
-            <a class="nav-link" href="rapports.html">
+        <li class="nav-item  {{ request()->routeIs('rapport.lists') ? 'active' : '' }}">
+            <a class="nav-link" href="{{route("rapport.lists")}}" >
                 <span class="menu-title">Rapports</span>
                 <i class="mdi mdi-file-chart menu-icon"></i>
             </a>
@@ -117,13 +138,13 @@
             <div class="collapse" id="collab-externes">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item {{ request()->routeIs('CollaboratorsPage') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{route("CollaboratorsPage")}}">Ajouter</a>
+                        <a class="nav-link" href="{{ route('CollaboratorsPage') }}">Ajouter</a>
                     </li>
                     <li class="nav-item  {{ request()->routeIs('ShowListCollaborator') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{route('ShowListCollaborator')}}">Liste</a>
+                        <a class="nav-link" href="{{ route('ShowListCollaborator') }}">Liste</a>
                     </li>
                     <li class="nav-item  {{ request()->routeIs('CreateBon') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{route('CreateBon')}}">Bon</a>
+                        <a class="nav-link" href="{{ route('CreateBon') }}">Bon</a>
                     </li>
                 </ul>
             </div>
@@ -133,7 +154,7 @@
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 @method('post')
-                <button type="submit" class="btn btn-danger">Deconnexion</button>
+                <button type="submit" class="btn btn-danger btn-lg">Deconnexion</button>
             </form>
         </li>
     </ul>

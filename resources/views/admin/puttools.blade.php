@@ -135,6 +135,18 @@
                                     @endif
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="equipmentQuantity" class="form-label required-label">Quantité
+                                        disponible</label>
+                                    <input type="number" class="form-control" id="equipmentQuantity"
+                                        name="quantite_disponible" min="1" required placeholder="Ex : 10" value="{{$equipement->quantite}}">
+                                    @error('quantite_disponible')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
 
                         </div>
 

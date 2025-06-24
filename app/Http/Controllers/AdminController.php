@@ -11,6 +11,7 @@ use App\Models\CollaborateurExterne;
 use App\Models\Demande;
 use App\Models\Equipement;
 use App\Models\Panne;
+use App\Models\Rapport;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
@@ -80,6 +82,7 @@ class AdminController extends Controller
     $equipement->marque = $request->marque;
     $equipement->description = $request->description;
     $equipement->date_acquisition = $request->date_acquisition;
+    $equipement->quantite = $request->quantite_disponible;
     $equipement->categorie_id = Categorie::where('nom', $request->categorie)->value('id');
     // Gestion de l'image si elle est envoyée
     if ($request->hasFile('image_path')) {
@@ -104,7 +107,8 @@ class AdminController extends Controller
       'nom' => $user->nom ?? 'Admin',
       'prenom' => $user->prenom ?? '',
       'motif' => 'Ajout de nouvel équipement : ' . $equipement->nom,
-      'numero_bon' => $bon->id
+      'numero_bon' => $bon->id,
+      'type' => $bon->statut
     ]);
     Storage::disk('public')->put($pdfPath, $pdf->output());
 
@@ -129,6 +133,7 @@ class AdminController extends Controller
     $equipement->marque = $request->marque;
     $equipement->description = $request->description;
     $equipement->date_acquisition = $request->date_acquisition;
+    $equipement->quantite = $request->quantite_disponible;
     if ($request->hasFile('image_path')) {
       $imagePath = $request->file('image_path')->store('pictures/equipments', 'public');
       $equipement->image_path = $imagePath;
@@ -184,33 +189,52 @@ class AdminController extends Controller
 
   public function HandleAffectation(Request $request)
   {
+    set_time_limit(120);
     DB::beginTransaction();
+    $user = Auth::user();
 
     try {
+      // Charger les équipements en bulk
+      $equipementIds = $request->equipements;
+      $equipements = Equipement::whereIn('id', $equipementIds)->get()->keyBy('id');
+      $affectationsDetails = [];
       foreach ($request->equipements as $index => $equipement_id) {
+        $quantite = $request->quantites[$index] ?? 1;
+        $rawDate = $request->dates_retour[$index] ?? null;
+
+        $equipement = $equipements->get($equipement_id);
+
+        if (!$equipement) {
+          throw new \Exception("Équipement ID $equipement_id introuvable.");
+        }
+
+        if ($equipement->quantite < $quantite) {
+          throw new \Exception("Quantité insuffisante pour l'équipement « {$equipement->nom} » (disponible : {$equipement->quantite}, demandée : {$quantite}).");
+        }
+
         $affectation = new Affectation();
         $affectation->equipement_id = $equipement_id;
-        $rawDate = $request->dates_retour[$index] ?? null;
-        $affectation->date_retour = !empty($rawDate) ? $rawDate : null;;
         $affectation->user_id = $request->employe_id;
-
-        $equipementChange = Equipement::find($equipement_id);
-          if($rawDate===NULL){
-             $equipementChange->etat = "disponible";
-        } else{
-             $equipementChange->etat = "usagé";
-        }
-        $equipementChange->save();
-
+        $affectation->date_retour = $rawDate ?: null;
+        $affectation->created_by = $user->nom . ' ' . $user->prenom;
+        $affectation->quantite_affectee = $quantite;
         $affectation->save();
+
+        $equipement->quantite -= $quantite;
+        $equipement->etat = ($equipement->quantite > 0) ? "disponible" : "usagé";
+        $equipement->save();
+        $affectationsDetails[] = [
+          'nom' => $equipement->nom,
+          'reference' => $equipement->reference ?? '',
+          'quantite' => $quantite,
+        ];
       }
 
       $bon = new Bon();
       $bon->user_id = $request->employe_id;
       $bon->motif = $request->motif;
       $bon->statut = "sortie";
-
-      $pdfName = 'bon_sortie_' . $request->employe_id . '.pdf';
+      $pdfName = 'bon_sortie_' . $request->employe_id . '_' . now()->timestamp . '.pdf';
       $pdfPath = 'bon_sortie/' . $pdfName;
       $bon->fichier_pdf = $pdfPath;
       $bon->save();
@@ -219,13 +243,15 @@ class AdminController extends Controller
 
       $employe = User::find($request->employe_id);
 
+
       $pdf = Pdf::loadView('pdf.bon', [
         'date' => now()->format('d/m/Y'),
         'nom' => $employe->nom ?? 'Admin',
         'prenom' => $employe->prenom ?? '',
         'motif' => $request->motif,
         'numero_bon' => $bon->id,
-        'type' => $bon->statut
+        'type' => $bon->statut,
+        'equipements' => $affectationsDetails, 
       ]);
 
       Storage::disk('public')->put($pdfPath, $pdf->output());
@@ -235,9 +261,12 @@ class AdminController extends Controller
         ->with('pdf', asset('storage/' . $pdfPath));
     } catch (\Exception $e) {
       DB::rollBack();
-      return redirect()->back()->with("error", "Une erreur est survenue : " . $e->getMessage());
+      Log::error("Erreur lors de l'affectation : " . $e->getMessage());
+      return redirect()->back()->with("error", $e->getMessage());
     }
   }
+
+
 
   public function Showpannes()
   {
@@ -247,10 +276,10 @@ class AdminController extends Controller
   public function ShowToollost()
   {
     $equipement_lost = Affectation::with(['equipement', 'user'])
-    ->where('date_retour', '<', now()->startOfDay()) // pour ignorer l'heure
-    ->get();
+      ->where('date_retour', '<', now()->startOfDay()) // pour ignorer l'heure
+      ->get();
 
-      // Assurez-vous que le nom de colonne est correct ('date_retour' et non 'date_retourne')
+    // Assurez-vous que le nom de colonne est correct ('date_retour' et non 'date_retourne')
     return view("admin.lost_tools", compact("equipement_lost"));
   }
   public function CollaboratorsPage()
@@ -326,32 +355,52 @@ class AdminController extends Controller
       ->with('success', 'Bon attribueé aux collaborateurs externe avec succès.')
       ->with('pdf', asset('storage/' . $pdfPath));
   }
-  public function BackTool(Affectation $affectation){
+  public function BackTool(Affectation $affectation)
+  {
     $affectation->date_retour = now();
     $affectation->save();
 
     $equipement = $affectation->equipement;
+    $equipement->quantite += $affectation->quantite_affectee;
+    $equipement->etat = "disponible";
+    $equipement->save();
     $user = $affectation->user;
 
     $pdfName = 'retour_perdu_' . $equipement->id . '.pdf';
     $pdfPath = 'retour_perdu/' . $pdfName;
 
     $pdf = Pdf::loadView('pdf.retour_perdu', [
-        'date' => now(),
-        'nom' => $user->nom,
-        'prenom' => $user->prenom,
-        'equipement' => $equipement->nom,
+      'date' => now(),
+      'nom' => $user->nom,
+      'prenom' => $user->prenom,
+      'equipement' => $equipement->nom,
     ]);
 
     Storage::disk('public')->put($pdfPath, $pdf->output());
 
     return redirect()->back()
-        ->with('success', 'Retour du matériel effectué. Un PDF de confirmation a été généré.')
-        ->with('pdf', asset('storage/' . $pdfPath));
-
+      ->with('success', 'Retour du matériel effectué. Un PDF de confirmation a été généré.')
+      ->with('pdf', asset('storage/' . $pdfPath));
   }
-  public function DeleteBon(Bon $bon){
-       $bon->delete();
-       return redirect()->back();
+  public function DeleteBon(Bon $bon)
+  {
+    $bon->delete();
+    return redirect()->back();
+  }
+  public function Showlistaffectation()
+  {
+    $affectations = Affectation::with(['equipement', 'user'])->latest()->get();
+    return view("admin.affectlist", compact("affectations"));
+  }
+  public function LoadingAsk(Demande $demande)
+  {
+    $demande->statut = "en_attente";
+    $demande->save();
+    return redirect()->back();
+  }
+  public function ShowRapport()
+  {
+    $rapports = Rapport::orderBy('created_at', 'desc')->get();
+    return view("admin.list_rapport", compact("rapports"));
   }
 }

@@ -66,21 +66,26 @@
                     {{-- Liste dynamique équipements + date de retour --}}
                     <div id="equipement-wrapper">
                         <div class="equipement-item row mb-3">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label>Équipement</label>
                                 <select name="equipements[]" class="form-select" required>
                                     <option value="">-- Sélectionner un équipement --</option>
                                     {!! $optionsHtml !!}
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label>Date de retour</label>
-                                <input type="date" name="dates_retour[]" class="form-control" >
+                                <input type="date" name="dates_retour[]" class="form-control">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Quantité à affecter</label>
+                                <input type="number" name="quantites[]" class="form-control" min="1" required>
                             </div>
                             <div class="col-md-2 d-flex align-items-end">
                                 <button type="button" class="btn btn-danger btn-sm remove-btn">Supprimer</button>
                             </div>
                         </div>
+
                     </div>
 
                     <button type="button" class="btn btn-outline-primary mb-3" id="add-equipement">
@@ -107,21 +112,26 @@
                 const newField = document.createElement('div');
                 newField.classList.add('equipement-item', 'row', 'mb-3');
                 newField.innerHTML = `
-                <div class="col-md-6">
-                    <label>Équipement</label>
-                    <select name="equipements[]" class="form-select" required>
-                        <option value="">-- Sélectionner un équipement --</option>
-                        ${optionsEquipement}
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label>Date de retour</label>
-                    <input type="date" name="dates_retour[]" class="form-control" required>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-danger btn-sm remove-btn">Supprimer</button>
-                </div>
-            `;
+            <div class="col-md-4">
+                <label>Équipement</label>
+                <select name="equipements[]" class="form-select" required>
+                    <option value="">-- Sélectionner un équipement --</option>
+                    ${optionsEquipement}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>Date de retour</label>
+                <input type="date" name="dates_retour[]" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label>Quantité à affecter</label>
+                <input type="number" name="quantites[]" class="form-control" min="1" required>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-sm remove-btn">Supprimer</button>
+            </div>
+           `;
+
                 wrapper.appendChild(newField);
             }
 
@@ -141,11 +151,9 @@
             });
         });
     </script>
-@endpush
-@push('scripts')
-    @if(session('pdf'))
+    @if (session('pdf'))
         <script>
-            window.onload = function () {
+            window.onload = function() {
                 const link = document.createElement('a');
                 link.href = "{{ session('pdf') }}";
                 link.download = "";
@@ -156,3 +164,5 @@
         </script>
     @endif
 @endpush
+
+    

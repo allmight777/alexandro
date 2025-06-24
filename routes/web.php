@@ -69,10 +69,14 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
         ->name("valider.demande");
     Route::put("/cancel_demande/{demande}", [AdminController::class, "CancelAsk"])
         ->name("refuser.demande");
+    Route::put("/loading_demandes,{demande}",[AdminController::class,"LoadingAsk"])
+         ->name("loading.demande");
     Route::get('/affectation', [AdminController::class, "Showaffectation"])
         ->name('page.affectation');
     Route::post('/afectation-post', [AdminController::class, "HandleAffectation"])
         ->name("handle.affectation");
+    Route::get("/listes_affectations",[AdminController::class,"Showlistaffectation"])
+          ->name("page.listeAffectations");
     Route::get('/equipement-pannes',[AdminController::class,"Showpannes"])
          ->name("equipements.pannes");
     Route::get("/list_tools_lost",[AdminController::class,"ShowToollost"])
@@ -95,7 +99,8 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
            ->name("affectation.retourner");
     Route::delete("/delete/{bon}",[AdminController::class,"DeleteBon"])
            ->name("delete.bon");
-    
+    Route::get("/list_rapport",[AdminController::class,"ShowRapport"])
+         ->name("rapport.lists");
 });
 Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function () {
     Route::get('/demande-equipement', [EmployeController::class, 'ShowAskpage'])->name('demande.equipement');
@@ -103,6 +108,10 @@ Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function ()
     Route::get('/signaler-panne', [EmployeController::class, 'signalerPanne'])->name('signaler.panne');
     Route::post("/post-signaler-panne",[EmployeController::class,"HandlePanne"])->name("post.HandlePanne");
     Route::get('/equipements-assignes', [EmployeController::class, 'equipementsAssignes'])->name('equipements.assignes');
+    Route::get("/help-employee",[EmployeController::class,"Helppage"])
+         ->name("page.aide");
+    Route::post("/post-aide",[EmployeController::class,"HandleHelp"])
+         ->name("send.aide");
 });
 
 //deleteuser

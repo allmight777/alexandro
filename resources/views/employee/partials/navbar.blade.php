@@ -56,7 +56,6 @@
                             id="profileDropdown">
                             <span class="nav-profile-name">{{ $user->nom }} {{ $user->prenom }}</span>
                             <span class="online-status"></span>
-                            <img src="/images1/faces/face28.png" alt="profile" />
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                             aria-labelledby="profileDropdown">

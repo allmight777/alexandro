@@ -14,10 +14,12 @@
                 <div class="col-sm-6">
                     <div class="d-flex align-items-center justify-content-md-end">
                         <div class="pe-1 mb-3 mb-xl-0">
-                            <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
-                                Aide
-                                <i class="mdi mdi-help-circle-outline btn-icon-append"></i>
-                            </button>
+                            <a href="{{route('page.aide')}}">
+                                <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
+                                    aide
+                                    <i class="mdi mdi-help-circle-outline btn-icon-append"></i>
+                                </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -86,38 +88,40 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Demandes récentes</h4>
-                            @if(count($demandes)>0)
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Type</th>
-                                            <th>Statut</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                      @foreach ($demandes as $demande)
-                                          @php
-                                            $badgeClass = match($demande->statut) {
-                                                'en_attente' => 'badge-info',
-                                                'acceptee'   => 'badge-success',
-                                                'rejetee'    => 'badge-danger',
-                                                default      => 'badge-secondary',
-                                            };
-                                        @endphp
-                                          <tr>
-                                            <td>{{$demande->created_at}}</td>
-                                            <td>{{$demande->motif}}</td>
-                                            <td><label class="badge {{ $badgeClass }}">{{$demande->statut}}</label></td>
-                                        </tr>
-                                     @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                              <span>Aucune demandes</span>
-                        @endif
+                            @if (count($demandes) > 0)
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Type</th>
+                                                <th>Statut</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($demandes as $demande)
+                                                @php
+                                                    $badgeClass = match ($demande->statut) {
+                                                        'en_attente' => 'badge-info',
+                                                        'acceptee' => 'badge-success',
+                                                        'rejetee' => 'badge-danger',
+                                                        default => 'badge-secondary',
+                                                    };
+                                                @endphp
+                                                <tr>
+                                                    <td>{{ $demande->created_at }}</td>
+                                                    <td>{{ $demande->motif }}</td>
+                                                    <td><label
+                                                            class="badge {{ $badgeClass }}">{{ $demande->statut }}</label>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <span>Aucune demandes</span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -154,7 +158,7 @@
             </div>
         </div>
         <!-- content-wrapper ends -->
-    
+
     </div>
 @endsection
- <!-- main-panel ends -->
+<!-- main-panel ends -->
