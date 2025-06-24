@@ -9,6 +9,7 @@ use App\Models\Panne;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class EmployeController extends Controller
 {
@@ -72,10 +73,30 @@ class EmployeController extends Controller
     public function equipementsAssignes()
     {
         $user = Auth::user();       
-        $equipements = $user->equipement;
+        $equipements = $user->equipements;
         return view("employee.layouts.assign", compact("user", "equipements"));
     }
-    public function DeleteBon(){
-        
+    public function Helppage(){
+        $user = Auth::user();    
+        return view("employee.layouts.help",compact('user'));
+    }
+    public function HandleHelp(Request $request){
+         $request->validate([
+            'message' => 'required|min:10'
+        ]);
+
+        // Email de l'admin
+        $adminEmail = "xandrotech66@gmail.com"; // Ou .env('ADMIN_EMAIL')
+
+        Mail::send('emails.aide', [
+            'email' => Auth::user()->email,
+            'body' => $request->message
+        ], function ($mail) use ($adminEmail) {
+            $mail->to($adminEmail)
+                ->subject('Demande d’aide d’un employé');
+        });
+
+        return back()->with('success', 'Votre message a été envoyé à l’administrateur.');
+
     }
 }

@@ -541,4 +541,7 @@
         margin-top: 15px;
         font-size: 1.2rem;
     }
+    .btn{
+        width: 200px;
+    }
 </style>

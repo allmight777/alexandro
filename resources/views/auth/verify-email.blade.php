@@ -1,31 +1,50 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-    </div>
+<div class="container login-container">
+    <div class="row justify-content-center w-100">
+        <div class="col-md-6 col-lg-5">
+            <div class="auth-form">
 
-    @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-        </div>
-    @endif
+                <!-- Logo TOOLZY -->
+                <div class="form-brand">
+                    <i class="fas fa-tools fa-3x me-2 text-primary"></i>
+                    <h2 style="font-weight: 700; color: var(--dark); margin-top: 15px;">TOOLZY</h2>
+                </div>
 
-    <div class="mt-4 flex items-center justify-between">
-        <form method="POST" action="{{ route('verification.send') }}">
-            @csrf
+                <!-- Titre -->
+                <h3 class="form-title">Vérification de l’adresse email</h3>
 
-            <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
+                <!-- Message principal -->
+                <p class="form-subtitle">
+                    Merci pour votre inscription ! Avant de commencer, veuillez vérifier votre adresse email
+                    en cliquant sur le lien que nous venons de vous envoyer. <br>
+                    Si vous n'avez pas reçu l'email, nous vous en enverrons un nouveau.
+                </p>
+
+                <!-- Message si renvoi effectué -->
+                @if (session('status') == 'verification-link-sent')
+                    <div class="alert alert-success">
+                        Un nouveau lien de vérification a été envoyé à votre adresse email.
+                    </div>
+                @endif
+
+                <!-- Formulaire de renvoi -->
+                <form method="POST" action="{{ route('verification.send') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-login">
+                        Renvoyer l’email de vérification
+                    </button>
+                </form>
+
+                <!-- Bouton de déconnexion -->
+                <div class="form-footer mt-4">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-secondary w-100" style="border-radius: 8px;">
+                            <i class="fas fa-sign-out-alt me-2"></i> Se déconnecter
+                        </button>
+                    </form>
+                </div>
+
             </div>
-        </form>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Log Out') }}
-            </button>
-        </form>
+        </div>
     </div>
-</x-guest-layout>
+</div>

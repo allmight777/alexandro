@@ -115,7 +115,16 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="equipmentQuantity" class="form-label required-label">Quantité disponible</label>
+                                <input type="number" class="form-control" id="equipmentQuantity"
+                                    name="quantite_disponible" min="1" required placeholder="Ex : 10">
+                                @error('quantite_disponible')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
                         <div class="form-footer">
                             <div class="d-flex justify-content-end">
                                 <button type="reset" class="btn btn-reset me-3">
@@ -134,9 +143,9 @@
     </div>
 @endsection
 @push('scripts')
-    @if(session('pdf'))
+    @if (session('pdf'))
         <script>
-            window.onload = function () {
+            window.onload = function() {
                 const link = document.createElement('a');
                 link.href = "{{ session('pdf') }}";
                 link.download = "";
