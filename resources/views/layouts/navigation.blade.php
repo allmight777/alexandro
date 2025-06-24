@@ -10,7 +10,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-lg-center">
                 <li class="nav-item mx-2">
-                    <a class="nav-link active" href="#">Accueil</a>
+                    <a class="nav-link active" href="{{url('/')}}">Accueil</a>
                 </li>
                 <li class="nav-item mx-2">
                     <a class="nav-link" href="#features">Fonctionnalités</a>

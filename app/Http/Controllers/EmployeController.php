@@ -103,4 +103,9 @@ class EmployeController extends Controller
         return back()->with('success', 'Votre message a été envoyé à l’administrateur.');
 
     }
+    //recuperation directe du modele + action(Ex:suppression)
+    public function DeletePanne(Panne $panne){
+        $panne->delete();
+        return redirect()->back();
+    } 
 }

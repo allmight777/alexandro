@@ -340,7 +340,7 @@ class AdminController extends Controller
     $pdfPath = 'bon_collaborateurs/' . $pdfName;
     $bon->fichier_pdf = $pdfPath;
     $bon->save();
-    $pdf = Pdf::loadView('pdf.bon', [
+    $pdf = Pdf::loadView('pdf.bon_ext', [
       'date' => now()->format('d/m/Y'),
       'nom' => $collaborateur->nom ?? 'Admin',
       'prenom' => $collaborateur->prenom ?? '',

@@ -109,13 +109,15 @@ Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function ()
     Route::post("/demande-equipement-soumise", [EmployeController::class, "SubmitAsk"])->name("demande.soumise");
     Route::get('/signaler-panne', [EmployeController::class, 'signalerPanne'])->name('signaler.panne');
     Route::post("/post-signaler-panne",[EmployeController::class,"HandlePanne"])->name("post.HandlePanne");
+    //liaison implicite
+    Route::delete('/delete_panne/{panne}',[EmployeController::class,"DeletePanne"])->name("delete.panne");
+    //liaison implicite
     Route::get('/equipements-assignes', [EmployeController::class, 'equipementsAssignes'])->name('equipements.assignes');
     Route::get("/help-employee",[EmployeController::class,"Helppage"])
          ->name("page.aide");
     Route::post("/post-aide",[EmployeController::class,"HandleHelp"])
          ->name("send.aide");
-    Route::get('/lists_demandes',[AdminController::class,"ShowDemandes"])
-          ->name("demandes.lists");
+        
 });
 
 //deleteuser

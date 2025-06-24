@@ -142,13 +142,13 @@
                                             <td>{{ $panne->description }}</td>
                                             <td>
                                                 <span class="badge {{ $panne->statut === 'resolu' ? 'bg-success' : 'bg-danger' }}">
-                                                    {{ ucfirst($panne->statut) }}
+                                                    {{ucfirst($panne->statut) }}
                                                 </span>
                                             </td>
                                             <td>
-                                                <form method="POST" action="#">
+                                                <form method="POST" action="{{route('delete.panne',$panne->id)}}">
                                                     @csrf @method('DELETE')
-                                                    <button class="btn btn-sm btn-outline-danger">
+                                                    <button class="btn btn-sm btn-outline-danger" type="submit">
                                                         <i class="mdi mdi-delete"></i>
                                                     </button>
                                                 </form>

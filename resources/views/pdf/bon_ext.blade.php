@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Bon de matériel</title>
+    <title>Bon de matériel - Collaborateur Externe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         @page {
@@ -118,6 +118,17 @@
             letter-spacing: 1.5px;
         }
 
+        .document-subtitle {
+            text-align: center;
+            font-size: 12px;
+            color: #dc3545;
+            font-weight: 600;
+            margin-top: 5px;
+            margin-left: 70px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         .company-name {
             text-align: center;
             font-size: 14px;
@@ -141,7 +152,7 @@
         .info-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 8px;
             padding: 6px 0;
             border-bottom: 1px dotted #dee2e6;
@@ -155,7 +166,7 @@
         .info-label {
             font-weight: bold;
             color: #495057;
-            min-width: 130px;
+            min-width: 150px;
             font-size: 11px;
         }
 
@@ -173,56 +184,63 @@
             background: transparent;
         }
 
-        /* Section matériel */
-        .material-section {
-            margin: 20px 0;
+        /* Section motif étendue */
+        .motif-section {
+            background: #f8f9fa;
+            border-left: 4px solid #dc3545;
             padding: 15px;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
+            margin: 15px 0;
+            border-radius: 0 6px 6px 0;
             flex-shrink: 0;
         }
 
-        .material-section h3 {
+        .motif-section h3 {
             margin-top: 0;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: #2c3e50;
             font-size: 16px;
             display: flex;
             align-items: center;
         }
 
-        .material-section h3::before {
+        .motif-section h3::before {
             margin-right: 8px;
             font-size: 18px;
         }
 
-        .material-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .material-table th {
-            background-color: #2c3e50;
-            color: white;
-            padding: 12px 10px;
-            text-align: left;
-            font-weight: bold;
+        .motif-content {
+            padding: 15px;
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
             font-size: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            min-height: 120px;
         }
 
-        .material-table td {
-            padding: 10px;
-            border-bottom: 1px solid #dee2e6;
-            font-size: 11px;
+        /* Section collaborateur externe */
+        .external-section {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 6px 6px 0;
+            flex-shrink: 0;
         }
 
-        .material-table tr:nth-child(even) {
-            background-color: #f8f9fa;
+        .external-section h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
         }
 
-        .material-table tr:hover {
-            background-color: #e3f2fd;
+        .external-section h3::before {
+            margin-right: 8px;
+            font-size: 18px;
         }
 
         /* Section signatures */
@@ -246,7 +264,7 @@
             justify-content: center;
         }
 
-        .signatures-section h3::before {
+        .signatures-section h3{
             margin-right: 8px;
             font-size: 18px;
         }
@@ -314,13 +332,28 @@
             position: absolute;
             top: 20px;
             left: 20px;
-            background: #28a745;
-            color: white;
+            background: #ffc107;
+            color: #212529;
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 10px;
             font-weight: bold;
             z-index: 3;
+        }
+
+        /* Formulaire interactif */
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 6px 10px;
+            font-size: 12px;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
         }
 
         /* Responsive pour impression */
@@ -353,7 +386,7 @@
 <body>
     <div class="document-container">
         <!-- Badge de statut -->
-        <div class="status-badge">OFFICIEL</div>
+        <div class="status-badge">EXTERNE</div>
 
         <!-- Filigrane texte -->
         <div class="watermark">JASPE TECHNOLOGIES</div>
@@ -370,16 +403,17 @@
         <div class="content">
             <!-- Numéro de référence -->
             <div class="reference-number">
-                Référence : MG-20250624-{{$numero_bon}}
+                Référence : MG-EXT-20250624-{{$numero_bon}}
             </div>
 
             <!-- En-tête -->
             <div class="header-section">
                 <div class="header-logo">
-                     <img src="{{ public_path('images/jaspe_logo_noir_web.png') }}" alt="" width="50" height="50">
+                    <img src="{{ public_path('images/jaspe_logo_noir_web.png') }}" alt="" width="50" height="50">
                 </div>
                 <div class="document-title">
                     <h1>Bon de Matériel</h1>
+                    <div class="document-subtitle">Collaborateur Externe</div>
                 </div>
                 <div class="company-name">
                     JASPE TECHNOLOGIES
@@ -390,7 +424,7 @@
             <div class="info-section">
                 <div class="info-row">
                     <span class="info-label">Numéro du bon :</span>
-                    <span class="info-value info-input">BM-2025-{{$numero_bon}}</span>
+                    <span class="info-value info-input">BME-2025-{{$numero_bon}}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Date d'émission :</span>
@@ -402,34 +436,11 @@
                 </div>
             </div>
 
-            <!-- Section matériel -->
-         @if($eq$equipements)
-            <div class="material-section">
-                <h3>Matériel concerné</h3>
-                <table class="material-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 70%;">Désignation</th>
-                            <th style="width: 30%;">Quantité</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                          @foreach ($equipements as $eq)
-                            <tr>
-                                <td>{{ $eq['nom'] }}</td>
-                                <td>{{ $eq['quantite'] }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-          @endif
-
-            <!-- Motif -->
-            <div class="info-section">
-                <div class="info-row">
-                    <span class="info-label">Motif :</span>
-                    <span class="info-value info-input">{{$motif}}</span>
+            <!-- Section motif avec équipements -->
+            <div class="motif-section">
+                <h3>Motif et Équipements Alloués</h3>
+                <div class="motif-content">
+                    {{$motif}}
                 </div>
             </div>
 
@@ -444,7 +455,13 @@
                         <div class="signature-field">Date : ___/___/______</div>
                     </div>
                     <div class="signature-box">
-                        <div class="signature-title">Bénéficiaire</div>
+                        <div class="signature-title">Collaborateur Externe</div>
+                        <div class="signature-line"></div>
+                        <div class="signature-field">Nom : _________________</div>
+                        <div class="signature-field">Date : ___/___/______</div>
+                    </div>
+                    <div class="signature-box">
+                        <div class="signature-title">Superviseur</div>
                         <div class="signature-line"></div>
                         <div class="signature-field">Nom : _________________</div>
                         <div class="signature-field">Date : ___/___/______</div>
@@ -457,7 +474,7 @@
         <div class="footer">
             <div class="footer-line"><strong>JASPE TECHNOLOGIES</strong> - Système de gestion de matériel informatique</div>
             <div class="footer-line">Tél : +229 XX XX XX XX • Email : contact@jaspe-techno.com</div>
-            <div class="footer-line">Document généré le {{$date}} • Confidentiel</div>
+            <div class="footer-line">Document généré le {{$date}} • Confidentiel - Usage Externe</div>
         </div>
     </div>
 </body>
