@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Affectation;
 use App\Models\Demande;
 use App\Models\Equipement;
 use App\Models\EquipementDemandé;
@@ -19,11 +20,14 @@ class EmployeController extends Controller
         // ou toute autre variable que tu veux passer
         $user = Auth::user();
         $demandes = Demande::all();
-
+        $affectations=Affectation::with("equipement")->where('user_id','=',$user->id)->take(4)->get();
+        $pannes=Panne::with("equipement")->where('user_id',"=",$user->id)->get();
 
         return view('employee.layouts.main', [
             'user' => $user,
             'demandes' => $demandes,
+            'affectations'=>$affectations,
+            'pannes'=>$pannes
         ]);
     }
     public function ShowAskpage()

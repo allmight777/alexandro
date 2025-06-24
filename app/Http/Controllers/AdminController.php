@@ -270,7 +270,7 @@ class AdminController extends Controller
 
   public function Showpannes()
   {
-    $pannes = Panne::with(['equipement', 'user'])->latest()->get();
+    $pannes = Panne::with(['equipement', 'user'])->where("statut","=","en_attente")->latest()->get();
     return view("admin.pannelist", compact('pannes'));
   }
   public function ShowToollost()
@@ -402,5 +402,11 @@ class AdminController extends Controller
   {
     $rapports = Rapport::orderBy('created_at', 'desc')->get();
     return view("admin.list_rapport", compact("rapports"));
+  }
+  
+  public function PutPanne(Panne $panne){
+        $panne->statut="resolu";
+        $panne->save();
+        return redirect()->back();
   }
 }

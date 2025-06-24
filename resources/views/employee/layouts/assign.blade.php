@@ -35,7 +35,7 @@
                                     <img src="/{{$eq->image_path}}" alt="Photo" width="80" class="rounded shadow-sm">
                                 </a>
                             </td>
-                            <td>{{ $eq->pivot->date_retour }}</td>
+                            <td>{{ $eq->pivot->date_retour ? $eq->pivot->date_retour:"aucune date de retour" }}</td>
                         </tr>
                   
                      @endforeach

@@ -79,6 +79,8 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
           ->name("page.listeAffectations");
     Route::get('/equipement-pannes',[AdminController::class,"Showpannes"])
          ->name("equipements.pannes");
+    Route::put('/pannes_modify/{panne}',[AdminController::class,"PutPanne"])
+          ->name('pannes.resolu');
     Route::get("/list_tools_lost",[AdminController::class,"ShowToollost"])
          ->name("tools.lost");
     Route::get("/add-collaborateur-page",[AdminController::class,"CollaboratorsPage"])
@@ -112,6 +114,8 @@ Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function ()
          ->name("page.aide");
     Route::post("/post-aide",[EmployeController::class,"HandleHelp"])
          ->name("send.aide");
+    Route::get('/lists_demandes',[AdminController::class,"ShowDemandes"])
+          ->name("demandes.lists");
 });
 
 //deleteuser
