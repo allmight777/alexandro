@@ -148,46 +148,29 @@ Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class
 
 });
 
-
-
-// Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
-//     Route::get('/rapports/create', [RapportController::class, 'create'])->name('gestionnaire.rapports.create');
-//     Route::post('/rapports', [RapportController::class, 'store'])->name('gestionnaire.rapports.store');
-//     Route::get('/rapports', [RapportController::class, 'index'])->name('gestionnaire.rapports.index');
-//     Route::get('/rapports/{id}/download', [RapportController::class, 'download'])->name('gestionnaire.rapports.download');
-// });
-
+// ----------------------------------------------bons------------------------------------------------
+// ----------------------------------------------    ------------------------------------------------
+Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
+    // ... autres routes ...
     
+    Route::get('/bons', [BonController::class, 'index'])
+        ->name('gestionnaire.bons.bon_external')
+        ->middleware([GestionnaireMiddleware::class]);
     
-    
- 
+    Route::get('/bons/external-collaborator', [BonController::class, 'showExternalCollaboratorForm'])
+        ->name('gestionnaire.bons.bon_external_collaborator')
+        ->middleware([GestionnaireMiddleware::class]);
 
-    // Route::get('/tools/list', [EquipementController::class, 'index'])
-    //     ->name('tools.list')
-    //     ->middleware('can:viewAny,' . Equipement::class);
+    // Route pour traiter le formulaire
+    Route::post('/bons/handle-external', [BonController::class, 'handleExternalBon'])
+        ->name('gestionnaire.bons.handle_external')
+        ->middleware([GestionnaireMiddleware::class]);
 
-    // Route::get('/tools/edit/{id}', [EquipementController::class, 'edit'])
-    //     ->name('tools.edit')
-    //     ->middleware('can:update,equipement');
 
-    // Route::put('/tools/update/{id}', [EquipementController::class, 'update'])
-    //     ->name('tools.update')
-    //     ->middleware('can:update,equipement');
+});
 
 
 
-
-    // Route::get('/tools/add', [EquipementController::class, 'create'])->name('tools.add');
-
-    // Route::get('/tools/list', [EquipementController::class, 'index'])->name('tools.list');
-    // Route::get('/tools/edit/{id}', [EquipementController::class, 'edit'])->name('tools.edit');
-    // Route::put('/tools/update/{id}', [EquipementController::class, 'update'])->name('tools.update');
-    
-
-    // Route::get('equipements/create', [EquipementController::class, 'create'])->name('equipements.create');
-    // Route::post('equipements', [EquipementController::class, 'store'])->name('equipements.store');
-    // Route::get('equipements', [EquipementController::class, 'index'])->name('equipements.index');
-    // Route::get('demandes', [DemandeController::class, 'index']);
     Route::resource('bons', BonController::class);
 
     Route::resource('affectations', AffectationController::class);
@@ -276,6 +259,16 @@ Route::prefix("dashboard/admin")->middleware(['auth', IsAdmin::class])->group(fu
         ->name("ShowListCollaborator");
     Route::get("/delete_collaborator/{CollaborateurExterne}",[AdminController::class,"destroy"])
          ->name("collaborateurs.destroy");
+    Route::get('/list_bon',[AdminController::class,"ShowBons"])
+         ->name("liste.bons");
+    Route::get('/bon_collaborator_external',[AdminController::class,"CreateBon"])
+        ->name("CreateBon");
+    Route::post("/post_bon_collaborator_external",[AdminController::class,"HandleBon"])
+         ->name("HandleBon");
+    Route::post("/back_tool/{affectation}",[AdminController::class,"BackTool"])
+           ->name("affectation.retourner");
+    Route::delete("/delete/{bon}",[AdminController::class,"DeleteBon"])
+           ->name("delete.bon");
     
 });
 

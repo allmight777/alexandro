@@ -27,7 +27,7 @@
                         <i class="fas fa-file-export mr-2"></i>Générer et Soumettre
                     </button>
                     <a href="{{ route('rapports.index') }}" class="btn btn-outline-secondary ml-2">
-                        <i class="fas fa-arrow-left mr-2"></i>Retour
+                        <i class="fas fa-arrow-left mr-2"></i>Voir la liste des rapports
                     </a>
                 </div>
             </form>

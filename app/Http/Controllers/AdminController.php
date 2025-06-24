@@ -12,10 +12,13 @@ use App\Models\Demande;
 use App\Models\Equipement;
 use App\Models\Panne;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -86,7 +89,28 @@ class AdminController extends Controller
       $equipement->image_path = 'pictures/equipements/' . $filename;
     }
     $equipement->save();
-    return redirect()->back()->with('success', 'Équipement ajouté avec succès.');
+
+    $user = Auth::user();
+    $bon = new Bon();
+    $bon->motif = 'Ajout de nouvel équipement : ' . $equipement->nom;
+    $bon->user_id = $user->id;
+    $bon->statut = "entrée";
+    $pdfName = 'bon_entree_' . $equipement->id . '.pdf';
+    $pdfPath = 'bon_entree/' . $pdfName;
+    $bon->fichier_pdf = $pdfPath;
+    $bon->save();
+    $pdf = Pdf::loadView('pdf.bon', [
+      'date' => now()->format('d/m/Y'),
+      'nom' => $user->nom ?? 'Admin',
+      'prenom' => $user->prenom ?? '',
+      'motif' => 'Ajout de nouvel équipement : ' . $equipement->nom,
+      'numero_bon' => $bon->id
+    ]);
+    Storage::disk('public')->put($pdfPath, $pdf->output());
+
+    return redirect()->back() // ou ->back()
+      ->with('success', 'Équipement ajouté avec succès et un Bon d \'entrée est genéré.')
+      ->with('pdf', asset('storage/' . $pdfPath));
   }
   public function ShowToolpage()
   {
@@ -143,83 +167,193 @@ class AdminController extends Controller
     //formulaire avec select employée, select pour equipements,motif text area,date de retour
     //recuperer la liste des employées && equipements
     //pour l'insertion il faut les tables:affectations,bon,equipement(MAJ),
-    $equipements_groupes = Categorie::with("equipement")->get();
+    $equipements_groupes = Categorie::with(['equipement' => function ($query) {
+      $query->where('etat', 'disponible')
+        ->where(function ($q) {
+          $q->whereHas('affectations', function ($q2) {
+            $q2->whereNull('date_retour');
+          })
+            ->orWhereDoesntHave('affectations', function ($q3) {
+              $q3->whereNull('date_retour');
+            });
+        });
+    }])->get();
+
+
     $employes = User::where("role", "=", "employé")->get();
     return view("admin.affectation", compact('equipements_groupes', 'employes'));
   }
 
   public function HandleAffectation(Request $request)
   {
-    DB::beginTransaction(); // start transaction
+    DB::beginTransaction();
 
     try {
-      //Enregistrer les affectations d'équipements
       foreach ($request->equipements as $index => $equipement_id) {
         $affectation = new Affectation();
         $affectation->equipement_id = $equipement_id;
-        $affectation->date_retour = $request->dates_retour[$index];
+        $rawDate = $request->dates_retour[$index] ?? null;
+        $affectation->date_retour = !empty($rawDate) ? $rawDate : null;;
         $affectation->user_id = $request->employe_id;
-        $equipementChange = Equipement::where("id", "=", $equipement_id)->first();
-        $equipementChange->etat = "usagé";
+
+        $equipementChange = Equipement::find($equipement_id);
+          if($rawDate===NULL){
+             $equipementChange->etat = "disponible";
+        } else{
+             $equipementChange->etat = "usagé";
+        }
         $equipementChange->save();
+
         $affectation->save();
       }
 
-
-      // 
       $bon = new Bon();
       $bon->user_id = $request->employe_id;
       $bon->motif = $request->motif;
       $bon->statut = "sortie";
+
+      $pdfName = 'bon_sortie_' . $request->employe_id . '.pdf';
+      $pdfPath = 'bon_sortie/' . $pdfName;
+      $bon->fichier_pdf = $pdfPath;
       $bon->save();
 
       DB::commit();
-      return redirect()->back()->with("success", "Affectation réussie avec succès");
+
+      $employe = User::find($request->employe_id);
+
+      $pdf = Pdf::loadView('pdf.bon', [
+        'date' => now()->format('d/m/Y'),
+        'nom' => $employe->nom ?? 'Admin',
+        'prenom' => $employe->prenom ?? '',
+        'motif' => $request->motif,
+        'numero_bon' => $bon->id,
+        'type' => $bon->statut
+      ]);
+
+      Storage::disk('public')->put($pdfPath, $pdf->output());
+
+      return redirect()->back()
+        ->with('success', 'Affectation réussie avec succès et un bon de sortie a été généré.')
+        ->with('pdf', asset('storage/' . $pdfPath));
     } catch (\Exception $e) {
-      DB::rollBack(); //
+      DB::rollBack();
       return redirect()->back()->with("error", "Une erreur est survenue : " . $e->getMessage());
     }
   }
-  public function Showpannes(){
-     $pannes = Panne::with(['equipement', 'user'])->latest()->get();
-     return view("admin.pannelist",compact('pannes'));
 
+  public function Showpannes()
+  {
+    $pannes = Panne::with(['equipement', 'user'])->latest()->get();
+    return view("admin.pannelist", compact('pannes'));
   }
-  public function ShowToollost(){
-      $equipement_lost = Affectation::with(["equipement","user"])
-       ->where('date_retour', '<', Carbon::now())
-        ->get(); 
-    return view("admin.lost_tools",compact("equipement_lost"));
+  public function ShowToollost()
+  {
+    $equipement_lost = Affectation::with(['equipement', 'user'])
+    ->where('date_retour', '<', now()->startOfDay()) // pour ignorer l'heure
+    ->get();
 
+      // Assurez-vous que le nom de colonne est correct ('date_retour' et non 'date_retourne')
+    return view("admin.lost_tools", compact("equipement_lost"));
   }
-  public function CollaboratorsPage(){
-    
+  public function CollaboratorsPage()
+  {
+
     return view("admin.collaborator_external");
-
   }
-  public function HandleCollaborator(Request $request){
-      $request->validate([
-        'nom' => 'required|string|max:255',
-        'prenom' => 'required|string|max:255',
-        'chemin_carte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+  public function HandleCollaborator(Request $request)
+  {
+    $request->validate([
+      'nom' => 'required|string|max:255',
+      'prenom' => 'required|string|max:255',
+      'chemin_carte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
-    $collaborator=new CollaborateurExterne();
-    $collaborator->nom=$request->nom;
-    $collaborator->prenom=$request->prenom;
+    $collaborator = new CollaborateurExterne();
+    $collaborator->nom = $request->nom;
+    $collaborator->prenom = $request->prenom;
     $cheminCarte = $request->file('chemin_carte')->store('cartes_identite', 'public');
-    $collaborator->carte_chemin=$cheminCarte;
+    $collaborator->carte_chemin = $cheminCarte;
     $collaborator->save();
     return redirect()->back()->with('success', 'Collaborateur ajouté avec succès.');
+  }
+  public function ShowListCollaborator()
+  {
+    $collaborateurs = CollaborateurExterne::all();
+    return view("admin.list_collaborator", compact('collaborateurs'));
+  }
+  public function destroy(CollaborateurExterne $CollaborateurExterne)
+  {
+    $CollaborateurExterne->delete();
+    return redirect()->back();
+  }
+  public function ShowBons()
+  {
+
+    $bons = Bon::all();
+    return view("admin.list_bons", compact('bons'));
+  }
+  public function CreateBon()
+  {
+    $collaborateurs = CollaborateurExterne::all();
+    return view("admin.bon_external_collaborator", compact("collaborateurs"));
+  }
+  public function HandleBon(Request $request)
+  {
+    $request->validate([
+      'collaborateur_id' => 'required|exists:collaborateur_externes,id',
+      'motif' => 'required|string|max:1000',
+      'type' => 'required|in:entrée,sortie,autre',
+    ]);
+
+    $collaborateur = CollaborateurExterne::findOrFail($request->collaborateur_id);
+    $bon = new Bon();
+    $bon->collaborateur_externe_id = $collaborateur->id;
+    $bon->motif = $request->motif;
+    $bon->statut = $request->type;
+    $pdfName = 'bon_collab_' . $bon->id . '.pdf';
+    $pdfPath = 'bon_collaborateurs/' . $pdfName;
+    $bon->fichier_pdf = $pdfPath;
+    $bon->save();
+    $pdf = Pdf::loadView('pdf.bon', [
+      'date' => now()->format('d/m/Y'),
+      'nom' => $collaborateur->nom ?? 'Admin',
+      'prenom' => $collaborateur->prenom ?? '',
+      'motif' => $request->motif,
+      'numero_bon' => $bon->id,
+      'type' => $bon->statut
+    ]);
+
+    Storage::disk('public')->put($pdfPath, $pdf->output());
+
+    return redirect()->back()
+      ->with('success', 'Bon attribueé aux collaborateurs externe avec succès.')
+      ->with('pdf', asset('storage/' . $pdfPath));
+  }
+  public function BackTool(Affectation $affectation){
+    $affectation->date_retour = now();
+    $affectation->save();
+
+    $equipement = $affectation->equipement;
+    $user = $affectation->user;
+
+    $pdfName = 'retour_perdu_' . $equipement->id . '.pdf';
+    $pdfPath = 'retour_perdu/' . $pdfName;
+
+    $pdf = Pdf::loadView('pdf.retour_perdu', [
+        'date' => now(),
+        'nom' => $user->nom,
+        'prenom' => $user->prenom,
+        'equipement' => $equipement->nom,
+    ]);
+
+    Storage::disk('public')->put($pdfPath, $pdf->output());
+
+    return redirect()->back()
+        ->with('success', 'Retour du matériel effectué. Un PDF de confirmation a été généré.')
+        ->with('pdf', asset('storage/' . $pdfPath));
 
   }
-  public function ShowListCollaborator(){
-    $collaborateurs=CollaborateurExterne::all();
-    return view("admin.list_collaborator",compact('collaborateurs'));
-
-  }
-  public function destroy(CollaborateurExterne $CollaborateurExterne){
-        $CollaborateurExterne->delete();
-        return redirect()->back();
-
+  public function DeleteBon(Bon $bon){
+       $bon->delete();
+       return redirect()->back();
   }
 }

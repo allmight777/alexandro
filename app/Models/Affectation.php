@@ -8,8 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Affectation extends Model
 {
-    protected $fillable = [
-        'equipement_id', 'user_id', 'date_retour'
+// <<<<<<< HEAD
+//     protected $fillable = [
+//         'equipement_id', 'user_id', 'date_retour'
+// =======
+//     //
+    protected $casts = [
+        'date_retour' => 'datetime',
+
     ];
 
     public function equipement()

@@ -45,6 +45,9 @@
                     <li class="nav-item {{ request()->routeIs('gestionnaire.tools.add') ? 'active' : '' }}">
                         <a class="nav-link" href="{{ route('gestionnaire.tools.add') }}">Ajouter un équipement</a>
                     </li>
+                    <li class="nav-item {{ request()->routeIs('liste.bons') ? 'active' : '' }}">
+                        <a class="nav-link" href="{{route('gestionnaire.bons.bon_external')}}">BONS</a>
+                    </li>
                   
                 </ul>
             </div>
