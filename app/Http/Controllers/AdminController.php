@@ -27,8 +27,9 @@ class AdminController extends Controller
    public function ShowHomePage(){
        $nbr_equipement=Equipement::count();
        $nbr_user=User::count();
-       $nbr_affect=Affectation::count();
+       $nbr_affect = Affectation::sum('quantite_affectee');
        return view("admin.homedash",compact('nbr_equipement','nbr_user','nbr_affect'));
+
   }
   public function showusers()
   {
