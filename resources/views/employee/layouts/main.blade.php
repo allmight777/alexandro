@@ -1,164 +1,169 @@
 @extends('employee.homedash')
+
+@push('styles')
+<style>
+    .table th, .table td {
+        vertical-align: middle !important;
+    }
+</style>
+@endpush
+
 @section('content')
-    <div class="main-panel">
-        <div class="content-wrapper">
-            <div class="row">
-                <div class="col-sm-6 mb-4 mb-xl-0">
-                    <div class="d-lg-flex align-items-center">
-                        <div>
-                            <h6 class="font-weight-normal mb-2">Bienvenue sur votre espace Toolzy</h6>
-                            <h3 class="text-dark font-weight-bold mb-2">Bonjour {{ $user->nom }} {{ $user->prenom }}!</h3>
-                        </div>
+<div class="main-panel">
+    <div class="content-wrapper">
+        <!-- Bienvenue -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h5 class="fw-normal text-muted">Bienvenue sur votre espace Toolzy</h5>
+                <h3 class="fw-bold text-dark">Bonjour {{ $user->nom }} {{ $user->prenom }} !</h3>
+            </div>
+            <div class="col-md-4 d-flex align-items-center justify-content-md-end">
+                <a href="{{ route('page.aide') }}" class="btn btn-outline-info">
+                    Aide <i class="mdi mdi-help-circle-outline ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Équipements & Actions rapides -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold text-primary">Vos équipements</h4>
+                        @if ($affectations->count() > 0)
+                            <table class="table table-striped table-bordered table-hover align-middle">
+                                <thead class="table-primary text-center">
+                                    <tr>
+                                        <th>Équipement</th>
+                                        <th>Statut</th>
+                                        <th>Date d'assignation</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center">
+                                    @foreach ($affectations as $aff)
+                                        <tr>
+                                            <td class="fw-semibold">{{ $aff->equipement->nom }}</td>
+                                            <td>
+                                                <span class="badge {{ $aff->equipement->etat === 'fonctionnel' ? 'bg-success' : 'bg-warning' }}">
+                                                    {{ ucfirst($aff->equipement->etat) }}
+                                                </span>
+                                            </td>
+                                            <td>{{ $aff->created_at->format('d/m/Y') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="text-muted">Aucun équipement pour le moment.</p>
+                        @endif
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="d-flex align-items-center justify-content-md-end">
-                        <div class="pe-1 mb-3 mb-xl-0">
-                            <a href="{{route('page.aide')}}">
-                                <button type="button" class="btn btn-outline-inverse-info btn-icon-text">
-                                    aide
-                                    <i class="mdi mdi-help-circle-outline btn-icon-append"></i>
-                                </button>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold text-primary">Actions rapides</h4>
+                        <div class="d-grid gap-2">
+                            <a href="{{ route('demande.equipement') }}" class="btn btn-primary btn-lg">
+                                <i class="mdi mdi-laptop"></i> Demander un équipement
+                            </a>
+                            <a href="{{ route('signaler.panne') }}" class="btn btn-danger btn-lg">
+                                <i class="mdi mdi-alert"></i> Signaler une panne
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-lg-8 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Vos équipements</h4>
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
+        </div>
+
+        <!-- Demandes & Pannes -->
+        <div class="row">
+            <!-- Demandes récentes -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold text-primary">Demandes récentes</h4>
+                        @if ($demandes->count())
+                            <table class="table table-striped table-bordered align-middle">
+                                <thead class="table-primary text-center">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center">
+                                    @foreach ($demandes as $demande)
+                                        @php
+                                            $badge = match($demande->statut) {
+                                                'en_attente' => 'bg-warning',
+                                                'acceptee' => 'bg-success',
+                                                'rejetee' => 'bg-danger',
+                                                default => 'bg-secondary',
+                                            };
+                                        @endphp
                                         <tr>
-                                            <th>Équipement</th>
-                                            <th>Numéro de série</th>
-                                            <th>Statut</th>
-                                            <th>Date d'assignation</th>
+                                            <td>{{ $demande->created_at->format('d/m/Y H:i') }}</td>
+                                            <td class="fw-semibold">{{ $demande->motif }}</td>
+                                            <td><span class="badge {{ $badge }}">{{ ucfirst($demande->statut) }}</span></td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Ordinateur portable</td>
-                                            <td>LP-784512</td>
-                                            <td><label class="badge badge-success">Actif</label></td>
-                                            <td>12/05/2023</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Téléphone mobile</td>
-                                            <td>PH-451236</td>
-                                            <td><label class="badge badge-warning">En maintenance</label></td>
-                                            <td>12/05/2023</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Écran 24"</td>
-                                            <td>MN-785412</td>
-                                            <td><label class="badge badge-success">Actif</label></td>
-                                            <td>12/05/2023</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 mb-3 mb-lg-0">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Actions rapides</h4>
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary btn-lg" type="button">
-                                    <i class="mdi mdi-laptop"></i> Demander un équipement
-                                </button>
-                                <button class="btn btn-danger btn-lg" type="button">
-                                    <i class="mdi mdi-alert"></i> Signaler une panne
-                                </button>
-                                <button class="btn btn-accent btn-lg" type="button">
-                                    <i class="mdi mdi-history"></i> Voir mes demandes
-                                </button>
-                            </div>
-                        </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="text-muted">Aucune demande récente.</p>
+                        @endif
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Demandes récentes</h4>
-                            @if (count($demandes) > 0)
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Type</th>
-                                                <th>Statut</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($demandes as $demande)
-                                                @php
-                                                    $badgeClass = match ($demande->statut) {
-                                                        'en_attente' => 'badge-info',
-                                                        'acceptee' => 'badge-success',
-                                                        'rejetee' => 'badge-danger',
-                                                        default => 'badge-secondary',
-                                                    };
-                                                @endphp
-                                                <tr>
-                                                    <td>{{ $demande->created_at }}</td>
-                                                    <td>{{ $demande->motif }}</td>
-                                                    <td><label
-                                                            class="badge {{ $badgeClass }}">{{ $demande->statut }}</label>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            @else
-                                <span>Aucune demandes</span>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Pannes signalées</h4>
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
+
+            <!-- Pannes signalées -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold text-primary">Pannes signalées</h4>
+                        @if ($pannes->count())
+                            <table class="table table-striped table-bordered table-hover align-middle">
+                                <thead class="table-primary text-center">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Équipement</th>
+                                        <th>Motif</th>
+                                        <th>Statut</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center">
+                                    @foreach ($pannes as $panne)
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Équipement</th>
-                                            <th>Statut</th>
+                                            <td>{{ $panne->created_at->format('d/m/Y H:i') }}</td>
+                                            <td>{{ $panne->equipement->nom }}</td>
+                                            <td>{{ $panne->description }}</td>
+                                            <td>
+                                                <span class="badge {{ $panne->statut === 'resolu' ? 'bg-success' : 'bg-danger' }}">
+                                                    {{ucfirst($panne->statut) }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <form method="POST" action="{{route('delete.panne',$panne->id)}}">
+                                                    @csrf @method('DELETE')
+                                                    <button class="btn btn-sm btn-outline-danger" type="submit">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>18/06/2023</td>
-                                            <td>Téléphone mobile</td>
-                                            <td><label class="badge badge-warning">En cours</label></td>
-                                        </tr>
-                                        <tr>
-                                            <td>12/06/2023</td>
-                                            <td>Écran 24"</td>
-                                            <td><label class="badge badge-success">Résolu</label></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="text-muted">Aucune panne signalée.</p>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
-        <!-- content-wrapper ends -->
-
     </div>
+</div>
 @endsection
-<!-- main-panel ends -->

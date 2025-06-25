@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Affectation;
 use App\Models\Demande;
 use App\Models\Equipement;
 use App\Models\EquipementDemandé;
@@ -19,11 +20,14 @@ class EmployeController extends Controller
         // ou toute autre variable que tu veux passer
         $user = Auth::user();
         $demandes = Demande::all();
-
+        $affectations=Affectation::with("equipement")->where('user_id','=',$user->id)->take(4)->get();
+        $pannes=Panne::with("equipement")->where('user_id',"=",$user->id)->get();
 
         return view('employee.layouts.main', [
             'user' => $user,
             'demandes' => $demandes,
+            'affectations'=>$affectations,
+            'pannes'=>$pannes
         ]);
     }
     public function ShowAskpage()
@@ -122,4 +126,9 @@ public function HandlePanne(Request $request)
         return back()->with('success', 'Votre message a été envoyé à l’administrateur.');
 
     }
+    //recuperation directe du modele + action(Ex:suppression)
+    public function DeletePanne(Panne $panne){
+        $panne->delete();
+        return redirect()->back();
+    } 
 }
