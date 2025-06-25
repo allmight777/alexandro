@@ -19,15 +19,18 @@
                 </div>
             </form>
         </div>
+        @php
+            $initials = strtoupper(substr(auth()->user()->nom, 0, 1) . substr(auth()->user()->prenom, 0, 1));
+        @endphp
 
         <ul class="navbar-nav navbar-nav-right">
             <li class="nav-item nav-profile dropdown">
                 <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-toggle="dropdown"
                     aria-expanded="false">
                     <div class="d-flex align-items-center">
-                        <div class="profile-initials">AT</div>
+                        <div class="profile-initials">{{$initials}}</div>
                         <div class="nav-profile-text">
-                            <p class="mb-1 text-black">Admin Toolzy</p>
+                            <p class="mb-1 text-black">{{ auth()->user()->nom }} {{ auth()->user()->prenom }}</p>
                         </div>
                     </div>
                 </a>
