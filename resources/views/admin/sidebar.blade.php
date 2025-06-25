@@ -78,8 +78,8 @@
             </a>
         </li>
 
-        <li class="nav-item ">
-            <a class="nav-link {{ request()->routeIs('tools.lost') ? 'active' : '' }}"
+        <li class="nav-item {{ request()->routeIs('tools.lost') ? 'active' : '' }} ">
+            <a class="nav-link"
                 href="{{ route('tools.lost') }}">
                 <span class="menu-title">Equipements Perdus</span>
                 <i class="mdi mdi-emoticon-sad-outline menu-icon"></i>

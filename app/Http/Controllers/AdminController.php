@@ -386,6 +386,7 @@ class AdminController extends Controller
   {
     $bon->delete();
     return redirect()->back();
+    
   }
   public function Showlistaffectation()
   {

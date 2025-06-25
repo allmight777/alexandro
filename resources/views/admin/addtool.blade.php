@@ -1,147 +1,130 @@
 @extends('admin.layouts.adminlay')
-@section('content')
-    <div class="row">
-        <div class="col-12 grid-margin">
-            @session('success')
-                <div class="alert alert-green">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-                    {{ $value }}
-                </div>
-            @endsession
 
-            <!-- Formulaire d'ajout d'équipement -->
-            <div class="card form-card">
-                <div class="form-header">
-                    <div class="d-flex align-items-center">
-                        <div class="form-icon">
-                            <i class="mdi mdi-laptop"></i>
-                        </div>
+@section('content')
+    <div class="container-fluid mt-4 px-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                    </div>
+                @endif
+
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white d-flex align-items-center">
+                        <i class="mdi mdi-laptop me-2 fs-4"></i>
                         <div>
-                            <h4 class="mb-0">Ajouter un nouvel équipement</h4>
-                            <p class="mb-0">Remplissez les détails de l'équipement à ajouter à l'inventaire</p>
+                            <h5 class="mb-0">Ajouter un nouvel équipement</h5>
+                            <small>Remplissez les détails de l'équipement à ajouter</small>
                         </div>
                     </div>
-                </div>
-                <div class="form-body">
-                    <form method="POST" action="{{ route('addTool') }}" enctype="multipart/form-data">
-                        @method('POST')
-                        @csrf
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="mb-3">
+
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('addTool') }}" enctype="multipart/form-data">
+                            @csrf
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
                                     <label for="equipmentName" class="form-label required-label">Nom de l'équipement</label>
-                                    <input type="text" class="form-control" id="equipmentName"
-                                        placeholder="Entrez le nom de l'équipement" required name="nom">
+                                    <input type="text" class="form-control" name="nom" id="equipmentName" required
+                                        placeholder="Ex: Ordinateur HP">
                                     @error('nom')
-                                        <span class="text-danger">{{ $message }}</span>
+                                        <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
+
+                                <div class="col-md-6">
                                     <label for="equipmentState" class="form-label required-label">État</label>
-                                    <select class="form-select" id="equipmentState" required name="etat">
-                                        <option value="" selected disabled>Sélectionnez un état</option>
+                                    <select class="form-select" name="etat" id="equipmentState" required>
+                                        <option value="" selected disabled>Choisissez l'état</option>
                                         <option value="disponible">Disponible</option>
                                         <option value="usagé">Usagé</option>
                                         <option value="en panne">En panne</option>
                                         <option value="réparé">Réparé</option>
                                     </select>
                                     @error('etat')
-                                        <span class="text-danger">{{ $message }}</span>
+                                        <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="mb-3">
+                                <div class="col-md-6">
                                     <label for="equipmentBrand" class="form-label">Marque</label>
-                                    <input type="text" class="form-control" id="equipmentBrand"
-                                        placeholder="Entrez la marque" name="marque">
+                                    <input type="text" class="form-control" name="marque" id="equipmentBrand"
+                                        placeholder="Ex: Dell, HP, Lenovo">
                                     @error('marque')
-                                        <span class="text-danger">{{ $message }}</span>
+                                        <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
+
+                                <div class="col-md-6">
                                     <label for="equipmentCategory" class="form-label required-label">Catégorie</label>
-                                    <select class="form-select" id="equipmentCategory" required name="categorie">
-                                        <option value="" selected disabled>Sélectionnez une catégorie</option>
+                                    <select class="form-select" name="categorie" id="equipmentCategory" required>
+                                        <option value="" selected disabled>Choisissez une catégorie</option>
                                         @foreach ($categories as $cat)
                                             <option value="{{ $cat->nom }}">{{ $cat->nom }}</option>
                                         @endforeach
                                     </select>
                                     @error('categorie')
-                                        <span class="text-danger">{{ $message }}</span>
+                                        <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <div class="mb-3">
+                                <div class="col-md-12">
                                     <label for="equipmentDescription" class="form-label">Description</label>
-                                    <textarea class="form-control" id="equipmentDescription" rows="3"
-                                        placeholder="Entrez une description de l'équipement" name="description"></textarea>
+                                    <textarea class="form-control" name="description" id="equipmentDescription" rows="3"
+                                        placeholder="Ex: Ordinateur portable Core i5, 8Go RAM, SSD 256Go"></textarea>
                                     @error('description')
-                                        <span class="text-danger">{{ $message }}</span>
+                                        <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="mb-3">
+                                <div class="col-md-6">
                                     <label for="acquisitionDate" class="form-label">Date d'acquisition</label>
-                                    <input type="date" class="form-control" id="acquisitionDate" name="date_acquisition">
+                                    <input type="date" class="form-control" name="date_acquisition" id="acquisitionDate">
                                     @error('date_acquisition')
-                                        <span class="text-danger">{{ $message }}</span>
+                                        <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="equipmentImage" class="form-label">Image de l'équipement</label>
-                                    <input type="file" class="form-control" id="equipmentImage" accept="image/*"
-                                        name="image_path">
+
+                                <div class="col-md-6">
+                                    <label for="equipmentImage" class="form-label">Image</label>
+                                    <input type="file" class="form-control" name="image_path" id="equipmentImage"
+                                        accept="image/*">
                                     @error('image_path')
-                                        <span class="text-danger">{{ $message }}</span>
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="equipmentQuantity" class="form-label required-label">Quantité
+                                        disponible</label>
+                                    <input type="number" min="1" class="form-control" name="quantite_disponible"
+                                        id="equipmentQuantity" required placeholder="Ex: 5">
+                                    @error('quantite_disponible')
+                                        <div class="text-danger small">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="equipmentQuantity" class="form-label required-label">Quantité disponible</label>
-                                <input type="number" class="form-control" id="equipmentQuantity"
-                                    name="quantite_disponible" min="1" required placeholder="Ex : 10">
-                                @error('quantite_disponible')
-                                    <span class="text-danger">{{ $message }}</span>
-                                @enderror
+
+                            <div class="row mt-4">
+                                <div class="col-12 d-flex flex-column flex-sm-row justify-content-end align-items-stretch gap-2">
+                                    <button type="reset" class="btn btn-outline-secondary">
+                                        <i class="mdi mdi-refresh me-1"></i> Réinitialiser
+                                    </button>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="mdi mdi-plus-circle me-1"></i> Ajouter
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-footer">
-                            <div class="d-flex justify-content-end">
-                                <button type="reset" class="btn btn-reset me-3">
-                                    <i class="mdi mdi-refresh me-1"></i> Réinitialiser
-                                </button>
-                                <button type="submit" class="btn btn-submit">
-                                    <i class="mdi mdi-plus-circle me-1"></i> Ajouter l'équipement
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <!-- Fin du formulaire d'ajout d'équipement -->
         </div>
     </div>
 @endsection
+
 @push('scripts')
     @if (session('pdf'))
         <script>
