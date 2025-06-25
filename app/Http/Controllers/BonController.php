@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CollaborateurExterne;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Bon;
+
 
 class BonController extends Controller
 {
@@ -15,7 +17,7 @@ class BonController extends Controller
     {
 
         $bons = Bon::all();
-        return view('gestionnaire.bons.index', compact('bons'));
+        return view('gestionnaire.bons.list_bons', compact('bons'));
     }
 
     /**
@@ -33,6 +35,7 @@ class BonController extends Controller
     {
         //
     }
+    
     public function showExternalCollaboratorForm()
     {
         $collaborateurs = CollaborateurExterne::all();
@@ -92,11 +95,27 @@ class BonController extends Controller
         //
     }
 
+
+    public function destroy($id)
+    {
+        $bon = Bon::findOrFail($id);
+
+        // Supprimer le fichier PDF s'il existe
+        if ($bon->fichier_pdf && Storage::disk('public')->exists($bon->fichier_pdf)) {
+            Storage::disk('public')->delete($bon->fichier_pdf);
+        }
+
+        // Supprimer l'enregistrement de la base de données
+        $bon->delete();
+
+        return redirect()->route('gestionnaire.bons.index')
+                        ->with('success', 'Bon supprimé avec succès.');
+    }
+
+
+
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
-}
+
+ }

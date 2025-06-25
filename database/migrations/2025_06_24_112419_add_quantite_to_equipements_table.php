@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('bons', function (Blueprint $table) {
-            if (!Schema::hasColumn('bons', 'fichier_pdf')) {
-                $table->string("fichier_pdf");
+        Schema::table('equipements', function (Blueprint $table) {
+            if (!Schema::hasColumn('equipements', 'quantite')) {
+              $table->integer('quantite')->default(0);
             }
         });
     }
@@ -23,8 +23,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('bons', function (Blueprint $table) {
-            //
+        Schema::table('equipements', function (Blueprint $table) {
+            if (Schema::hasColumn('equipements', 'quantite')) {
+                $table->dropColumn('quantite');
+            }   
+
         });
     }
 };

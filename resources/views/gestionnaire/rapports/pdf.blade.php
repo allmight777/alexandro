@@ -13,7 +13,7 @@
 <body>
     <div class="header">
         <h2>Rapport</h2>
-        <p>Généré par: {{ $user->name }}</p>
+        <p>Généré par: {{ $user->nom}}</p>
         <p>Date: {{ now()->format('d/m/Y H:i') }}</p>
     </div>
     

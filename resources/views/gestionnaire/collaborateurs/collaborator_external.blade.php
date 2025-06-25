@@ -19,24 +19,22 @@
         </div>
         <div class="card-body">
             <!-- <form action="{{route('HandleCollaborator')}}" method="POST" enctype="multipart/form-data"> -->
-            <form action="{{ route('gestionnaire.collaborateurs.store') }}" method="POST" enctype="multipart/form-data"></form>
+            <form action="{{ route('gestionnaire.collaborateurs.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <!-- Nom -->
+
                 <div class="mb-3">
                     <label for="nom" class="form-label">Nom</label>
                     <input type="text" name="nom" id="nom" class="form-control" required>
                 </div>
 
-                <!-- Prénom -->
                 <div class="mb-3">
                     <label for="prenom" class="form-label">Prénom</label>
                     <input type="text" name="prenom" id="prenom" class="form-control" required>
                 </div>
 
-                <!-- Carte d'identité -->
                 <div class="mb-3">
                     <label for="chemin_carte" class="form-label">Carte d'identité</label>
-                    <input type="file" name="chemin_carte" id="chemin_carte" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
+                    <input type="file" name="chemin_carte" id="chemin_carte" class="form-control" required>
                 </div>
 
                 <div class="text-end">

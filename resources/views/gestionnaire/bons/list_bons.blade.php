@@ -28,11 +28,11 @@
                     @endif
                 </td>
                 <td>
-                    <form action="{{route('delete.bon',$bon->id)}}" method="POST" >
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-sm btn-danger">Supprimer</button>
-                    </form>
+                <form action="{{ route('gestionnaire.bons.destroy', $bon->id) }}" method="POST" onsubmit="return confirm('Supprimer ce bon ?');">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-sm btn-danger">Supprimer</button>
+                </form>
                 </td>
             </tr>
         @empty

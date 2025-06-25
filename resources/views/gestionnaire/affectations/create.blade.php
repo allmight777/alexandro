@@ -7,7 +7,7 @@
     $equipementDisponibleTrouvé = false;
 
     foreach ($equipements_groupes as $categorie) {
-        $equipementsDisponibles = $categorie->equipement->where('etat', 'disponible');
+        $equipementsDisponibles = $categorie->equipements->where('etat', 'disponible');
 
         if ($equipementsDisponibles->count() > 0) {
             $equipementDisponibleTrouvé = true;

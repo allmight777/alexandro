@@ -13,7 +13,7 @@ class Categorie extends Model
     protected $table = 'categories'; // Spécifie le nom de la table
 
     // Relation AU PLURIEL car une catégorie peut avoir PLUSIEURS équipements
-    public function equipement()
+    public function equipements()
     {
         return $this->hasMany(Equipement::class);
     }

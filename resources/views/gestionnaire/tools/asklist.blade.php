@@ -1,4 +1,4 @@
-@extends('admin.layouts.adminlay')
+@extends('gestionnaire.tools.layouts.gestionlay')
 @section('content')
     <div class="container mt-4">
         <h4 class="mb-4 fw-bold text-primary">Liste des demandes d’équipement</h4>

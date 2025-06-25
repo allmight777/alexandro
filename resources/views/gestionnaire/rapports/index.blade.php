@@ -36,16 +36,16 @@
                                 <tr>
                                     <th class="px-4 py-3 fw-semibold text-muted">#</th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
-                                        <i class="fas fa-calendar me-1"></i>
-                                        Date
+                                        <i class="fas fa-calendar me-1"></i> Date
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted">
-                                        <i class="fas fa-file-text me-1"></i>
-                                        Contenu (extrait)
+                                        <i class="fas fa-file-text me-1"></i> Contenu (extrait)
                                     </th>
                                     <th class="px-4 py-3 fw-semibold text-muted text-center">
-                                        <i class="fas fa-download me-1"></i>
-                                        PDF
+                                        <i class="fas fa-download me-1"></i> PDF
+                                    </th>
+                                    <th class="px-4 py-3 fw-semibold text-muted text-center">
+                                        <i class="fas fa-trash me-1"></i> Supprimer
                                     </th>
                                 </tr>
                             </thead>
@@ -68,17 +68,29 @@
                                             </div>
                                         </td>
                                         <td class="px-4 py-3">
-                                            <div class="text-dark" style="max-width: 400px;">
-                                                {{ Str::limit($rapport->contenu, 50) }}
-                                            </div>
+                                            <a href="#" 
+                                               class="text-dark contenu-extrait d-inline-flex align-items-center"
+                                               data-bs-toggle="modal" 
+                                               data-bs-target="#modalContenu" 
+                                               data-contenu="{{ htmlspecialchars($rapport->contenu, ENT_QUOTES, 'UTF-8') }}"
+                                               style="cursor:pointer; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none;">
+                                                <i class="fas fa-eye me-1 text-primary"></i>
+                                                <span>{{ Str::limit($rapport->contenu, 50) }}</span>
+                                            </a>
                                         </td>
                                         <td class="px-4 py-3 text-center">
-                                            <a href="{{ route('gestionnaire.rapports.download', $rapport->id) }}" 
-                                               target="_blank" 
-                                               class="btn btn-primary btn-sm px-3 py-2">
-                                                <i class="fas fa-download me-1"></i>
-                                                Voir / Télécharger
+                                            <a href="{{ route('gestionnaire.rapports.download', $rapport->id) }}" target="_blank" class="btn btn-primary btn-sm px-3 py-2">
+                                                <i class="fas fa-download me-1"></i> Voir / Télécharger
                                             </a>
+                                        </td>
+                                        <td class="px-4 py-3 text-center">
+                                            <form action="{{ route('rapports.destroy', $rapport->id) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer ce rapport ?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm px-3 py-2">
+                                                    <i class="fas fa-trash me-1"></i> Supprimer
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -91,6 +103,24 @@
     </div>
 </div>
 
+<!-- Modale Bootstrap pour afficher le contenu complet -->
+<div class="modal fade" id="modalContenu" tabindex="-1" aria-labelledby="modalContenuLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalContenuLabel">Contenu complet du rapport</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body" id="modalContenuBody" style="white-space: pre-wrap;">
+        <!-- Contenu injecté par JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <style>
     .card {
         border-radius: 12px;
@@ -100,6 +130,11 @@
     .table > :not(caption) > * > * {
         padding: 1rem;
         border-color: #f1f3f4;
+    }
+    
+    .contenu-extrait:hover {
+        color:rgb(0, 201, 27); /* bootstrap blue */
+        text-decoration: underline;
     }
     
     .table-hover > tbody > tr:hover > td {
@@ -128,3 +163,19 @@
     }
 </style>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modalContenu = document.getElementById('modalContenu');
+        var modalContenuBody = document.getElementById('modalContenuBody');
+
+        document.querySelectorAll('.contenu-extrait').forEach(function(el) {
+            el.addEventListener('click', function() {
+                var contenu = this.getAttribute('data-contenu');
+                modalContenuBody.textContent = contenu;
+            });
+        });
+    });
+</script>
+@endpush

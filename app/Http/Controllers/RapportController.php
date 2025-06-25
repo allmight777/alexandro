@@ -64,17 +64,45 @@ class RapportController extends Controller
 
 
 
+    // public function download($id)
+    // {
+    //     $rapport = Rapport::findOrFail($id);
+    //     $user = Auth::user(); // Récupération de l'utilisateur connecté
+
+    //     $contenu = $rapport->contenu; // si tu veux afficher le contenu dans le PDF
+
+    //     return PDF::loadView('gestionnaire.rapports.pdf', compact('rapport', 'user', 'contenu'))
+    //             ->download('rapport_' . $rapport->id . '.pdf');
+    // }
+
+
     public function download($id)
+{
+    $rapport = Rapport::with('user')->findOrFail($id); // on récupère aussi l'utilisateur lié
+    $user = $rapport->user; // on récupère l'utilisateur
+
+    $pdf = Pdf::loadView('gestionnaire.rapports.pdf', [
+        'contenu' => $rapport->contenu,
+        'user' => $user, // on passe bien $user à la vue
+    ]);
+
+    return $pdf->download('rapport_'.$rapport->id.'.pdf');
+}
+
+
+    public function destroy($id)
     {
         $rapport = Rapport::findOrFail($id);
-        $user = Auth::user(); // Récupération de l'utilisateur connecté
 
-        $contenu = $rapport->contenu; // si tu veux afficher le contenu dans le PDF
+    // Si tu as un fichier à supprimer, supprime-le aussi ici, par exemple :
+        if ($rapport->chemin_fichier && Storage::exists($rapport->chemin_fichier)) {
+            Storage::delete($rapport->chemin_fichier);
+        }   
 
-        return PDF::loadView('gestionnaire.rapports.pdf', compact('rapport', 'user', 'contenu'))
-                ->download('rapport_' . $rapport->id . '.pdf');
+        $rapport->delete();
+
+        return redirect()->route('gestionnaire.rapports.index')->with('success', 'Rapport supprimé avec succès.');
     }
-
 
     // /**
     //  * Display the specified resource.

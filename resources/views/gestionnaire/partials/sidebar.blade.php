@@ -55,14 +55,14 @@
 
         {{-- Le reste des liens, tu peux faire pareil --}}
         <li class="nav-item {{ request()->is('equipment-out-of-service') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('gestionnaire.tools.panne') }}">
+            <a class="nav-link" href="{{ route('gestionnaire.pannes.index') }}">
                 <span class="menu-title">Equipements en Pannes</span>
                 <i class="mdi mdi-alert-circle-outline menu-icon"></i>
             </a>
         </li>
 
         <li class="nav-item {{ request()->is('equipment-lost') ? 'active' : '' }}">
-            <a class="nav-link" href="equipment-lost.html">
+            <a class="nav-link" href="{{ route('gestionnaire.equipements.perdus') }}"class="btn btn-warning">
                 <span class="menu-title">Equipements Perdus</span>
                 <i class="mdi mdi-emoticon-sad-outline menu-icon"></i>
             </a>
@@ -159,12 +159,11 @@
 
                     </li>
                     <li class="nav-item">
-                        <!-- <a class="nav-link" href="collaborateurs-liste.html">Liste</a> -->
                         <a class="nav-link" href="{{ route('gestionnaire.collaborateurs.index') }}">Liste</a>
 
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="collaborateurs-bon.html">Bon</a>
+                            <a class="nav-link" href="{{ route('gestionnaire.bons.bon_external_collaborator') }}">Bon</a>
                     </li>
                 </ul>
             </div>

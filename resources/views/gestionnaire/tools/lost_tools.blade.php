@@ -1,4 +1,4 @@
-@extends('admin.layouts.adminlay')
+@extends('gestionnaire.tools.layouts.gestionlay')
 @section('content')
     <div class="container mt-5">
         <div class="card shadow-lg">
@@ -26,7 +26,7 @@
                                         <td>{{ $affectation->user->nom ?? '-' }} {{ $affectation->user->prenom ?? '' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($affectation->date_retour)->format('d/m/Y') }}</td>
                                         <td>
-                                            <form action=""
+                                            <form action="{{ route('gestionnaire.equipements.retourner', $affectation->id) }}"
                                                 method="POST">
                                                 @csrf
                                                 @method('PATCH')

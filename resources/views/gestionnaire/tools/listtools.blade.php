@@ -1,4 +1,4 @@
-@extends('gestionnaire.tools.layouts.gestionlay')
+@extends('admin.layouts.adminlay')
 @section('content')
     <div class="page-header">
         <h3 class="page-title">
@@ -20,14 +20,6 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Liste des équipements</h4>
-
-
-                    @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
 
                     <div class="table-responsive">
                         <table class="table">
@@ -52,9 +44,7 @@
                                             </div>
                                         </td>
                                         <td>{{ $equip->description }}</td>
-                                        <!-- <td>{{ $equip->categorie?->nom ?? 'Aucune catégorie' }}</td> -->
-                                        <td>{{ $equip->categorie && $equip->categorie->nom ? $equip->categorie->nom : 'Aucune catégorie' }}</td>
-                                        <!-- <td>{{ $equip->categorie->nom }}</td> -->
+                                        <td>{{ $equip->categorie->nom }}</td>
                                         <td>
                                             <span class="status-badge status-available">{{ $equip->etat }}</span>
                                         </td>

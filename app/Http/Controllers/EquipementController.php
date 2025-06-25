@@ -64,12 +64,32 @@ class EquipementController extends Controller
         return redirect()->route('gestionnaire.tools.list')->with('success', 'Équipement ajouté avec succès !');
 
     } 
+
+    public function put(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'nom' => 'required|string|max:255',
+            'description' => 'required|string',
+            'categorie' => 'required|string|max:255',
+            'statut' => 'required|string|in:Disponible,Indisponible',
+        ]);
+
+        $equipement = Equipement::findOrFail($id);
+        $equipement->update($validated);
+
+        return redirect()->route('gestionnaire.tools.list')
+                         ->with('success', 'Équipement mis à jour avec succès.');
+}
+    
     public function showPanne()
     {
     // Récupère uniquement les équipements avec état = 'panne'
-    $equipements = Equipement::where('etat', 'panne')->get();
-    
-    return view('gestionnaire.tools.panne', compact('equipements'));
+    // $equipements = Equipement::where('etat', 'panne')->get();
+     $pannes = Equipement::where('etat', 'panne')->get();
+
+    // return view('gestionnaire.tools.pannelist', compact(var_name: 'equipements'));
+        return view('gestionnaire.tools.pannelist', compact('pannes'));
+
 
     }
 }

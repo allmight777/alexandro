@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Affectation;
 use App\Models\Equipement;
 use App\Models\User;
+use App\Models\Categorie;
 
 
 class AffectationController extends Controller

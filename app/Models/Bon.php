@@ -9,7 +9,10 @@ class Bon extends Model
 {
     use HasFactory;
     
-    protected $fillable = [
-        // Ajoutez ici les champs remplissables
-    ];
+        protected $fillable = ['user_id', 'motif', 'statut'];
+       
+        public function user()
+        {
+            return $this->belongsTo(CollaborateurExterne::class, 'user_id');  
+        }
 }

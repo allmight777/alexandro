@@ -1,4 +1,4 @@
-@extends('admin.layouts.adminlay')
+@extends('gestionnaire.bons.layouts.gestionlay')
 @section('content')
 <div class="row">
     <div class="col-md-8 offset-md-2">
