@@ -24,6 +24,12 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
+   public function ShowHomePage(){
+       $nbr_equipement=Equipement::count();
+       $nbr_user=User::count();
+       $nbr_affect=Affectation::count();
+       return view("admin.homedash",compact('nbr_equipement','nbr_user','nbr_affect'));
+  }
   public function showusers()
   {
     $users = User::where("role", "!=", "admin")->get();
@@ -410,4 +416,5 @@ class AdminController extends Controller
         $panne->save();
         return redirect()->back();
   }
+ 
 }

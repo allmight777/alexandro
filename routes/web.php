@@ -19,9 +19,10 @@ Route::get('/', function () {
 //      return  view("admin.homedash");
 // });
 Route::middleware(['auth'])->group(function () {
-    Route::view('/dashboard/admin', 'admin.homedash')->middleware([IsAdmin::class]);
+    // Route::view('/dashboard/admin', 'admin.homedash')->middleware([IsAdmin::class]);
+    Route::get('/dashboard/admin', [AdminController::class,"ShowHomePage"])->name('admin.homedash')->middleware([IsAdmin::class]);
     Route::view('/dashboard/gestionnaire', 'gestionnaire.homedash')->name('dashboard.gestionnaire');
-    Route::get('/dashboard/employe', [EmployeController::class, "index"])->name('dashboard.employee');
+    Route::get('/dashboard/employe', [EmployeController::class, "index"])->name('dashboard.employee')->middleware([Isemp::class]);
 });
 
 Route::get('/redirect-by-role', function () {
