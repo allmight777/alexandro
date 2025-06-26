@@ -283,7 +283,7 @@ class AdminController extends Controller
   public function ShowToollost()
   {
     $equipement_lost = Affectation::with(['equipement', 'user'])
-      ->where('date_retour', '<', now()->startOfDay()) // pour ignorer l'heure
+      ->where('date_retour', '<=', now()->startOfDay()) // pour ignorer l'heure
       ->get();
 
     // Assurez-vous que le nom de colonne est correct ('date_retour' et non 'date_retourne')
