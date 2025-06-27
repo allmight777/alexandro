@@ -16,26 +16,7 @@ class Equipement extends Model
 // <<<<<<< HEAD
 
 
-//     // ---------------------------------------------------------------------
-//     public function demandes()
-//     {
-//         return $this->belongsToMany(Demande::class, 'equipements_demandes')
-//             ->withPivot('nbr_equipement')
-//             ->withTimestamps();
-//     }
 
-//     public function equipementsDemandes()
-//     {
-//         return $this->hasMany(EquipementDemandé::class);
-//     }
-
-
-//     // app/Models/Equipement.php
-
-//     public function scopeEnPanne($query)
-//     {
-//         return $query->where('etat', 'panne');
-// =======
     public function demandes()
     {
 

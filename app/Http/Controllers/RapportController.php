@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 
+
 class RapportController extends Controller
 {
     /**
@@ -58,36 +59,47 @@ class RapportController extends Controller
             'user_id' => $user->id,
             'file_path' => $path,
         ]);
-        return redirect()->back()->with('success', 'Rapport généré et soumis avec succès.');
+        // return redirect()->back()->with('success', value: 'Rapport généré et soumis avec succès.');
+        return redirect()->route('gestionnaire.rapports.index')->with('success', 'Le rapport a bien été généré.');
+    }
 
+    public function show($id)
+    {
+        $rapport = Rapport::with('user')->findOrFail($id);
+        return view('gestionnaire.rapports.show', compact('rapport'));
     }
 
 
 
-    // public function download($id)
-    // {
-    //     $rapport = Rapport::findOrFail($id);
-    //     $user = Auth::user(); // Récupération de l'utilisateur connecté
 
-    //     $contenu = $rapport->contenu; // si tu veux afficher le contenu dans le PDF
+//     public function download($id)
+// {
+//     $rapport = Rapport::with('user')->findOrFail($id); // on récupère aussi l'utilisateur lié
+//     $user = $rapport->user; // on récupère l'utilisateur
 
-    //     return PDF::loadView('gestionnaire.rapports.pdf', compact('rapport', 'user', 'contenu'))
-    //             ->download('rapport_' . $rapport->id . '.pdf');
-    // }
+//     $pdf = Pdf::loadView('gestionnaire.rapports.pdf', [
+//         'contenu' => $rapport->contenu,
+//         'user' => $user, // on passe bien $user à la vue
+//     ]);
+
+//     return $pdf->download('rapport_'.$rapport->id.'.pdf');
+// }
 
 
-    public function download($id)
-{
-    $rapport = Rapport::with('user')->findOrFail($id); // on récupère aussi l'utilisateur lié
-    $user = $rapport->user; // on récupère l'utilisateur
+        public function download($id)
+        {
+            $rapport = Rapport::with('user')->findOrFail($id);
+            $user = $rapport->user;
 
-    $pdf = Pdf::loadView('gestionnaire.rapports.pdf', [
-        'contenu' => $rapport->contenu,
-        'user' => $user, // on passe bien $user à la vue
-    ]);
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('gestionnaire.rapports.pdf', [
+                'contenu' => $rapport->contenu, // 🔥 ajout ici
+                'user' => $user
+            ]);
 
-    return $pdf->download('rapport_'.$rapport->id.'.pdf');
-}
+            // return $pdf->download('rapport_'.$rapport->id.'.pdf');
+            return $pdf->stream('rapport_'.$rapport->id.'.pdf');//Forcer le téléchargement dans le navigateur
+
+        }
 
 
     public function destroy($id)

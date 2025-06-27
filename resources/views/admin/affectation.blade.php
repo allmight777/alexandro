@@ -5,11 +5,11 @@
 
     {{-- Construire options groupées pour équipements disponibles --}}
     @foreach ($equipements_groupes as $categorie)
-        @if ($categorie->equipement->count() > 0)
+        @if ($categorie->equipements->count() > 0)
             @php $hasEquipementDispo = true; @endphp
             @php
                 $optionsHtml .= '<optgroup label="' . e($categorie->nom) . '">';
-                foreach ($categorie->equipement as $equipement) {
+                foreach ($categorie->equipements as $equipement) {
                     $optionsHtml .= '<option value="' . e($equipement->id) . '">' . e($equipement->nom) . '</option>';
                 }
                 $optionsHtml .= '</optgroup>';

@@ -68,19 +68,18 @@
                                             </div>
                                         </td>
                                         <td class="px-4 py-3">
-                                            <a href="#" 
-                                               class="text-dark contenu-extrait d-inline-flex align-items-center"
-                                               data-bs-toggle="modal" 
-                                               data-bs-target="#modalContenu" 
-                                               data-contenu="{{ htmlspecialchars($rapport->contenu, ENT_QUOTES, 'UTF-8') }}"
-                                               style="cursor:pointer; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none;">
-                                                <i class="fas fa-eye me-1 text-primary"></i>
-                                                <span>{{ Str::limit($rapport->contenu, 50) }}</span>
+
+                                            <!-- <a href="#"  -->
+                                            <a href="{{ route('gestionnaire.rapports.show', $rapport->id) }}"
+                                            class="text-dark d-inline-flex align-items-center"
+                                            style="cursor:pointer; max-width: 400px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-decoration: none;">
+                                            <i class="fas fa-eye me-1 text-primary"></i>
+                                            <span>{{ Str::limit($rapport->contenu, 50) }}</span>
                                             </a>
                                         </td>
                                         <td class="px-4 py-3 text-center">
                                             <a href="{{ route('gestionnaire.rapports.download', $rapport->id) }}" target="_blank" class="btn btn-primary btn-sm px-3 py-2">
-                                                <i class="fas fa-download me-1"></i> Voir / Télécharger
+                                                <i class="fas fa-download me-1"></i> Télécharger
                                             </a>
                                         </td>
                                         <td class="px-4 py-3 text-center">

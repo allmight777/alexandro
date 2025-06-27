@@ -6,7 +6,7 @@
     <base href="/public">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Toolzy - Gestionnaire</title>
+    <title>JASPETools - Gestionnaire</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
@@ -20,6 +20,24 @@
     <link rel="shortcut icon" href="images/favicon.png" />
 
     @include('gestionnaire.partials.style')
+
+    <style>
+    body {
+        background-image: url("images/tools.jpg"); /* adapte le chemin */
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
+    /* Optionnel : pour ajouter un effet flouté ou une couleur superposée */
+
+    .content-wrapper {
+    background: transparent;
+    padding: 20px;
+    }   
+</style>
+
 </head>
 
 <body>

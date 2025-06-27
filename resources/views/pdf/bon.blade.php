@@ -403,7 +403,7 @@
             </div>
 
             <!-- Section matériel -->
-         @if($eq$equipements)
+        @isset($equipements)
             <div class="material-section">
                 <h3>Matériel concerné</h3>
                 <table class="material-table">
@@ -423,7 +423,7 @@
                     </tbody>
                 </table>
             </div>
-          @endif
+          @endisset
 
             <!-- Motif -->
             <div class="info-section">

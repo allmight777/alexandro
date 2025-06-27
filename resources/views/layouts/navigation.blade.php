@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="#">
-            <i class="fas fa-tools me-2 text-primary"></i>
-            <span>TOOLZY</span>
+            <img src="{{ asset('images/JASPETools.png') }}" alt="Logo" height="40" class="me-2"> <!-- Ton logo ici -->
+            <span>JASPETools</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>

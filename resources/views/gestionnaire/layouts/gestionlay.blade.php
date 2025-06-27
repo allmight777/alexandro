@@ -6,7 +6,7 @@
     <base href="/public">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Toolzy - Gestionnaire</title>
+    <title>JASPETools - Gestionnaire</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
@@ -19,7 +19,31 @@
     <!-- endinject -->
     <link rel="shortcut icon" href="images/favicon.png" />
 
+    <!-- Logo personnalisé -->
+    <div class="bg-white p-2 d-flex align-items-center shadow-sm" style="height: 60px;">
+        <img src="{{ asset('images/JASPETools.png') }}" alt="Logo JASPETools" height="40" class="me-2">
+        <span class="fs-4 fw-bold text-dark">JASPETools</span>
+    </div>
+
     @include('gestionnaire.partials.style')
+
+    <style>
+    body {
+        background-image: url("images/tools.jpg"); /* adapte le chemin */
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+    }
+
+    /* Optionnel : pour ajouter un effet flouté ou une couleur superposée */
+
+    .content-wrapper {
+    background: transparent;
+    padding: 20px;
+    }   
+</style>
+
 </head>
 
 <body>

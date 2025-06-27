@@ -1,4 +1,5 @@
 @extends('gestionnaire.tools.layouts.gestionlay')
+
 @section('content')
     <div class="container mt-5">
         <div class="card shadow-lg">
@@ -6,6 +7,12 @@
                 <h4 class="mb-0">Matériels non retournés</h4>
             </div>
             <div class="card-body">
+                  @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                    </div>
+                @endif
                 @if ($equipement_lost->isEmpty())
                     <p class="text-center text-muted">Aucun matériel en retard n'a été trouvé.</p>
                 @else
@@ -26,13 +33,10 @@
                                         <td>{{ $affectation->user->nom ?? '-' }} {{ $affectation->user->prenom ?? '' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($affectation->date_retour)->format('d/m/Y') }}</td>
                                         <td>
-                                            <form action="{{ route('gestionnaire.equipements.retourner', $affectation->id) }}"
-                                                method="POST">
+                                            <form action="{{ route('gestionnaire.equipements.retourner', $affectation->id) }}" method="POST" style="display: inline;">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="btn btn-success btn-sm">
-                                                    <i class="mdi mdi-undo"></i> Retourner
-                                                </button>
+                                                <button type="submit" class="btn btn-sm btn-success">Retourner</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -46,3 +50,18 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    @if(session('pdf'))
+        <script>
+            window.onload = function () {
+                const link = document.createElement('a');
+                link.href = "{{ session('pdf') }}";
+                link.download = "";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        </script>
+    @endif
+@endpush
+

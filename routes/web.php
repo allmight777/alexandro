@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\BonController;
 
 
-use App\Models\Equipement;
+// use App\Models\Equipement;
 
 use App\Http\Middleware\GestionnaireMiddleware;
 use App\Http\Controllers\EquipementController;
@@ -31,9 +31,16 @@ Route::get('/dashboard', function () {
 // Route::middleware(['auth', 'checkRole:gestionnaire'])->group(function () {
 Route::middleware(['auth', GestionnaireMiddleware::class])->group(function () {
     
-    Route::view('/dashboard/admin', 'admin.homedash')->name('dashboard.admin');
-    Route::view('/dashboard/gestionnaire', 'gestionnaire.homedash')->name('dashboard.gestionnaire');
+    // -----------------------------------------------dashdoard------------------------------------
 
+    Route::view('/dashboard/admin', 'admin.homedash')
+        ->name('dashboard.admin');
+
+    Route::get('/dashboard/gestionnaire', [GestionnaireController::class, 'dashboard'])->name('dashboard.gestionnaire');
+    
+
+
+// ----------------------------------------------Equipements-------------------------------------------
     
     Route::get('/tools/add', [EquipementController::class, 'create'])
         ->name('gestionnaire.tools.add')
@@ -57,23 +64,20 @@ Route::middleware(['auth', GestionnaireMiddleware::class])->group(function () {
     Route::put('/tools/update/{id}', [EquipementController::class, 'update'])
         ->name('gestionnaire.tools.update')
         ->middleware([GestionnaireMiddleware::class]);
-   
+
+   Route::delete('/tools/delete/{id}', [EquipementController::class, 'destroy'])
+        ->name('gestionnaire.tools.destroy')
+        ->middleware([GestionnaireMiddleware::class]);
 // ----------------------------------panne-----------------------------------------------------
 
-Route::get('/gestionnaire/pannes', [GestionnaireController::class, 'voirPannes'])
-    ->name('gestionnaire.pannes.index')
-    ->middleware([GestionnaireMiddleware::class]);
+    Route::get('/gestionnaire/pannes', [GestionnaireController::class, 'voirPannes'])
+        ->name('gestionnaire.pannes.index')
+        ->middleware([GestionnaireMiddleware::class]);
 
-// Route::middleware(['auth', 'gestionnaire'])->prefix('gestionnaire')->name('gestionnaire.')->group(function () {
-//     Route::get('/equipements-perdus', [GestionnaireController::class, 'equipementsPerdus'])
-//         ->name('equipements.perdus')
-//         ->middleware([GestionnaireMiddleware::class]);
-    
-//     Route::patch('/equipements-retourner/{id}', [GestionnaireController::class, 'retournerEquipement'])
-//         ->name('equipements.retourner')
-//         ->middleware([GestionnaireMiddleware::class]);
+    Route::put('/gestionnaire/pannes/{panne}/resolu', [GestionnaireController::class, 'PutPanne'])
+        ->name('gestionnaire.pannes.resolu')
+        ->middleware([GestionnaireMiddleware::class]);
 
-// });
 
 
 
@@ -81,8 +85,9 @@ Route::middleware(['auth', App\Http\Middleware\GestionnaireMiddleware::class])
     ->prefix('gestionnaire')
     ->name('gestionnaire.')
     ->group(function () {
-        Route::get('/equipements-perdus', [GestionnaireController::class, 'equipementsPerdus'])->name('equipements.perdus');
-        Route::patch('/equipements-retourner/{id}', [GestionnaireController::class, 'retournerEquipement'])->name('equipements.retourner');
+        Route::get('/equipements-perdus', [GestionnaireController::class, 'equipementsPerdus'])->name('equipements.perdus');        
+        Route::patch('/equipements-retourner/{affectation}', [GestionnaireController::class, 'BackTool'])->name('equipements.retourner');
+
     });
 
 // -----------------------------------------------------------------------------------------------------------------------------
@@ -109,9 +114,41 @@ Route::prefix(prefix: 'gestionnaire')->middleware(['auth', GestionnaireMiddlewar
         ->middleware([GestionnaireMiddleware::class]);
      
     Route::post('/gestionnaire/demandes/{demande}/assigner', [GestionnaireController::class, 'assignerDemande'])
-         ->name('gestionnaire.demandes.affecter');
+        ->name('gestionnaire.demandes.affecter')
+        ->middleware([GestionnaireMiddleware::class]);
+
+
+    // Route::get('/demandes', [GestionnaireController::class, 'ShowAllAsk'])
+    //     ->name('gestionnaire.demandes.liste')
+    //     ->middleware([GestionnaireMiddleware::class]);
+
+    // Route::patch('/demandes/{demande}/accepter', [GestionnaireController::class, 'CheckAsk'])
+    // ->name('gestionnaire.demandes.accepter')
+    // ->middleware([GestionnaireMiddleware::class]);
+
+    // Route::patch('/demandes/{demande}/rejeter', [GestionnaireController::class, 'CancelAsk'])
+    //     ->name('gestionnaire.demandes.rejeter')
+    //     ->middleware([GestionnaireMiddleware::class]);
+        // Refuser une demande
+    Route::put('/demandes/{demande}/refuser', [GestionnaireController::class, 'CancelAsk'])
+        ->name('gestionnaire.demandes.refuser')
+        ->middleware([GestionnaireMiddleware::class]);
+
+        // Valider une demande
+    Route::put('/demandes/{demande}/valider', [GestionnaireController::class, 'CheckAsk'])
+        ->name('gestionnaire.demandes.valider')
+        ->middleware([GestionnaireMiddleware::class]);
+
+        // Mettre en attente
+    Route::put('/demandes/{demande}/attente', [GestionnaireController::class, 'LoadingAsk'])
+        ->name('gestionnaire.demandes.attente')
+        ->middleware([GestionnaireMiddleware::class]);
+    
+
 });
 
+
+// -------------------------------------------------------Collabo-------------------------------------------------------------
 
 Route::prefix('gestionnaire')->middleware(['auth', App\Http\Middleware\GestionnaireMiddleware::class])->group(function () {
     Route::get('/collaborateurs/create', [App\Http\Controllers\GestionnaireController::class, 'createCollaborateur'])->name('gestionnaire.collaborateurs.create');
@@ -124,11 +161,6 @@ Route::prefix('gestionnaire')->middleware(['auth', App\Http\Middleware\Gestionna
 
         // ----------------------------------------------------------Bon-------------------------------------------
 
-Route::prefix('gestionnaire/bons')->middleware(['auth', 'gestionnaire'])->group(function() {
-    Route::get('/', [BonController::class, 'index'])->name('gestionnaire.bons.index');
-    Route::get('/externe', [BonController::class, 'showExternalCollaboratorForm'])->name('gestionnaire.bons.bon_external');
-    Route::post('/externe', [BonController::class, 'handleExternalBon'])->name('gestionnaire.bons.handle');
-});
 
 
 });
@@ -150,6 +182,10 @@ Route::middleware(['auth', GestionnaireMiddleware::class])->prefix('gestionnaire
     Route::post('/affectations', [AffectationController::class, 'store'])
         ->name('gestionnaire.affectations.store')
         ->middleware([GestionnaireMiddleware::class]);
+    Route::post('/gestionnaire/affecter', [GestionnaireController::class, 'handleAffectation'])
+        ->name('gestionnaire.affectation')
+        ->middleware([GestionnaireMiddleware::class]);
+
 
 });
 
@@ -173,8 +209,9 @@ Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class
         ->name('gestionnaire.rapports.download')
         ->middleware([GestionnaireMiddleware::class]);
 
-    Route::delete('/rapports/{rapport}', [RapportController::class, 'destroy'])->name('rapports.destroy');
+    Route::delete('/rapports/{rapport}', [RapportController::class, 'destroy'])->name('gestionnaire.rapports.destroy');
     
+    Route::get('/gestionnaire/rapports/{id}', [RapportController::class, 'show'])->name('gestionnaire.rapports.show');
 
 
 });
@@ -182,16 +219,57 @@ Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class
 // ----------------------------------------------bons------------------------------------------------
 // ----------------------------------------------    ------------------------------------------------
 
-Route::get('/gestionnaire/bons', [BonController::class, 'index'])->name('gestionnaire.bons.bon_external');
-Route::get('/gestionnaire/bons/external-collaborator', [BonController::class, 'showExternalCollaboratorForm'])->name('gestionnaire.bons.bon_external_collaborator');
-Route::post('/gestionnaire/bons/handle-external', [BonController::class, 'handleExternalBon'])->name('gestionnaire.bons.handle_external');
+// Route::middleware(['auth'])->group(function () {
 
-Route::middleware(['web', 'auth', GestionnaireMiddleware::class])->group(function () {
+//     // Route::get('/gestionnaire/bons', [BonController::class, 'index'])
+//     //     ->name('gestionnaire.bons.bon_external');
+        
+//     Route::get('/gestionnaire/bons/external-collaborator', [BonController::class, 'showExternalCollaboratorForm'])
+//         ->name('gestionnaire.bons.bon_external_collaborator');
+
+//     Route::post('/gestionnaire/bons/handle-external', [BonController::class, 'handleExternalBon'])
+//         ->name('gestionnaire.bons.handle_external');
+
+
+
+        
+//     Route::get('/', [BonController::class, 'index'])->name('gestionnaire.bons.index');
+//     Route::get('/externe', [BonController::class, 'showExternalCollaboratorForm'])->name('gestionnaire.bons.bon_external');
+//     Route::post('/externe', [BonController::class, 'handleExternalBon'])->name('gestionnaire.bons.handle');
+
+// // Route::middleware(['web', 'auth', GestionnaireMiddleware::class])->group(function () {
+//     Route::delete('/gestionnaire/bons/{id}', [BonController::class, 'destroy'])
+//         ->middleware(GestionnaireMiddleware::class)
+//         ->name('gestionnaire.bons.destroy');
+
+
+// });
+
+Route::middleware(['auth'])->group(function () {
+
+    // Affiche le formulaire pour un collaborateur externe
+    Route::get('/gestionnaire/bons/external-collaborator', [BonController::class, 'showExternalCollaboratorForm'])
+        ->name('gestionnaire.bons.bon_external_collaborator');
+
+    // Traitement du formulaire
+    Route::post('/gestionnaire/bons/handle-external', [BonController::class, 'handleExternalBon'])
+        ->name('gestionnaire.bons.handle_external');
+
+    Route::get('/gestionnaire/bons/externe', [BonController::class, 'showExternalCollaboratorForm'])
+        ->name('gestionnaire.bons.bon_external');
+
+    // Liste des bons
+    Route::get('/gestionnaire/bons', [BonController::class, 'index'])->name('gestionnaire.bons.index');
+
+    // Suppression d'un bon par id
     Route::delete('/gestionnaire/bons/{id}', [BonController::class, 'destroy'])
         ->middleware(GestionnaireMiddleware::class)
         ->name('gestionnaire.bons.destroy');
 
 });
+
+
+
 
 
 
@@ -212,7 +290,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::view('/dashboard/admin', 'admin.homedash')->middleware([IsAdmin::class]);
-    Route::view('/dashboard/gestionnaire', 'gestionnaire.homedash')->name('dashboard.gestionnaire');
+    // Route::view('/dashboard/gestionnaire', 'gestionnaire.homedash')->name('dashboard.gestionnaire');
     Route::get('/dashboard/employe', [EmployeController::class, "index"])->name('dashboard.employee');
 });
 

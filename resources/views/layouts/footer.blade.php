@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-lg-4 mb-4 mb-lg-0">
                 <h5 class="mb-4 text-white">
-                    <i class="fas fa-tools me-2"></i>TOOLZY
+                    <i class="fas fa-tools me-2"></i>JASPETools
                 </h5>
                 <p class="mb-4">
                     Solution de gestion de matériel pour Jaspe Technologie<br>
@@ -48,7 +48,7 @@
         <hr class="my-5 bg-light">
 
         <div class="text-center text-white-50">
-            <p class="mb-0">&copy; 2024 Toolzy - Jaspe Technologie. Tous droits réservés.</p>
+            <p class="mb-0">&copy; 2024 JASPETools - Jaspe Technologie. Tous droits réservés.</p>
         </div>
     </div>
 </footer>

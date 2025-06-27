@@ -1,9 +1,9 @@
 <style>
     :root {
-        --toolzy-primary: #4776E6;
-        --toolzy-secondary: #8E54E9;
+        --toolzy-primary:rgb(1, 120, 150);
+        --toolzy-secondary:rgb(1, 120, 150);
         --toolzy-success: #38ef7d;
-        --toolzy-warning: #FFC837;
+        --toolzy-warning:rgb(51, 179, 26);
         --toolzy-danger: #f5515f;
         --toolzy-light: #f8f9fa;
         --toolzy-dark: #343a40;
@@ -65,10 +65,16 @@
         margin-right: 8px;
     }
 
+
+
+
     .sidebar {
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+        background-color: rgba(255, 255, 255, 0.85); /* Fond clair et un peu transparent */
+        padding: 15px;
+        border-radius: 10px;
     }
 
+   
     .sidebar .nav .nav-item.active>.nav-link {
         background: linear-gradient(to right, var(--toolzy-primary), var(--toolzy-secondary));
         border-radius: 6px;

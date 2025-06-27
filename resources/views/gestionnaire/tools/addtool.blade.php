@@ -2,14 +2,15 @@
 @section('content')
     <div class="row">
         <div class="col-12 grid-margin">
-            @session('success')
+
+            @if (session('success'))
                 <div class="alert alert-green">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
-                    {{ $value }}
+                    {{ session('success') }}
                 </div>
-            @endsession
+            @endif
 
-            <!-- Formulaire d'ajout d'équipement -->
+            <!-- Formulaire d'ajout ou de modification d'équipement -->
             <div class="card form-card">
                 <div class="form-header">
                     <div class="d-flex align-items-center">
@@ -17,21 +18,31 @@
                             <i class="mdi mdi-laptop"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0">Ajouter un nouvel équipement</h4>
-                            <p class="mb-0">Remplissez les détails de l'équipement à ajouter à l'inventaire</p>
+                            <h4 class="mb-0">
+                                {{ isset($equipement) ? 'Modifier un équipement' : 'Ajouter un nouvel équipement' }}
+                            </h4>
+                            <p class="mb-0">
+                                {{ isset($equipement) ? 'Modifiez les détails de l’équipement' : 'Remplissez les détails de l’équipement à ajouter à l’inventaire' }}
+                            </p>
                         </div>
                     </div>
                 </div>
                 <div class="form-body">
-                    <form method="POST" action="{{ route('addTool') }}" method="POST" enctype="multipart/form-data">
-                        @method('POST')
+                    <form method="POST"
+                        action="{{ isset($equipement) ? route('gestionnaire.tools.update', $equipement->id) : route('storeTool') }}"
+                        enctype="multipart/form-data">
                         @csrf
+                        @if (isset($equipement))
+                            @method('PUT')
+                        @endif
+
                         <div class="row mb-4">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="equipmentName" class="form-label required-label">Nom de l'équipement</label>
-                                    <input type="text" class="form-control" id="equipmentName"
-                                        placeholder="Entrez le nom de l'équipement" required name="nom">
+                                    <input type="text" class="form-control" id="equipmentName" required name="nom"
+                                        value="{{ old('nom') ?? $equipement->nom ?? '' }}"
+                                        placeholder="Entrez le nom de l'équipement">
                                     @error('nom')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -41,11 +52,11 @@
                                 <div class="mb-3">
                                     <label for="equipmentState" class="form-label required-label">État</label>
                                     <select class="form-select" id="equipmentState" required name="etat">
-                                        <option value="" selected disabled>Sélectionnez un état</option>
-                                        <option value="disponible">Disponible</option>
-                                        <option value="usagé">Usagé</option>
-                                        <option value="en panne">En panne</option>
-                                        <option value="réparé">Réparé</option>
+                                        <option value="" disabled {{ !isset($equipement) ? 'selected' : '' }}>Sélectionnez un état</option>
+                                        <option value="disponible" {{ (old('etat') ?? $equipement->etat ?? '') == 'disponible' ? 'selected' : '' }}>Disponible</option>
+                                        <option value="usagé" {{ (old('etat') ?? $equipement->etat ?? '') == 'usagé' ? 'selected' : '' }}>Usagé</option>
+                                        <option value="en panne" {{ (old('etat') ?? $equipement->etat ?? '') == 'en panne' ? 'selected' : '' }}>En panne</option>
+                                        <option value="réparé" {{ (old('etat') ?? $equipement->etat ?? '') == 'réparé' ? 'selected' : '' }}>Réparé</option>
                                     </select>
                                     @error('etat')
                                         <span class="text-danger">{{ $message }}</span>
@@ -58,8 +69,9 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="equipmentBrand" class="form-label">Marque</label>
-                                    <input type="text" class="form-control" id="equipmentBrand"
-                                        placeholder="Entrez la marque" name="marque">
+                                    <input type="text" class="form-control" id="equipmentBrand" name="marque"
+                                        value="{{ old('marque') ?? $equipement->marque ?? '' }}"
+                                        placeholder="Entrez la marque">
                                     @error('marque')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -69,9 +81,12 @@
                                 <div class="mb-3">
                                     <label for="equipmentCategory" class="form-label required-label">Catégorie</label>
                                     <select class="form-select" id="equipmentCategory" required name="categorie">
-                                        <option value="" selected disabled>Sélectionnez une catégorie</option>
+                                        <option value="" disabled {{ !isset($equipement) ? 'selected' : '' }}>Sélectionnez une catégorie</option>
                                         @foreach ($categories as $cat)
-                                            <option value="{{ $cat->nom }}">{{ $cat->nom }}</option>
+                                            <option value="{{ $cat->nom }}"
+                                                {{ (old('categorie') ?? $equipement->categorie->nom ?? '') == $cat->nom ? 'selected' : '' }}>
+                                                {{ $cat->nom }}
+                                            </option>
                                         @endforeach
                                     </select>
                                     @error('categorie')
@@ -85,8 +100,8 @@
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label for="equipmentDescription" class="form-label">Description</label>
-                                    <textarea class="form-control" id="equipmentDescription" rows="3"
-                                        placeholder="Entrez une description de l'équipement" name="description"></textarea>
+                                    <textarea class="form-control" id="equipmentDescription" rows="3" name="description"
+                                        placeholder="Entrez une description de l'équipement">{{ old('description') ?? $equipement->description ?? '' }}</textarea>
                                     @error('description')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -98,7 +113,8 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="acquisitionDate" class="form-label">Date d'acquisition</label>
-                                    <input type="date" class="form-control" id="acquisitionDate" name="date_acquisition">
+                                    <input type="date" class="form-control" id="acquisitionDate" name="date_acquisition"
+                                        value="{{ old('date_acquisition') ?? $equipement->date_acquisition ?? '' }}">
                                     @error('date_acquisition')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -114,6 +130,18 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="equipmentQuantity" class="form-label required-label">Quantité disponible</label>
+                                    <input type="number" class="form-control" id="equipmentQuantity"
+                                        name="quantite-" min="1" required placeholder="Ex : 10"
+                                        value="{{ old('quantite') ?? $equipement->quantite_disponible ?? '' }}">
+                                    @error('quantite')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-footer">
@@ -122,18 +150,15 @@
                                     <i class="mdi mdi-refresh me-1"></i> Réinitialiser
                                 </button>
                                 <button type="submit" class="btn btn-submit">
-                                    <i class="mdi mdi-plus-circle me-1"></i> Ajouter l'équipement
+                                    <i class="mdi mdi-check-circle me-1"></i>
+                                    {{ isset($equipement) ? 'Mettre à jour' : 'Ajouter l\'équipement' }}
                                 </button>
                             </div>
                         </div>
-
-                    
-
-
                     </form>
                 </div>
             </div>
-            <!-- Fin du formulaire d'ajout d'équipement -->
+            <!-- Fin du formulaire -->
         </div>
     </div>
 @endsection

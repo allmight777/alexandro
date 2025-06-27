@@ -9,15 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    // public function up(): void
+    // {
+    //     Schema::table('pannes', function (Blueprint $table) {
+    //         //
+    //          $table->unsignedBigInteger('equipement_id')->after('id'); // ou à la fin si tu préfères
+    //          $table->foreign('equipement_id')->references('id')->on('equipements')->onDelete('cascade');
+    //     });
+    // }
+
+    public function up()
     {
         Schema::table('pannes', function (Blueprint $table) {
-            //
-             $table->unsignedBigInteger('equipement_id')->after('id'); // ou à la fin si tu préfères
-             $table->foreign('equipement_id')->references('id')->on('equipements')->onDelete('cascade');
+            if (!Schema::hasColumn('pannes', 'equipement_id')) {
+                $table->unsignedBigInteger('equipement_id')->after('id');
+            }
         });
     }
-
     /**
      * Reverse the migrations.
      */

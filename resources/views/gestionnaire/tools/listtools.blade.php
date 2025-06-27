@@ -1,4 +1,4 @@
-@extends('admin.layouts.adminlay')
+@extends('gestionnaire.tools.layouts.gestionlay')
 @section('content')
     <div class="page-header">
         <h3 class="page-title">
@@ -17,6 +17,14 @@
 
     <div class="row">
         <div class="col-12">
+
+            {{-- Affichage du message de succès --}}
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Liste des équipements</h4>
@@ -49,12 +57,17 @@
                                             <span class="status-badge status-available">{{ $equip->etat }}</span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('putToolpage', $equip->id) }}">
+                                            <a href="{{ route('tools.put', $equip->id) }}">
                                                 <i class="mdi mdi-pencil edit-icon action-icon" title="Modifier"></i>
                                             </a>
-                                            <a href="{{ route('DeleteTool', $equip->id) }}">
-                                                <i class="mdi mdi-delete delete-icon action-icon" title="Supprimer"></i>
-                                            </a>
+
+                                            <form action="{{ route('gestionnaire.tools.destroy', $equip->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Confirmer la suppression de cet équipement ?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" style="border:none; background:none; padding:0;">
+                                                    <i class="mdi mdi-delete delete-icon action-icon" title="Supprimer"></i>
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @empty
@@ -83,6 +96,7 @@
         </div>
     </div>
 @endsection
+
 @push('popups')
     <div class="image-popup" id="imagePopup">
         <div class="image-popup-content">

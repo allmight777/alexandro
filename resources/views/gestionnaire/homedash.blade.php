@@ -1,5 +1,24 @@
 @extends('gestionnaire.layouts.gestionlay')
 @section('content')
+    <!-- <style>
+        body {
+            background-image: url('{{ asset('images/fond_dashboard.jpg') }}');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        .card {
+            background-color: rgba(216, 61, 61, 0.92); /* effet flou blanc */
+            border-radius: 12px;
+        }
+
+        .page-header h3, .page-header .breadcrumb {
+            color: #fff;
+            text-shadow: 1px 1px 3px #00000099;
+        }
+    </style> -->
     <div class="page-header">
         <h3 class="page-title">
             <span class="page-title-icon bg-gradient-toolzy-primary text-white mr-2">
@@ -24,7 +43,7 @@
                     <h4 class="font-weight-normal mb-3">Total Équipements
                         <i class="mdi mdi-laptop mdi-24px float-right"></i>
                     </h4>
-                    <h2 class="mb-5">245</h2>
+                    <h2 class="mb-5">{{ $totalEquipements }}</h2>
                     <h6 class="card-text">Augmentation de 15% ce mois</h6>
                 </div>
             </div>
@@ -36,7 +55,7 @@
                     <h4 class="font-weight-normal mb-3">Équipements affectés
                         <i class="mdi mdi-account-check mdi-24px float-right"></i>
                     </h4>
-                    <h2 class="mb-5">184</h2>
+                    <h2 class="mb-5">{{ $equipementsAffectes }}</h2>
                     <h6 class="card-text">75% du total des équipements</h6>
                 </div>
             </div>
@@ -48,13 +67,13 @@
                     <h4 class="font-weight-normal mb-3">Utilisateurs actifs
                         <i class="mdi mdi-account-multiple mdi-24px float-right"></i>
                     </h4>
-                    <h2 class="mb-5">156</h2>
+                    <h2 class="mb-5">33</h2>
                     <h6 class="card-text">Augmentation de 8% ce mois</h6>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-7 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
@@ -78,5 +97,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 @endsection

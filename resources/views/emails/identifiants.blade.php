@@ -70,13 +70,13 @@
 <body>
     <div class="email-container">
         <div class="email-header">
-            <i class="fas fa-tools"></i> <strong>TOOLZY</strong>
+            <i class="fas fa-tools"></i> <strong>JASPETools</strong>
         </div>
 
         <div class="email-body">
             <h2>Bienvenue {{ $user->prenom }} {{ $user->nom }},</h2>
 
-            <p>Un compte a été créé pour vous sur la plateforme <strong>TOOLZY</strong>.</p>
+            <p>Un compte a été créé pour vous sur la plateforme <strong>JASPETools</strong>.</p>
 
             <p>Voici vos identifiants de connexion :</p>
 
@@ -89,11 +89,11 @@
 
             <p>Merci de vous connecter dès que possible.</p>
 
-            <p>Cordialement,<br>L'équipe TOOLZY</p>
+            <p>Cordialement,<br>L'équipe JASPETools</p>
         </div>
 
         <div class="footer">
-            &copy; {{ date('Y') }} TOOLZY. Tous droits réservés.
+            &copy; {{ date('Y') }} JASPETools. Tous droits réservés.
         </div>
     </div>
 </body>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Categorie;
+use App\Models\Equipement;
+
 
 class CategorieController extends Controller
 {
@@ -56,5 +58,9 @@ class CategorieController extends Controller
 
         return redirect()->route('gestionnaire.categories.list')
                          ->with('success', 'Catégorie supprimée.');
+        }
+    public function equipements()
+    {
+        return $this->hasMany(Equipement::class);
     }
 }
