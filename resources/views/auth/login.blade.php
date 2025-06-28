@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toolzy | Connexion - Jaspe Technologie</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+@extends('layouts.app')
+@section('style')
     <style>
         :root {
             --primary: #2563eb;
@@ -162,51 +153,15 @@
             transform: translateY(-3px);
         }
     </style>
-</head>
-
-<body>
-    <!-- Barre de navigation identique à la page d'accueil -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <i class="fas fa-tools me-2 text-primary"></i>
-                <span>TOOLZY</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-lg-center">
-                    <li class="nav-item mx-2">
-                        <a class="nav-link" href="#">Accueil</a>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link" href="#features">Fonctionnalités</a>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link" href="#benefits">Avantages</a>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link" href="#contact">Contact</a>
-                    </li>
-                    <li class="nav-item nav-btn">
-                        <a href="{{ route('login') }}" class="btn btn-primary px-4">
-                            <i class="fas fa-sign-in-alt me-2"></i>Connexion
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Section de connexion -->
+@endsection
+@section('content')
     <div class="container login-container">
         <div class="row justify-content-center w-100">
             <div class="col-md-6 col-lg-5">
                 <div class="auth-form">
                     <div class="form-brand">
                         <i class="fas fa-tools fa-3x me-2 text-primary"></i>
-                        <h2 style="font-weight: 700; color: var(--dark); margin-top: 15px;">TOOLZY</h2>
+                        <h2 style="font-weight: 700; color: var(--dark); margin-top: 15px;">JASPETools</h2>
                     </div>
 
                     <h3 class="form-title">Bienvenue !</h3>
@@ -223,17 +178,24 @@
 
 
                         <div class="form-group">
+                            <span class="fw-bold"> Email</span>
                             <input type="email" class="form-control form-control-lg" id="emailInput" name="email"
                                 placeholder="Email ou nom d'utilisateur" required>
                         </div>
 
-                        <div class="form-group position-relative">
-                            <input type="password" class="form-control form-control-lg" id="passwordInput"
-                                name="password" placeholder="Mot de passe" required>
-                            <span class="position-absolute top-50 end-0 translate-middle-y me-3"
-                                style="cursor: pointer;" onclick="togglePassword()">
-                                <i class="fas fa-eye" id="eyeIcon"></i>
-                            </span>
+                        <div class="form-group mb-3">
+                            <label for="passwordInput" class="fw-bold mb-2">Mot de passe</label>
+
+                            <div class="position-relative">
+                                <input type="password" class="form-control form-control-lg pe-5" id="passwordInput"
+                                    name="password" placeholder="Mot de passe" required>
+
+                                <!-- Icône intégrée dans le input -->
+                                <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                    style="cursor: pointer;" onclick="togglePassword()">
+                                    <i class="fas fa-eye text-secondary" id="eyeIcon"></i>
+                                </span>
+                            </div>
                         </div>
 
 
@@ -246,10 +208,6 @@
                             <div>
                                 <a href="{{ route('password.request') }}" class="text-primary">Mot de passe oublié ?</a>
                             </div>
-                            <div>
-                                <span>Pas encore de compte ? </span>
-                                <a href="{{ route('register') }}" class="text-primary">Créer un compte</a>
-                            </div>
                         </div>
                     </form>
 
@@ -257,82 +215,22 @@
             </div>
         </div>
     </div>
-
-    <!-- Pied de page -->
-    <footer id="contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h5 class="mb-4">
-                        <i class="fas fa-tools me-2"></i>TOOLZY
-                    </h5>
-                    <p class="mb-4">
-                        Solution de gestion de matériel pour Jaspe Technologie<br>
-                        Optimisation • Traçabilité • Productivité
-                    </p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h5>Navigation</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#">Accueil</a></li>
-                        <li class="mb-2"><a href="#features">Fonctionnalités</a></li>
-                        <li class="mb-2"><a href="#benefits">Avantages</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-4">
-                    <h5>Contact</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-3">
-                            <i class="fas fa-map-marker-alt me-2"></i>
-                            Calavi, Bidossesi
-                        </li>
-                        <li class="mb-3">
-                            <i class="fas fa-phone me-2"></i>
-                            +229 47332880
-                        </li>
-                        <li>
-                            <i class="fas fa-envelope me-2"></i>
-                            support@toolzy.bj
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-divider"></div>
-
-            <div class="text-center">
-                <p class="mb-0">&copy; 2024 Toolzy - Jaspe Technologie. Tous droits réservés.</p>
-            </div>
-        </div>
-    </footer>
-
+@endsection
+@push('scripts')
     <script>
         function togglePassword() {
-            const passwordInput = document.getElementById('passwordInput');
-            const eyeIcon = document.getElementById('eyeIcon');
+            const passwordInput = document.getElementById("passwordInput");
+            const eyeIcon = document.getElementById("eyeIcon");
 
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.classList.remove('fa-eye');
-                eyeIcon.classList.add('fa-eye-slash');
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
             } else {
-                passwordInput.type = 'password';
-                eyeIcon.classList.remove('fa-eye-slash');
-                eyeIcon.classList.add('fa-eye');
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
             }
         }
     </script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+@endpush

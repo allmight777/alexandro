@@ -62,6 +62,7 @@
         font-weight: 600;
       }
     </style>
+    @stack('styles')
   </head>
   <body>
     <div class="container-scroller">

@@ -114,39 +114,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="password" class="form-label required-label">Mot de passe </label>
-                                    <div class="password-input-group">
-                                        <input type="password" class="form-control" id="password"
-                                            placeholder="Créer un mot de passe temporaire" name="password">
-                                        <button type="button" class="password-toggle" id="togglePassword">
-                                            <i class="mdi mdi-eye"></i>
-                                        </button>
-                                    </div>
-                                    @if ($errors->has('password') && !str_contains($errors->first('password'), 'confirmation'))
-                                        <span class="text-danger">{{ $errors->first('password') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="confirmPassword" class="form-label required-label">Confirmer le mot de
-                                        passe</label>
-                                    <div class="password-input-group">
-                                        <input type="password" class="form-control" id="confirmPassword"
-                                            placeholder="Confirmer le mot de passe" required name="password_confirmation">
-                                        <button type="button" class="password-toggle" id="toggleConfirmPassword">
-                                            <i class="mdi mdi-eye"></i>
-                                        </button>
-                                    </div>
-                                    @if ($errors->has('password') && str_contains($errors->first('password'), 'confirmation'))
-                                        <span class="text-danger">{{ $errors->first('password') }}</span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="form-footer">
                             <div class="d-flex justify-content-end">
                                 <button type="reset" class="btn btn-reset me-3">

@@ -68,13 +68,17 @@
                         </table>
                     </div>
                     @if ($equipements->count())
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <div class="text-muted">
-                                Affichage de {{ $equipements->firstItem() }} à
-                                {{ $equipements->lastItem() }} sur {{ $equipements->total() }} équipements
+                        <div class="row mt-4">
+                            <div class="col-12 col-md-6 text-center text-md-start mb-2 mb-md-0">
+                                <span class="text-muted">
+                                    Affichage de {{ $equipements->firstItem() }} à
+                                    {{ $equipements->lastItem() }} sur {{ $equipements->total() }} équipements
+                                </span>
                             </div>
-                            <div>
-                                {{ $equipements->links() }}
+                            <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end">
+                                <div class="pagination-wrapper">
+                                    {{ $equipements->links() }}
+                                </div>
                             </div>
                         </div>
                     @endif

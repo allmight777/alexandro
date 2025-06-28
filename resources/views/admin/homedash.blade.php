@@ -24,7 +24,7 @@
                     <h4 class="font-weight-normal mb-3">Total Équipements
                         <i class="mdi mdi-laptop mdi-24px float-right"></i>
                     </h4>
-                    <h2 class="mb-5">245</h2>
+                    <h2 class="mb-5">{{$nbr_equipement}}</h2>
                     <h6 class="card-text">Augmentation de 15% ce mois</h6>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                     <h4 class="font-weight-normal mb-3">Équipements affectés
                         <i class="mdi mdi-account-check mdi-24px float-right"></i>
                     </h4>
-                    <h2 class="mb-5">184</h2>
+                    <h2 class="mb-5">{{$nbr_affect}}</h2>
                     <h6 class="card-text">75% du total des équipements</h6>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                     <h4 class="font-weight-normal mb-3">Utilisateurs actifs
                         <i class="mdi mdi-account-multiple mdi-24px float-right"></i>
                     </h4>
-                    <h2 class="mb-5">156</h2>
+                    <h2 class="mb-5">{{$nbr_user}}</h2>
                     <h6 class="card-text">Augmentation de 8% ce mois</h6>
                 </div>
             </div>

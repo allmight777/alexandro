@@ -56,7 +56,6 @@
                             id="profileDropdown">
                             <span class="nav-profile-name">{{ $user->nom }} {{ $user->prenom }}</span>
                             <span class="online-status"></span>
-                            <img src="/images1/faces/face28.png" alt="profile" />
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                             aria-labelledby="profileDropdown">
@@ -100,14 +99,14 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('signaler-panne') ? 'active' : '' }}" href="{{ url('signaler-panne') }}">
+                <a class="nav-link {{ request()->routeIs('signaler.panne') ? 'active' : '' }}" href="{{ route('signaler.panne') }}">
                     <i class="mdi mdi-alert-circle menu-icon"></i>
                     <span class="menu-title">Signaler pannes</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('equipements-assignes') ? 'active' : '' }}"
-                    href="{{ url('equipements-assignes') }}">
+                <a class="nav-link {{ request()->routeIs('equipements.assignes') ? 'active' : '' }}"
+                    href="{{ route('equipements.assignes') }}">
                     <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                     <span class="menu-title">Équipements assignés</span>
                 </a>
