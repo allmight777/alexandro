@@ -71,7 +71,10 @@
                                 <select name="equipements[]" class="form-select" required>
                                     <option value="">-- Sélectionner un équipement --</option>
                                     {!! $optionsHtml !!}
-                                </select>
+                                </select>   
+                                 @error('equipements')
+                                     <span class="text-danger">{{$message}}</span>
+                                @enderror                             
                             </div>
                             <div class="col-md-3">
                                 <label>Date de retour</label>
@@ -80,6 +83,9 @@
                             <div class="col-md-3">
                                 <label>Quantité à affecter</label>
                                 <input type="number" name="quantites[]" class="form-control" min="1" required>
+                                  @error('quantites')
+                                     <span class="text-danger">{{$message}}</span>
+                                  @enderror
                             </div>
                             <div class="col-md-2 d-flex align-items-end">
                                 <button type="button" class="btn btn-danger btn-sm remove-btn">Supprimer</button>

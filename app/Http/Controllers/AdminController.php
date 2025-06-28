@@ -196,6 +196,15 @@ class AdminController extends Controller
 
   public function HandleAffectation(Request $request)
   {
+    $request->validate([
+       'equipements'=>'required',
+       'quantites'=>'required'
+    ],[
+      'equipements.required'=>'le champ equipement est requis',
+       'quantites.required'=>'le champ quantité est requis'
+    ]);
+
+
     set_time_limit(120);
     DB::beginTransaction();
     $user = Auth::user();
@@ -285,8 +294,6 @@ class AdminController extends Controller
     $equipement_lost = Affectation::with(['equipement', 'user'])
       ->where('date_retour', '<=', now()->startOfDay()) // pour ignorer l'heure
       ->get();
-
-    // Assurez-vous que le nom de colonne est correct ('date_retour' et non 'date_retourne')
     return view("admin.lost_tools", compact("equipement_lost"));
   }
   public function CollaboratorsPage()
