@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('marque');
             $table->longText('description');
             $table->date('date_acquisition');
+            $table->integer('quantite')->default(0);
+
             $table->string('image_path');
             $table->foreignId('categorie_id')->constrained()->onDelete('cascade');
             $table->timestamps();

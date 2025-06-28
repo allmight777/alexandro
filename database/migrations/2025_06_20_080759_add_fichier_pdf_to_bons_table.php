@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bons', function (Blueprint $table) {
-            //
-            $table->string("fichier_pdf");
+            if (!Schema::hasColumn('bons', 'fichier_pdf')) {
+                $table->string("fichier_pdf");
+            }
         });
     }
 

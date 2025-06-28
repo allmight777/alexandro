@@ -89,7 +89,7 @@ class AdminController extends Controller
     $equipement->marque = $request->marque;
     $equipement->description = $request->description;
     $equipement->date_acquisition = $request->date_acquisition;
-    $equipement->quantite = $request->quantite_disponible;
+    $equipement->quantite = $request->quantite;
     $equipement->categorie_id = Categorie::where('nom', $request->categorie)->value('id');
     // Gestion de l'image si elle est envoyée
     if ($request->hasFile('image_path')) {
@@ -125,7 +125,9 @@ class AdminController extends Controller
   }
   public function ShowToolpage()
   {
-    $equipements = Equipement::with('categorie')->paginate(2);
+    // $equipements = Equipement::with('categorie')->paginate(2);
+    $equipements = Equipement::with('categorie')->paginate(10);
+
     return view("admin.listtools", compact("equipements"));
   }
   public function putToolpage(Equipement $equipement)
@@ -140,7 +142,7 @@ class AdminController extends Controller
     $equipement->marque = $request->marque;
     $equipement->description = $request->description;
     $equipement->date_acquisition = $request->date_acquisition;
-    $equipement->quantite = $request->quantite_disponible;
+    $equipement->quantite = $request->quantite;
     if ($request->hasFile('image_path')) {
       $imagePath = $request->file('image_path')->store('pictures/equipments', 'public');
       $equipement->image_path = $imagePath;
@@ -172,26 +174,48 @@ class AdminController extends Controller
     $demande->save();
     return redirect()->back();
   }
+//   public function Showaffectation()
+//   {
+//     //formulaire avec select employée, select pour equipements,motif text area,date de retour
+//     //recuperer la liste des employées && equipements
+//     //pour l'insertion il faut les tables:affectations,bon,equipement(MAJ),
+//     $categories = Categorie::with(['equipements' => function ($query) {
+//       $query->where('etat', 'disponible')
+//         ->where(function ($q) {
+//           $q->whereHas('affectations', function ($q2) {
+//             $q2->whereNull('date_retour');
+//           })
+//             ->orWhereDoesntHave('affectations', function ($q3) {
+//               $q3->whereNull('date_retour');
+//             });
+//         });
+//     }])->get();
+
+
+//     $employes = User::where("role", "=", "employé")->get();
+//     return view("admin.affectation", [
+//         'equipements_groupes' => $categories,
+//         'employes' => $employes
+//     ]); 
+//  }
+
   public function Showaffectation()
   {
-    //formulaire avec select employée, select pour equipements,motif text area,date de retour
-    //recuperer la liste des employées && equipements
-    //pour l'insertion il faut les tables:affectations,bon,equipement(MAJ),
-    $equipements_groupes = Categorie::with(['equipement' => function ($query) {
-      $query->where('etat', 'disponible')
-        ->where(function ($q) {
-          $q->whereHas('affectations', function ($q2) {
-            $q2->whereNull('date_retour');
-          })
-            ->orWhereDoesntHave('affectations', function ($q3) {
-              $q3->whereNull('date_retour');
-            });
-        });
-    }])->get();
+      $equipements_groupes = Categorie::with(['equipements' => function ($query) {
+          $query->where('etat', 'disponible')
+              ->where(function ($q) {
+                  $q->whereHas('affectations', function ($q2) {
+                      $q2->whereNull('date_retour');
+                  })
+                  ->orWhereDoesntHave('affectations', function ($q3) {
+                      $q3->whereNull('date_retour');
+                  });
+              });
+      }])->get();
 
+      $employes = User::where("role", "=", "employé")->get();
 
-    $employes = User::where("role", "=", "employé")->get();
-    return view("admin.affectation", compact('equipements_groupes', 'employes'));
+      return view("admin.affectation", compact('equipements_groupes', 'employes'));
   }
 
   public function HandleAffectation(Request $request)

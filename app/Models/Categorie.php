@@ -3,11 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Categorie extends Model
 {
     //
-    public function equipement()
+    protected $fillable = ['nom'];
+    protected $table = 'categories'; // Spécifie le nom de la table
+
+    // Relation AU PLURIEL car une catégorie peut avoir PLUSIEURS équipements
+    public function equipements()
     {
         return $this->hasMany(Equipement::class);
     }

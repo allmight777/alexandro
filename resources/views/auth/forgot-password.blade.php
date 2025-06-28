@@ -162,7 +162,7 @@
                     <!-- Logo / Marque -->
                     <div class="form-brand">
                         <i class="fas fa-tools fa-3x me-2 text-primary"></i>
-                        <h2 style="font-weight: 700; color: var(--dark); margin-top: 15px;">TOOLZY</h2>
+                        <h2 style="font-weight: 700; color: var(--dark); margin-top: 15px;">JASPETools</h2>
                     </div>
 
                     <!-- Titre et message -->

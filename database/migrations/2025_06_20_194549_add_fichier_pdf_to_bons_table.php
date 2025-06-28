@@ -9,21 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+
+
+    public function up()
     {
-        Schema::table('pannes', function (Blueprint $table) {
-            //
-             $table->string('statut')->default('en_attente');
+    if (!Schema::hasColumn('bons', 'fichier_pdf')) {
+        Schema::table('bons', function (Blueprint $table) {
+            $table->string('fichier_pdf')->nullable()->after('statut');
         });
     }
-
+    }
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('pannes', function (Blueprint $table) {
-             $table->string('statut')->default('en_attente');
+        Schema::table('bons', function (Blueprint $table) {
+            $table->dropColumn('fichier_pdf');
         });
     }
 };
+

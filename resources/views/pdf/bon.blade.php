@@ -403,7 +403,11 @@
             </div>
 
             <!-- Section matériel -->
+<<<<<<< HEAD
          @isset($equipements)
+=======
+        @isset($equipements)
+>>>>>>> 5f3c30007b4a85399e7653e21993571e061ee83e
             <div class="material-section">
                 <h3>Matériel concerné</h3>
                 <table class="material-table">

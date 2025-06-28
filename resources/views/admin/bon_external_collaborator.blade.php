@@ -1,4 +1,4 @@
-@extends('admin.layouts.adminlay')
+@extends("admin.layouts.adminlay")
 @section('content')
 <div class="row">
     <div class="col-md-8 offset-md-2">
@@ -13,7 +13,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
                     </div>
                 @endif
-                <form action="{{route("HandleBon")}}" method="POST">
+                <form action="{{route("gestionnaire.bons.handle_external")}}" method="POST">
                     @csrf
 
                     <div class="mb-3">

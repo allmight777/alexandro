@@ -63,17 +63,40 @@ class EmployeController extends Controller
         return view ("employee.layouts.panne",compact("user","equipements_user"));
     }
 
-   public function HandlePanne(Request $request){
-     $user=Auth::user();  
-     $panne=new Panne();
-     $panne->equipement_id=$request->equipement_id;
-     $panne->user_id=$user->id;
-     $panne->description=$request->description;
-     $panne->save();
-     return redirect()->back()->with("success","Panne siagnlée avec succès");
+public function HandlePanne(Request $request)
+{
+    $user = Auth::user();  
+
+    // Enregistrer la panne
+    $panne = new Panne();
+    $panne->equipement_id = $request->equipement_id;
+    $panne->user_id = $user->id;
+    $panne->description = $request->description;
+    $panne->save();
+
+    // Mettre à jour l'état de l'équipement à 'panne'
+    $equipement = Equipement::find($request->equipement_id);
+    if ($equipement) {
+        $equipement->etat = 'en panne';
+        $equipement->save();
+    }
+
+    return redirect()->back()->with("success", "Panne signalée avec succès");
+}
 
 
-   }
+
+//    public function HandlePanne(Request $request){
+//      $user=Auth::user();  
+//      $panne=new Panne();
+//      $panne->equipement_id=$request->equipement_id;
+//      $panne->user_id=$user->id;
+//      $panne->description=$request->description;
+//      $panne->save();
+//      return redirect()->back()->with("success","Panne siagnlée avec succès");
+
+
+//    }
     public function equipementsAssignes()
     {
         $user = Auth::user();       
