@@ -353,6 +353,7 @@ class AdminController extends Controller
 
     return view("admin.collaborator_external");
   }
+
   public function HandleCollaborator(Request $request)
   {
     $request->validate([
@@ -362,17 +363,21 @@ class AdminController extends Controller
     ]);
 
     // Upload sur Cloudinary
-    $uploadedFileUrl = Cloudinary::upload($request->file('chemin_carte')->getRealPath())->getSecurePath();
+    $uploadedFileUrl = Cloudinary::upload(
+      $request->file('chemin_carte')->getRealPath(),
+      ['folder' => 'cartes_identite']
+    )->getSecurePath();
 
-    // Enregistrement dans la base de données
+    // Enregistrement en base
     $collaborator = new CollaborateurExterne();
     $collaborator->nom = $request->nom;
     $collaborator->prenom = $request->prenom;
-    $collaborator->carte_chemin = $uploadedFileUrl; // c'est un lien Cloudinary direct
+    $collaborator->carte_chemin = $uploadedFileUrl;
     $collaborator->save();
 
     return redirect()->back()->with('success', 'Collaborateur ajouté avec succès.');
   }
+
 
   public function ShowListCollaborator()
   {
