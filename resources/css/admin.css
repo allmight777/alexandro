@@ -1,0 +1,5 @@
+/* resources/css/admin.css */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import '../../public/vendors/iconfonts/mdi/css/materialdesignicons.min.css';
+@import '../../public/vendors/css/vendor.bundle.base.css';
+@import '../../public/css/style.css';
