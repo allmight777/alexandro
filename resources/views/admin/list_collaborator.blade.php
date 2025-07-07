@@ -28,10 +28,10 @@
                                         <td>{{ $collaborateur->prenom }}</td>
                                         <td>
                                             @if ($collaborateur->carte_chemin)
-                                                <img src="{{ $collaborateur->carte_chemin }}"
+                                                <img src="{{ asset('storage/' . $collaborateur->carte_chemin) }}"
                                                     alt="Carte" width="80" class="img-thumbnail" 
                                                     style="cursor: pointer;"
-                                                    onclick="showImagePopup('{{ $collaborateur->carte_chemin }}', 'Carte de {{ $collaborateur->prenom }} {{ $collaborateur->nom }}')">
+                                                    onclick="showImagePopup('{{ asset('storage/' . $collaborateur->carte_chemin) }}', 'Carte de {{ $collaborateur->prenom }} {{ $collaborateur->nom }}')">
                                             @else
                                                 <span class="text-muted">Non fournie</span>
                                             @endif

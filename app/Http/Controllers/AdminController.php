@@ -16,7 +16,6 @@ use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -353,7 +352,6 @@ class AdminController extends Controller
 
     return view("admin.collaborator_external");
   }
-
   public function HandleCollaborator(Request $request)
   {
     $request->validate([
@@ -361,23 +359,14 @@ class AdminController extends Controller
       'prenom' => 'required|string|max:255',
       'chemin_carte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
-
-    // Nouveau upload via storeOnCloudinary
-    $upload = $request->file('chemin_carte')->storeOnCloudinary('cartes_identite');
-    $uploadedFileUrl = $upload->getSecurePath();
-    $publicId = $upload->getPublicId(); // utile si tu veux supprimer après
-
-    // Sauvegarde
     $collaborator = new CollaborateurExterne();
     $collaborator->nom = $request->nom;
     $collaborator->prenom = $request->prenom;
-    $collaborator->carte_chemin = $uploadedFileUrl;
+    $cheminCarte = $request->file('chemin_carte')->store('cartes_identite', 'public');
+    $collaborator->carte_chemin = $cheminCarte;
     $collaborator->save();
-
     return redirect()->back()->with('success', 'Collaborateur ajouté avec succès.');
   }
-
-
   public function ShowListCollaborator()
   {
     $collaborateurs = CollaborateurExterne::all();
