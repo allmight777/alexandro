@@ -25,31 +25,38 @@ use Illuminate\Support\Facades\Cache;
 
 class AdminController extends Controller
 {
+
+
   public function ShowHomePage()
   {
-    $statsParMois = [];
-    $nbr_equipement = Cache::remember('nbr_equipement', 100, fn() => Equipement::count());
-    $nbr_user = Cache::remember('nbr_user', 100, fn() => User::count());
-    $nbr_affect = Cache::remember('nbr_affect', 100, fn() => Affectation::sum('quantite_affectee'));
-    $nbr_panne = Cache::remember('nbr_panne', 100, fn() => Panne::count());
+    // Cache global de 5 minutes (300 sec) pour toute la data statistique
+    $cacheKey = 'home_page_stats';
 
-    // Statistiques par mois pour un type d'équipement (ex: ordinateurs)
-     $statsParMois=Affectation::selectRaw('MONTH(created_at) as mois, SUM(quantite_affectee) as total')->whereYear('created_at', now()->year)->groupByRaw('MONTH(created_at)')->pluck('total', 'mois')->toArray();
+    $data = Cache::remember($cacheKey, 300, function () {
+      $nbr_equipement = Equipement::count();
+      $nbr_user = User::count();
+      $nbr_affect = Affectation::sum('quantite_affectee');
+      $nbr_panne = Panne::count();
 
-    for ($i = 1; $i <= 12; $i++) {
-      $debut = Carbon::create(null, $i, 1)->startOfMonth();
-      $fin = Carbon::create(null, $i, 1)->endOfMonth();
+      // Statistiques par mois
+      $statsParMois = [];
+      for ($i = 1; $i <= 12; $i++) {
+        $debut = Carbon::create(null, $i, 1)->startOfMonth();
+        $fin = Carbon::create(null, $i, 1)->endOfMonth();
 
-       $statsParMois[$i] = Affectation::whereBetween('created_at', [$debut, $fin])->sum('quantite_affectee');
+        $statsParMois[$i] = Affectation::whereBetween('created_at', [$debut, $fin])->sum('quantite_affectee');
+      }
 
-    }
+      // Distribution par catégorie
+      $distribution = Categorie::withCount('equipements')->get()->map(function ($cat) {
+        return ['label' => $cat->nom, 'count' => $cat->equipements_count];
+      });
 
-    // Distribution par catégorie (pour donut chart)
-    $distribution = Categorie::withCount('equipements')->get()->map(function ($cat) {
-      return ['label' => $cat->nom, 'count' => $cat->equipements_count];
+      return compact('nbr_equipement', 'nbr_user', 'nbr_affect', 'nbr_panne', 'statsParMois', 'distribution');
     });
 
-    return view("admin.homedash", compact('nbr_equipement', 'nbr_user', 'nbr_affect', 'nbr_panne', 'statsParMois', 'distribution'));
+    // Injecte dans la vue
+    return view("admin.homedash", $data);
   }
 
   public function showusers()
@@ -312,7 +319,7 @@ class AdminController extends Controller
         'type' => $bon->statut,
         'equipements' => $affectationsDetails,
       ]);
-      $pdf->setPaper('A5', 'portrait'); 
+      $pdf->setPaper('A5', 'portrait');
 
       Storage::disk('public')->put($pdfPath, $pdf->output());
 
@@ -406,7 +413,7 @@ class AdminController extends Controller
       'numero_bon' => $bon->id,
       'type' => $bon->statut
     ]);
-    $pdf->setPaper('A5', 'portrait'); 
+    $pdf->setPaper('A5', 'portrait');
     Storage::disk('public')->put($pdfPath, $pdf->output());
 
     return redirect()->back()
