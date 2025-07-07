@@ -19,7 +19,6 @@
         </div>
         <div class="card-body">
             <form action="{{route('HandleCollaborator')}}" method="POST" enctype="multipart/form-data">
-                @method("POST")
                 @csrf
                 <!-- Nom -->
                 <div class="mb-3">
