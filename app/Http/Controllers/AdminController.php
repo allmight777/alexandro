@@ -367,6 +367,7 @@ class AdminController extends Controller
       $request->file('chemin_carte')->getRealPath(),
       ['folder' => 'cartes_identite']
     )->getSecurePath();
+    dd($uploadedFileUrl);
 
     // Enregistrement en base
     $collaborator = new CollaborateurExterne();
