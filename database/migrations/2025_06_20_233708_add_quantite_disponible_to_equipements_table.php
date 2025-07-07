@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('equipements', function (Blueprint $table) {
             //
-            $table->integer("quantite");
+            $table->integer("quantite")->default(0);
         });
     }
 
