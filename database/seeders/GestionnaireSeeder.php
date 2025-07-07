@@ -9,24 +9,6 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\DB;
 
 
-// class GestionnaireSeeder extends Seeder
-// {
-//     public function run()
-//     {
-//         if (!User::where('email', 'aden@gmail.com')->exists()) {
-//             User::create([
-//                 'nom' => 'Aden',
-//                 'prenom' => 'Gest',
-//                 'email' => 'aden@gmail.com',
-//                 'password' => Hash::make('aden123@'), // mot de passe clair: aden123@
-//                 'role' => 'gestionnaire',
-//                 'poste' => 'Gestionnaire',
-//             ]);
-//         }
-//     }
-// }
-
-
 class GestionnaireSeeder extends Seeder
 {
     public function run()

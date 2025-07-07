@@ -46,7 +46,8 @@ class AdminSeeder extends Seeder
                 'password' => bcrypt('admin123@'),
                 'role' => 'admin',
                 'poste' => 'CEO',
-                'email_verified_at' => now()
+                'email_verified_at' => now(),
+                'service'=>'JASPE_DIRECTION'
             ]
         );
     }
