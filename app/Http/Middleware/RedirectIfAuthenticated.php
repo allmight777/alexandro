@@ -14,9 +14,8 @@ class RedirectIfAuthenticated
             $role = Auth::user()->role;
 
             return match ($role) {
-                'admin' => redirect('/dashboard/admin'),
-                'gestionnaire' => redirect('/dashboard/gestionnaire'),
-                default => redirect('/dashboard/employe'),
+                'admin','gestionnaire' => redirect('/dashboard'),
+                  'employé' => redirect('/dashboard/employe'),
             };
         }
 

@@ -53,7 +53,6 @@
         </div>
         <!-- container-scroller -->
         @stack('popups')
-        @stack("scripts")
         <!-- plugins:js -->
         <script src="vendors/js/vendor.bundle.base.js"></script>
         <script src="vendors/js/vendor.bundle.addons.js"></script>
@@ -66,6 +65,7 @@
         <script src="js/template.js"></script>
         <!-- endinject -->
         <!-- Custom js for this page-->
+         @stack('scripts')
         <script src="js/dashboard.js"></script>
         <script>
             // Personnalisation des graphiques pour Toolzy
@@ -175,52 +175,60 @@
                     gradientStroke4.addColorStop(1, '#ff9966');
 
                     var myChart = new Chart(ctx, {
-                        type: 'doughnut',
+                        type: 'line',
                         data: {
+                            labels: moisLabels, // ✅ données dynamiques injectées depuis homedash.blade.php
                             datasets: [{
-                                data: [40, 25, 20, 15],
-                                backgroundColor: [
-                                    gradientStroke1,
-                                    gradientStroke2,
-                                    gradientStroke3,
-                                    gradientStroke4
-                                ],
-                                hoverBackgroundColor: [
-                                    gradientStroke1,
-                                    gradientStroke2,
-                                    gradientStroke3,
-                                    gradientStroke4
-                                ],
-                                borderColor: [
-                                    gradientStroke1,
-                                    gradientStroke2,
-                                    gradientStroke3,
-                                    gradientStroke4
-                                ],
-                                legendColor: [
-                                    gradientStroke1,
-                                    gradientStroke2,
-                                    gradientStroke3,
-                                    gradientStroke4
-                                ]
-                            }],
-                            labels: [
-                                'Ordinateurs',
-                                'Téléphones',
-                                'Imprimantes',
-                                'Autres'
-                            ]
+                                label: 'Équipements ajoutés',
+                                borderColor: gradientStroke1,
+                                backgroundColor: gradientStroke1,
+                                pointBackgroundColor: gradientStroke1,
+                                pointBorderColor: 'rgba(255,255,255,0)',
+                                pointHoverBackgroundColor: gradientStroke1,
+                                pointBorderWidth: 0,
+                                pointHoverRadius: 0,
+                                pointHoverBorderWidth: 0,
+                                pointRadius: 0,
+                                fill: true,
+                                borderWidth: 2,
+                                data: equipementsParMois // ✅ données dynamiques Laravel
+                            }]
                         },
                         options: {
-                            responsive: true,
-                            cutoutPercentage: 70,
-                            legend: false,
-                            animation: {
-                                animateScale: true,
-                                animateRotate: true
+                            legend: {
+                                display: true,
+                            },
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        maxTicksLimit: 6,
+                                        stepSize: 1
+                                    },
+                                    gridLines: {
+                                        borderDash: [3, 3],
+                                        drawBorder: false,
+                                        color: 'rgba(0,0,0,0.1)',
+                                        zeroLineColor: 'rgba(0,0,0,0)',
+                                    }
+                                }],
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false,
+                                        drawBorder: false,
+                                        color: 'rgba(0,0,0,0.1)',
+                                        zeroLineColor: 'rgba(0,0,0,0)',
+                                    },
+                                    ticks: {
+                                        padding: 20,
+                                        fontColor: "#9c9fa6",
+                                        autoSkip: true,
+                                    }
+                                }]
                             }
                         }
                     });
+
                     document.getElementById('traffic-chart-legend').innerHTML = myChart.generateLegend();
                 }
             });

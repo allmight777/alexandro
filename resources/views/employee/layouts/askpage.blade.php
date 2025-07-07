@@ -6,12 +6,18 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Faire une demande d'équipement</h4>
-
                         {{-- ✅ Message de succès --}}
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 {{ session('success') }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Fermer"></button>
                             </div>
                         @endif
                         <form method="POST" action="{{ route('demande.soumise') }}">
@@ -41,11 +47,17 @@
                                                 <option value="{{ $equipement->id }}">{{ $equipement->nom }}</option>
                                             @endforeach
                                         </select>
+                                        @error('equipements')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label>Quantité</label>
                                         <input type="number" name="quantites[]" class="form-control" min="1"
                                             required>
+                                        @error('quantites')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                     <div class="col-12 col-md-2 d-flex align-items-end">
                                         <button type="button"

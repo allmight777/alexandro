@@ -1,169 +1,316 @@
 @extends('employee.homedash')
-
 @push('styles')
-<style>
-    .table th, .table td {
-        vertical-align: middle !important;
-    }
-</style>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .dashboard-card {
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 0.075);
+            transition: box-shadow 0.3s ease;
+            background: white;
+            /* suppression de height: 100% */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.5rem;
+        }
+
+        .dashboard-card:hover {
+            box-shadow: 0 0.5rem 1rem rgb(0 123 255 / 0.25);
+        }
+
+        .card-title i {
+            margin-right: 0.5rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            opacity: 0.75;
+        }
+
+        .stat-primary {
+            background: #0d6efd;
+        }
+
+        .stat-success {
+            background: #198754;
+        }
+
+        .stat-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .stat-danger {
+            background: #dc3545;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle !important;
+        }
+
+        .table-responsive {
+            max-height: 360px;
+            /* limite la hauteur */
+            overflow-y: auto;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .actions-rapides .btn {
+            font-size: 1rem;
+            padding: 0.85rem 1rem;
+            border-radius: 0.4rem;
+        }
+
+        /* Pour que la colonne de droite s'aligne bien verticalement */
+        .col-lg-4.d-flex.flex-column.gap-4>.dashboard-card {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* S'assurer que la liste des pannes prenne tout l'espace disponible */
+        .list-group {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+    </style>
 @endpush
 
+
 @section('content')
-<div class="main-panel">
-    <div class="content-wrapper">
-        <!-- Bienvenue -->
-        <div class="row mb-4">
-            <div class="col-md-8">
-                <h5 class="fw-normal text-muted">Bienvenue sur votre espace Toolzy</h5>
-                <h3 class="fw-bold text-dark">Bonjour {{ $user->nom }} {{ $user->prenom }} !</h3>
-            </div>
-            <div class="col-md-4 d-flex align-items-center justify-content-md-end">
+    <div class="main-panel">
+        <div class="content-wrapper px-4 py-3">
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h5 class="text-muted">Bienvenue sur votre espace Jaspe-Tools</h5>
+                    <h2 class="fw-bold">Bonjour {{ $user->nom }} {{ $user->prenom }} !</h2>
+                </div>
                 <a href="{{ route('page.aide') }}" class="btn btn-outline-info">
-                    Aide <i class="mdi mdi-help-circle-outline ms-1"></i>
+                    <i class="mdi mdi-help-circle-outline"></i> Aide
                 </a>
             </div>
-        </div>
 
-        <!-- Équipements & Actions rapides -->
-        <div class="row mb-4">
-            <div class="col-lg-8">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h4 class="card-title fw-bold text-primary">Vos équipements</h4>
-                        @if ($affectations->count() > 0)
-                            <table class="table table-striped table-bordered table-hover align-middle">
-                                <thead class="table-primary text-center">
-                                    <tr>
-                                        <th>Équipement</th>
-                                        <th>Statut</th>
-                                        <th>Date d'assignation</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-center">
-                                    @foreach ($affectations as $aff)
-                                        <tr>
-                                            <td class="fw-semibold">{{ $aff->equipement->nom }}</td>
-                                            <td>
-                                                <span class="badge {{ $aff->equipement->etat === 'fonctionnel' ? 'bg-success' : 'bg-warning' }}">
-                                                    {{ ucfirst($aff->equipement->etat) }}
-                                                </span>
-                                            </td>
-                                            <td>{{ $aff->created_at->format('d/m/Y') }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @else
-                            <p class="text-muted">Aucun équipement pour le moment.</p>
-                        @endif
+            <!-- Statistiques principales -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card stat-primary shadow-sm">
+                        <i class="mdi mdi-desktop-mac stat-icon"></i>
+                        <div>
+                            <h5>Équipements assignés</h5>
+                            <h3>{{ $affectations->count() }}</h3>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h4 class="card-title fw-bold text-primary">Actions rapides</h4>
-                        <div class="d-grid gap-2">
-                            <a href="{{ route('demande.equipement') }}" class="btn btn-primary btn-lg">
-                                <i class="mdi mdi-laptop"></i> Demander un équipement
-                            </a>
-                            <a href="{{ route('signaler.panne') }}" class="btn btn-danger btn-lg">
-                                <i class="mdi mdi-alert"></i> Signaler une panne
-                            </a>
+                <div class="col-md-3">
+                    <div class="stat-card stat-warning shadow-sm">
+                        <i class="mdi mdi-file-document stat-icon"></i>
+                        <div>
+                            <h5>Demandes en attente</h5>
+                            <h3>{{ $demandes->where('statut', 'en_attente')->count() }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card stat-success shadow-sm">
+                        <i class="mdi mdi-check-circle stat-icon"></i>
+                        <div>
+                            <h5>Demandes acceptées</h5>
+                            <h3>{{ $demandes->where('statut', 'acceptee')->count() }}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card stat-danger shadow-sm">
+                        <i class="mdi mdi-bug stat-icon"></i>
+                        <div>
+                            <h5>Pannes non résolues</h5>
+                            <h3>{{ $pannes->where('statut', '!=', 'resolu')->count() }}</h3>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Demandes & Pannes -->
-        <div class="row">
-            <!-- Demandes récentes -->
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h4 class="card-title fw-bold text-primary">Demandes récentes</h4>
+            <!-- Section principale -->
+            <div class="row g-4">
+                <!-- Équipements récents -->
+                <div class="col-lg-8">
+                    <div class="card dashboard-card shadow-sm p-3">
+                        <h4 class="card-title fw-bold text-primary mb-3">
+                            <i class="mdi mdi-laptop"></i> Équipements récemment affectés
+                        </h4>
+
+                        @if ($affectations->count())
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Catégorie</th>
+                                            <th>Date d'affectation</th>
+                                            <th>État</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($affectations as $affectation)
+                                            <tr>
+                                                <td>{{ $affectation->equipement->nom }}</td>
+                                                <td>{{ $affectation->equipement->categorie->nom ?? 'Non défini' }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($affectation->created_at)->format('d/m/Y') }}
+                                                </td>
+                                                <td>
+                                                    @php
+                                                        $etat = $affectation->equipement->etat;
+                                                        $retourDepasse = \Carbon\Carbon::parse(
+                                                            $affectation->date_retour,
+                                                        )->lt(\Carbon\Carbon::now());
+                                                    @endphp
+
+                                                    <span
+                                                                                                            class="badge 
+                                                        @if ($retourDepasse) bg-warning text-dark
+                                                        @elseif ($etat === 'fonctionnel') bg-success
+                                                        @elseif ($etat === 'en panne') bg-danger
+                                                        @elseif ($etat === 'maintenance') bg-info text-dark
+                                                        @else bg-secondary @endif
+                                                    ">
+                                                        {{ $retourDepasse ? 'À retourner' : ucfirst($etat) }}
+                                                    </span>
+
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="no-data">
+                                <i class="mdi mdi-laptop-off"></i>
+                                <p>Aucun équipement affecté récemment.</p>
+                            </div>
+                        @endif
+                    </div>
+                    <!-- Demandes récentes -->
+                    <div class="card dashboard-card shadow-sm p-3 mt-4">
+                        <h4 class="card-title fw-bold text-primary mb-3">
+                            <i class="mdi mdi-file-document"></i> Demandes Recentes
+                        </h4>
+
                         @if ($demandes->count())
-                            <table class="table table-striped table-bordered align-middle">
-                                <thead class="table-primary text-center">
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Type</th>
-                                        <th>Statut</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-center">
-                                    @foreach ($demandes as $demande)
-                                        @php
-                                            $badge = match($demande->statut) {
-                                                'en_attente' => 'bg-warning',
-                                                'acceptee' => 'bg-success',
-                                                'rejetee' => 'bg-danger',
-                                                default => 'bg-secondary',
-                                            };
-                                        @endphp
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light">
                                         <tr>
-                                            <td>{{ $demande->created_at->format('d/m/Y H:i') }}</td>
-                                            <td class="fw-semibold">{{ $demande->motif }}</td>
-                                            <td><span class="badge {{ $badge }}">{{ ucfirst($demande->statut) }}</span></td>
+                                            <th>N°</th>
+                                            <th>Objet</th>
+                                            <th>Date</th>
+                                            <th>Statut</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($demandes as $index => $demande)
+                                            <tr>
+                                                <td> {{ $index + 1 }}</td>
+                                                <td>{{ $demande->motif }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($demande->created_at)->format('d/m/Y') }}</td>
+                                                <td>
+                                                    <span
+                                                        class="badge
+                                    @if ($demande->statut === 'acceptee') bg-success
+                                    @elseif($demande->statut === 'refusee') bg-danger
+                                    @else bg-warning text-dark @endif
+                                ">
+                                                        {{ ucfirst($demande->statut) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         @else
-                            <p class="text-muted">Aucune demande récente.</p>
+                            <div class="no-data">
+                                <i class="mdi mdi-file-document-outline"></i>
+                                <p>Aucune demande récente.</p>
+                            </div>
                         @endif
                     </div>
-                </div>
-            </div>
 
-            <!-- Pannes signalées -->
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h4 class="card-title fw-bold text-primary">Pannes signalées</h4>
+
+                </div>
+
+                <!-- Actions rapides & Dernières pannes -->
+                <div class="col-lg-4 d-flex flex-column gap-4">
+
+                    <!-- Actions rapides -->
+                    <div class="card dashboard-card shadow-sm p-3 actions-rapides">
+                        <h4 class="card-title fw-bold text-primary mb-3">
+                            <i class="mdi mdi-flash"></i> Actions rapides
+                        </h4>
+                        <a href="{{ route('demande.equipement') }}" class="btn btn-primary w-100 mb-2">
+                            <i class="mdi mdi-laptop"></i> Demander un équipement
+                        </a>
+                        <a href="{{ route('signaler.panne') }}" class="btn btn-danger w-100 mb-2">
+                            <i class="mdi mdi-alert"></i> Signaler une panne
+                        </a>
+                        <a href="{{ route('listes.demandes') }}" class="btn btn-secondary w-100">
+                            <i class="mdi mdi-file-document-outline"></i> Consulter les demandes
+                        </a>
+                    </div>
+
+                    <!-- Dernières pannes -->
+                    <div class="card dashboard-card shadow-sm p-3">
+                        <h4 class="card-title fw-bold text-primary mb-3">
+                            <i class="mdi mdi-bug"></i> Dernières pannes signalées
+                        </h4>
                         @if ($pannes->count())
-                            <table class="table table-striped table-bordered table-hover align-middle">
-                                <thead class="table-primary text-center">
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Équipement</th>
-                                        <th>Motif</th>
-                                        <th>Statut</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-center">
-                                    @foreach ($pannes as $panne)
-                                        <tr>
-                                            <td>{{ $panne->created_at->format('d/m/Y H:i') }}</td>
-                                            <td>{{ $panne->equipement->nom }}</td>
-                                            <td>{{ $panne->description }}</td>
-                                            <td>
-                                                <span class="badge {{ $panne->statut === 'resolu' ? 'bg-success' : 'bg-danger' }}">
-                                                    {{ucfirst($panne->statut) }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <form method="POST" action="{{route('delete.panne',$panne->id)}}">
-                                                    @csrf @method('DELETE')
-                                                    <button class="btn btn-sm btn-outline-danger" type="submit">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            <ul class="list-group list-group-flush">
+                                @foreach ($pannes->take(5) as $panne)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ $panne->equipement->nom }}</strong><br>
+                                            <small>{{ Str::limit($panne->description, 50) }}</small>
+                                        </div>
+                                        <span class="badge {{ $panne->statut === 'resolu' ? 'bg-success' : 'bg-danger' }}">
+                                            {{ ucfirst($panne->statut) }}
+                                        </span>
+                                    </li>
+                                @endforeach
+                            </ul>
                         @else
-                            <p class="text-muted">Aucune panne signalée.</p>
+                            <div class="no-data">
+                                <i class="mdi mdi-bug-outline"></i>
+                                <p>Aucune panne signalée.</p>
+                            </div>
                         @endif
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

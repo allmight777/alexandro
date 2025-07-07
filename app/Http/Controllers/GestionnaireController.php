@@ -22,20 +22,6 @@ use Illuminate\Support\Facades\Log;
 
 class GestionnaireController extends Controller
 {
-    public function index()
-    {
-    $demandes = Demande::with(['user', 'equipements'])
-        ->select('id', 'lieu', 'motif', 'statut', 'user_id', 'created_at', 'updated_at')
-        ->where('statut', 'en_attente')
-        ->orderBy('created_at', 'desc')
-        ->paginate(10);
-
-    return view('gestionnaire.demandes.index', [
-        'demandes' => $demandes,
-        'gestionnaires' => User::where('role', 'gestionnaire')->get()
-    ]);
-    }
-
     public function equipementsPerdus()
     {
         $equipement_lost = Affectation::with(['equipement', 'user'])
@@ -466,7 +452,7 @@ public function BackTool(Affectation $affectation)
 //     }
 //   }
 
-public function HandleAffectation(Request $request)
+public function handleAffectation(Request $request)
   {
     $request->validate([
        'equipements'=>'required',

@@ -21,16 +21,37 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class AdminController extends Controller
 {
-   public function ShowHomePage(){
-       $nbr_equipement=Equipement::count();
-       $nbr_user=User::count();
-       $nbr_affect = Affectation::sum('quantite_affectee');
-       return view("admin.homedash",compact('nbr_equipement','nbr_user','nbr_affect'));
+  public function ShowHomePage()
+  {
+    $statsParMois = [];
+    $nbr_equipement = Cache::remember('nbr_equipement', 100, fn() => Equipement::count());
+    $nbr_user = Cache::remember('nbr_user', 100, fn() => User::count());
+    $nbr_affect = Cache::remember('nbr_affect', 100, fn() => Affectation::sum('quantite_affectee'));
+    $nbr_panne = Cache::remember('nbr_panne', 100, fn() => Panne::count());
 
+    // Statistiques par mois pour un type d'équipement (ex: ordinateurs)
+     $statsParMois=Affectation::selectRaw('MONTH(created_at) as mois, SUM(quantite_affectee) as total')->whereYear('created_at', now()->year)->groupByRaw('MONTH(created_at)')->pluck('total', 'mois')->toArray();
+
+    for ($i = 1; $i <= 12; $i++) {
+      $debut = Carbon::create(null, $i, 1)->startOfMonth();
+      $fin = Carbon::create(null, $i, 1)->endOfMonth();
+
+       $statsParMois[$i] = Affectation::whereBetween('created_at', [$debut, $fin])->sum('quantite_affectee');
+
+    }
+
+    // Distribution par catégorie (pour donut chart)
+    $distribution = Categorie::withCount('equipements')->get()->map(function ($cat) {
+      return ['label' => $cat->nom, 'count' => $cat->equipements_count];
+    });
+
+    return view("admin.homedash", compact('nbr_equipement', 'nbr_user', 'nbr_affect', 'nbr_panne', 'statsParMois', 'distribution'));
   }
+
   public function showusers()
   {
     $users = User::where("role", "!=", "admin")->get();
@@ -142,7 +163,7 @@ class AdminController extends Controller
     $equipement->marque = $request->marque;
     $equipement->description = $request->description;
     $equipement->date_acquisition = $request->date_acquisition;
-    $equipement->quantite = $request->quantite;
+    $equipement->quantite = $request->quantite_disponible;
     if ($request->hasFile('image_path')) {
       $imagePath = $request->file('image_path')->store('pictures/equipments', 'public');
       $equipement->image_path = $imagePath;
@@ -174,58 +195,56 @@ class AdminController extends Controller
     $demande->save();
     return redirect()->back();
   }
-//   public function Showaffectation()
-//   {
-//     //formulaire avec select employée, select pour equipements,motif text area,date de retour
-//     //recuperer la liste des employées && equipements
-//     //pour l'insertion il faut les tables:affectations,bon,equipement(MAJ),
-//     $categories = Categorie::with(['equipements' => function ($query) {
-//       $query->where('etat', 'disponible')
-//         ->where(function ($q) {
-//           $q->whereHas('affectations', function ($q2) {
-//             $q2->whereNull('date_retour');
-//           })
-//             ->orWhereDoesntHave('affectations', function ($q3) {
-//               $q3->whereNull('date_retour');
-//             });
-//         });
-//     }])->get();
+  //   public function Showaffectation()
+  //   {
+  //     //formulaire avec select employée, select pour equipements,motif text area,date de retour
+  //     //recuperer la liste des employées && equipements
+  //     //pour l'insertion il faut les tables:affectations,bon,equipement(MAJ),
+  //     $categories = Categorie::with(['equipements' => function ($query) {
+  //       $query->where('etat', 'disponible')
+  //         ->where(function ($q) {
+  //           $q->whereHas('affectations', function ($q2) {
+  //             $q2->whereNull('date_retour');
+  //           })
+  //             ->orWhereDoesntHave('affectations', function ($q3) {
+  //               $q3->whereNull('date_retour');
+  //             });
+  //         });
+  //     }])->get();
 
 
-//     $employes = User::where("role", "=", "employé")->get();
-//     return view("admin.affectation", [
-//         'equipements_groupes' => $categories,
-//         'employes' => $employes
-//     ]); 
-//  }
+  //     $employes = User::where("role", "=", "employé")->get();
+  //     return view("admin.affectation", [
+  //         'equipements_groupes' => $categories,
+  //         'employes' => $employes
+  //     ]); 
+  //  }
 
   public function Showaffectation()
   {
-      $equipements_groupes = Categorie::with(['equipements' => function ($query) {
-          $query->where('etat', 'disponible')
-              ->where(function ($q) {
-                  $q->whereHas('affectations', function ($q2) {
-                      $q2->whereNull('date_retour');
-                  })
-                  ->orWhereDoesntHave('affectations', function ($q3) {
-                      $q3->whereNull('date_retour');
-                  });
-              });
-      }])->get();
+    $equipements_groupes = Categorie::with(['equipements' => function ($query) {
+      $query->where('etat', 'disponible')
+        ->where(function ($q) {
+          $q->whereHas('affectations', function ($q2) {
+            $q2->whereNull('date_retour');
+          })
+            ->orDoesntHave('affectations');
+        });
+    }])->get();
 
-      $employes = User::where("role", "=", "employé")->get();
+    $employes = User::where("role", "=", "employé")->get();
 
-      return view("admin.affectation", compact('equipements_groupes', 'employes'));
+    return view("admin.affectation", compact('equipements_groupes', 'employes'));
   }
 
   public function HandleAffectation(Request $request)
   {
     $request->validate([
-       'equipements'=>'required',
-       'quantites'=>'required'
-    ],[
-      'equipements.required'=>'le champ equipement est requis',
-       'quantites.required'=>'le champ quantité est requis'
+      'equipements' => 'required',
+      'quantites' => 'required'
+    ], [
+      'equipements.required' => 'le champ equipement est requis',
+      'quantites.required' => 'le champ quantité est requis'
     ]);
 
 
@@ -291,14 +310,15 @@ class AdminController extends Controller
         'motif' => $request->motif,
         'numero_bon' => $bon->id,
         'type' => $bon->statut,
-        'equipements' => $affectationsDetails, 
+        'equipements' => $affectationsDetails,
       ]);
+      $pdf->setPaper('A5', 'portrait'); 
 
       Storage::disk('public')->put($pdfPath, $pdf->output());
 
       return redirect()->back()
         ->with('success', 'Affectation réussie avec succès et un bon de sortie a été généré.')
-        ->with('pdf', asset('storage/' . $pdfPath));
+        ->with('pdf', asset('/storage/' . $pdfPath));
     } catch (\Exception $e) {
       DB::rollBack();
       Log::error("Erreur lors de l'affectation : " . $e->getMessage());
@@ -310,7 +330,7 @@ class AdminController extends Controller
 
   public function Showpannes()
   {
-    $pannes = Panne::with(['equipement', 'user'])->where("statut","=","en_attente")->latest()->get();
+    $pannes = Panne::with(['equipement', 'user'])->where("statut", "=", "en_attente")->latest()->get();
     return view("admin.pannelist", compact('pannes'));
   }
   public function ShowToollost()
@@ -378,7 +398,7 @@ class AdminController extends Controller
     $pdfPath = 'bon_collaborateurs/' . $pdfName;
     $bon->fichier_pdf = $pdfPath;
     $bon->save();
-    $pdf = Pdf::loadView('pdf.bon_ext', [
+    $pdf = Pdf::loadView('pdf.bon', [
       'date' => now()->format('d/m/Y'),
       'nom' => $collaborateur->nom ?? 'Admin',
       'prenom' => $collaborateur->prenom ?? '',
@@ -386,7 +406,7 @@ class AdminController extends Controller
       'numero_bon' => $bon->id,
       'type' => $bon->statut
     ]);
-
+    $pdf->setPaper('A5', 'portrait'); 
     Storage::disk('public')->put($pdfPath, $pdf->output());
 
     return redirect()->back()
@@ -424,7 +444,6 @@ class AdminController extends Controller
   {
     $bon->delete();
     return redirect()->back();
-    
   }
   public function Showlistaffectation()
   {
@@ -442,11 +461,16 @@ class AdminController extends Controller
     $rapports = Rapport::orderBy('created_at', 'desc')->get();
     return view("admin.list_rapport", compact("rapports"));
   }
-  
-  public function PutPanne(Panne $panne){
-        $panne->statut="resolu";
-        $panne->save();
-        return redirect()->back();
+
+  public function PutPanne(Panne $panne)
+  {
+    $panne->statut = "resolu";
+    $panne->save();
+    return redirect()->back();
   }
- 
+  public function DestroyAffect(Affectation $affectation)
+  {
+    $affectation->delete();
+    return redirect()->back();
+  }
 }
