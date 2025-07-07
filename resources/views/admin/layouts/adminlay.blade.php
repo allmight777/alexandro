@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <!-- Required meta tags -->
     <base href="/public">
@@ -8,7 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Toolzy - Administration</title>
     <!-- plugins:css -->
-   @vite(['resources/css/admin.css', 'resources/js/admin.js'])
+    <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
+    <!-- endinject -->
     <!-- inject:css -->
     <link rel="stylesheet" href="css/style.css">
     <!-- endinject -->
@@ -48,12 +52,20 @@
         </div>
         <!-- container-scroller -->
         @stack('popups')
-        {{-- <script src="{{ asset('js/template.js') }}"></script> --}}
         <!-- plugins:js -->
-
+        <script src="vendors/js/vendor.bundle.base.js"></script>
+        <script src="vendors/js/vendor.bundle.addons.js"></script>
+        <!-- endinject -->
+        <!-- Plugin js for this page-->
+        <!-- End plugin js for this page-->
+        <!-- inject:js -->
+        <script src="js/off-canvas.js"></script>
+        <script src="js/misc.js"></script>
+        <script src="js/template.js"></script>
         <!-- endinject -->
         <!-- Custom js for this page-->
          @stack('scripts')
+        <script src="js/dashboard.js"></script>
         <script>
             // Personnalisation des graphiques pour Toolzy
             document.addEventListener('DOMContentLoaded', function() {
@@ -283,6 +295,7 @@
                 });
             });
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- End custom js for this page-->
 </body>
