@@ -7,4 +7,3 @@ import '../../public/js/misc.js';
 import '../../public/js/dashboard.js';
 
 // Tes scripts perso
-import './popup.js';
