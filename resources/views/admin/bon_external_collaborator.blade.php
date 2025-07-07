@@ -13,9 +13,8 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
                     </div>
                 @endif
-                <form action="{{route("gestionnaire.bons.handle_external")}}" method="POST">
+                <form action="{{route("HandleBon")}}" method="POST">
                     @csrf
-
                     <div class="mb-3">
                         <label for="collaborateur" class="form-label">Collaborateur externe</label>
                         <select class="form-select" name="collaborateur_id" id="collaborateur" required>

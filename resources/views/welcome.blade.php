@@ -8,7 +8,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-5 mb-lg-0">
                     <h1 class="display-4 fw-bold mb-4">Optimisez votre parc <br>matériel avec <span
-                            class="text-warning">JASPETools</span></h1>
+                            class="text-warning">JASPE-Tools</span></h1>
                     <p class="lead mb-5">La solution complète pour une gestion efficace et traçable de votre inventaire
                         professionnel</p>
                     <div class="d-flex flex-wrap gap-3">

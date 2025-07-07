@@ -44,7 +44,7 @@
                 <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                     <a class="navbar-brand brand-logo" href="index.html">
                         <i class="fas fa-tools me-2" style="color: var(--primary);"></i>
-                        <span class="logo-text">TOOLZY</span>
+                        <span class="logo-text">Jaspe-Tools</span>
                     </a>
                     <a class="navbar-brand brand-logo-mini" href="index.html">
                         <i class="fas fa-tools" style="color: var(--primary);"></i>
@@ -109,6 +109,13 @@
                     href="{{ route('equipements.assignes') }}">
                     <i class="mdi mdi-format-list-bulleted menu-icon"></i>
                     <span class="menu-title">Équipements assignés</span>
+                </a>
+            </li>
+             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('historique.pannes') ? 'active' : '' }}"
+                    href="{{ route('historique.pannes') }}">
+                       <i class="mdi mdi-alert menu-icon"></i> 
+                    <span class="menu-title">Liste Pannes</span>
                 </a>
             </li>
         </ul>

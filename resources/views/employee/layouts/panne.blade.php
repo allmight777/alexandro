@@ -29,9 +29,11 @@
                                 <label for="equipement_id" class="form-label">Équipement concerné</label>
                                 <select name="equipement_id" id="equipement_id" class="form-select" required>
                                     <option value="">-- Sélectionnez un équipement --</option>
-                                    @foreach($equipements_user as $equipement)
+                                    @forelse($equipements_user as $equipement)
                                         <option value="{{ $equipement->id }}">{{ $equipement->nom }}</option>
-                                    @endforeach
+                                    @empty
+                                           <option disabled>Aucun équipement disponible pour le moment</option>
+                                    @endforelse
                                 </select>
                             </div>
 

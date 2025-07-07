@@ -1,5 +1,4 @@
-@extends('gestionnaire.rapports.layouts.gestionlay')
-
+@extends('admin.layouts.adminlay')  
 @section('content')
 <div class="container py-4">
     <div class="card shadow">
@@ -10,7 +9,7 @@
         </div>
         
         <div class="card-body">
-            <form method="POST" action="{{ route('rapports.store') }}" class="needs-validation" novalidate>
+            <form method="POST" action="{{ route('gestionnaire.rapports.store') }}" class="needs-validation" novalidate>
                 @csrf
                 
                 <div class="form-group">
@@ -26,7 +25,7 @@
                     <button type="submit" class="btn btn-primary btn-lg">
                         <i class="fas fa-file-export mr-2"></i>Générer et Soumettre
                     </button>
-                    <a href="{{ route('rapports.index') }}" class="btn btn-outline-secondary ml-2">
+                    <a href="{{ route('gestionnaire.rapports.index') }}" class="btn btn-outline-secondary ml-2">
                         <i class="fas fa-arrow-left mr-2"></i>Voir la liste des rapports
                     </a>
                 </div>

@@ -68,7 +68,7 @@
                                     <select class="form-select" id="role" required name="role">
                                         <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>admin</option>
                                         <option value="gestionnaire" {{ $user->role == 'gestionnaire' ? 'selected' : '' }}>gestionnaire</option>
-                                        <option value="employée" {{ $user->role == 'employée' ? 'selected' : '' }}>employée</option>
+                                        <option value="employé" {{ $user->role == 'employé' ? 'selected' : '' }}>employé</option>
                                     </select>
                                     @error('role')
                                         <span class="text-danger">{{ $message }}</span>
@@ -143,3 +143,19 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            this.querySelector('i').classList.toggle('mdi-eye');
+            this.querySelector('i').classList.toggle('mdi-eye-off');
+        });
+    });
+</script>
+@endpush

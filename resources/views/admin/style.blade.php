@@ -70,14 +70,20 @@
     }
 
     .sidebar .nav .nav-item.active>.nav-link {
-        background: linear-gradient(to right, var(--toolzy-primary), var(--toolzy-secondary));
-        border-radius: 6px;
+        background: transparent;
+        /* pas de fond */
+          color: var(--toolzy-primary);
+          font-weight: bold;
     }
 
     .sidebar .nav .nav-item.active>.nav-link i,
     .sidebar .nav .nav-item.active>.nav-link .menu-title {
-        color: #ffffff;
+        color: var(--toolzy-primary);
+        /* ou var(--toolzy-secondary) si tu préfères */
+        font-weight: bold;
+        /* optionnel */
     }
+
 
     .sidebar .nav .nav-item .nav-link {
         border-radius: 6px;
@@ -91,6 +97,17 @@
 
     .action-buttons .btn {
         margin-right: 5px;
+    }
+
+    .nav .nav-link.active {
+        color: var(--toolzy-primary);
+        /* ou var(--toolzy-secondary) si tu préfères */
+        font-weight: bold;
+    }
+    .deplace{
+  
+        font-size: 13px;
+        margin-right: 12px;
     }
 
     .card {
@@ -478,6 +495,9 @@
         color: #6c757d;
         z-index: 10;
     }
+    a:{
+        color: var(--toolzy-primary); 
+    }
 
     .password-toggle:focus {
         outline: none;
@@ -541,7 +561,8 @@
         margin-top: 15px;
         font-size: 1.2rem;
     }
-    .btn{
+
+    .btn {
         width: 200px;
     }
 </style>

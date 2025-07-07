@@ -1,5 +1,4 @@
-@extends('gestionnaire.rapports.layouts.gestionlay')
-
+@extends('admin.layouts.adminlay')
 @section('content')
 <div class="container py-5">
     <h2 class="mb-4"><i class="fas fa-file-alt text-primary me-2"></i> Rapport n°{{ $rapport->id }}</h2>

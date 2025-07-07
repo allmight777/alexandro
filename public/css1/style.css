@@ -12736,6 +12736,17 @@ fieldset:disabled .btn {
   color: #fff;
   background-color: #0d6efd;
 }
+.nav-profile-text span.font-weight-bold {
+  display: block;
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.deplace{
+  margin-left: 12px;
+
+}
 
 .nav-fill > .nav-link,
 .nav-fill .nav-item {
