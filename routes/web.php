@@ -105,7 +105,7 @@ Route::prefix("dashboard")->middleware(['auth', AdminOuGestionnaire::class])->gr
          ->name("HandleCollaborator");
     Route::get('/list_collaborator',[AdminController::class,"ShowListCollaborator"])
         ->name("ShowListCollaborator");
-    Route::get("/delete_collaborator/{CollaborateurExterne}",[AdminController::class,"destroy"])
+    Route::delete("/delete_collaborator/{CollaborateurExterne}",[AdminController::class,"destroy"])
          ->name("collaborateurs.destroy");
     Route::get('/list_bon',[AdminController::class,"ShowBons"])
          ->name("liste.bons");
