@@ -48,7 +48,7 @@
         </div>
         <!-- container-scroller -->
         @stack('popups')
-        <script src="{{ asset('js/template.js') }}"></script>
+        {{-- <script src="{{ asset('js/template.js') }}"></script> --}}
         <!-- plugins:js -->
 
         <!-- endinject -->
