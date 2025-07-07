@@ -8,12 +8,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\BonController;
 use App\Http\Middleware\GestionnaireMiddleware;
-
+use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\GestionnaireController;
 use App\Http\Middleware\AdminOuGestionnaire;
-
-
 Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
 
     Route::get('/rapports/create', [RapportController::class, 'create'])
@@ -40,10 +38,10 @@ Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class
 
 
 Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/pdf',function (){
- return view('pdf.bon');
+    // Cache la vue complète pendant 60 minutes
+    return Cache::remember('welcome_page', 60 * 60, function () {
+        return view('welcome')->render();  // on génère la vue puis on la met en cache
+    });
 });
 
 
