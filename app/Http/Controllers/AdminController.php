@@ -362,14 +362,12 @@ class AdminController extends Controller
       'chemin_carte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
 
-    // Upload sur Cloudinary
-    $uploadedFileUrl = Cloudinary::upload(
-      $request->file('chemin_carte')->getRealPath(),
-      ['folder' => 'cartes_identite']
-    )->getSecurePath();
-    dd($uploadedFileUrl);
+    // Nouveau upload via storeOnCloudinary
+    $upload = $request->file('chemin_carte')->storeOnCloudinary('cartes_identite');
+    $uploadedFileUrl = $upload->getSecurePath();
+    $publicId = $upload->getPublicId(); // utile si tu veux supprimer après
 
-    // Enregistrement en base
+    // Sauvegarde
     $collaborator = new CollaborateurExterne();
     $collaborator->nom = $request->nom;
     $collaborator->prenom = $request->prenom;
