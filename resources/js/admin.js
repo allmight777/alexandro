@@ -4,7 +4,6 @@ import '../../public/vendors/js/vendor.bundle.base.js';
 import '../../public/vendors/js/vendor.bundle.addons.js';
 import '../../public/js/off-canvas.js';
 import '../../public/js/misc.js';
-import '../../public/js/template.js';
 import '../../public/js/dashboard.js';
 
 // Tes scripts perso
