@@ -352,29 +352,53 @@ class AdminController extends Controller
 
     return view("admin.collaborator_external");
   }
-  public function HandleCollaborator(Request $request)
-  {
+ <?php
+
+use Cloudinary\Cloudinary;
+
+public function HandleCollaborator(Request $request)
+{
     $request->validate([
-      'nom' => 'required|string|max:255',
-      'prenom' => 'required|string|max:255',
-      'chemin_carte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        'nom' => 'required|string|max:255',
+        'prenom' => 'required|string|max:255',
+        'chemin_carte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
 
-    // Nouveau upload via storeOnCloudinary
-    $upload = $request->file('chemin_carte')->storeOnCloudinary('cartes_identite');
-    $uploadedFileUrl = $upload->getSecurePath();
-    $publicId = $upload->getPublicId(); // utile si tu veux supprimer après
-
-    // Sauvegarde
     $collaborator = new CollaborateurExterne();
     $collaborator->nom = $request->nom;
     $collaborator->prenom = $request->prenom;
-    $collaborator->carte_chemin = $uploadedFileUrl;
+
+    // Upload vers Cloudinary au lieu du stockage local
+    if ($request->hasFile('chemin_carte')) {
+        try {
+            $cloudinary = new Cloudinary();
+            
+            $result = $cloudinary->uploadApi()->upload(
+                $request->file('chemin_carte')->getRealPath(),
+                [
+                    'folder' => 'cartes_identite',
+                    'public_id' => 'carte_' . time() . '_' . $request->nom,
+                    'resource_type' => 'auto', // Supporte images et PDF
+                    'transformation' => [
+                        'quality' => 'auto',
+                        'fetch_format' => 'auto'
+                    ]
+                ]
+            );
+            
+            // Sauvegarder l'URL Cloudinary dans la BDD
+            $collaborator->carte_chemin = $result['secure_url'];
+            // $collaborator->carte_public_id = $result['public_id']; // Pour pouvoir supprimer plus tard
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Erreur lors de l\'upload du fichier: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
     $collaborator->save();
-
     return redirect()->back()->with('success', 'Collaborateur ajouté avec succès.');
-  }
-
+}
   public function ShowListCollaborator()
   {
     $collaborateurs = CollaborateurExterne::all();
