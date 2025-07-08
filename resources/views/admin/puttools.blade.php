@@ -124,7 +124,7 @@
                                     @if ($equipement->image_path)
                                         <div class="mt-2">
                                             <small class="text-muted">Image actuelle :</small>
-                                            <img id="imagePreview" src="{{ asset('/' . $equipement->image_path) }}"
+                                            <img id="imagePreview" src="{{$equipement->image_path}}"
                                                 alt="Image actuelle" class="img-thumbnail mt-1"
                                                 style="max-width: 150px; max-height: 150px; display: block;">
                                         </div>
