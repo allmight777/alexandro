@@ -103,11 +103,10 @@
 @section('content')
     <div class="main-panel">
         <div class="content-wrapper px-4 py-3">
-
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h5 class="text-muted">Bienvenue sur votre espace Jaspe-Tools</h5>
+                    <h5 class="text-muted">Bienvenue sur votre espace J-Tools</h5>
                     <h2 class="fw-bold">Bonjour {{ $user->nom }} {{ $user->prenom }} !</h2>
                 </div>
                 <a href="{{ route('page.aide') }}" class="btn btn-outline-info">

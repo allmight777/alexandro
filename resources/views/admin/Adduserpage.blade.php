@@ -114,10 +114,10 @@
                             </div>
                         </div>
 
-                        
+
                         <div class="form-footer">
-                            <div class="d-flex justify-content-end">
-                                <button type="reset" class="btn btn-reset me-3">
+                            <div class="d-flex flex-wrap justify-content-end gap-2">
+                                <button type="reset" class="btn btn-reset">
                                     <i class="mdi mdi-refresh me-1"></i> Réinitialiser
                                 </button>
                                 <button type="submit" class="btn btn-submit">
@@ -125,6 +125,7 @@
                                 </button>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -132,28 +133,27 @@
     </div>
 @endsection
 @push('scripts')
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const togglePassword = document.getElementById("togglePassword");
-        const passwordField = document.getElementById("password");
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const togglePassword = document.getElementById("togglePassword");
+            const passwordField = document.getElementById("password");
 
-        const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
-        const confirmPasswordField = document.getElementById("confirmPassword");
+            const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+            const confirmPasswordField = document.getElementById("confirmPassword");
 
-        togglePassword.addEventListener("click", function () {
-            const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
-            passwordField.setAttribute("type", type);
-            this.querySelector("i").classList.toggle("mdi-eye");
-            this.querySelector("i").classList.toggle("mdi-eye-off");
+            togglePassword.addEventListener("click", function() {
+                const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+                passwordField.setAttribute("type", type);
+                this.querySelector("i").classList.toggle("mdi-eye");
+                this.querySelector("i").classList.toggle("mdi-eye-off");
+            });
+
+            toggleConfirmPassword.addEventListener("click", function() {
+                const type = confirmPasswordField.getAttribute("type") === "password" ? "text" : "password";
+                confirmPasswordField.setAttribute("type", type);
+                this.querySelector("i").classList.toggle("mdi-eye");
+                this.querySelector("i").classList.toggle("mdi-eye-off");
+            });
         });
-
-        toggleConfirmPassword.addEventListener("click", function () {
-            const type = confirmPasswordField.getAttribute("type") === "password" ? "text" : "password";
-            confirmPasswordField.setAttribute("type", type);
-            this.querySelector("i").classList.toggle("mdi-eye");
-            this.querySelector("i").classList.toggle("mdi-eye-off");
-        });
-    });
-</script>
+    </script>
 @endpush
-

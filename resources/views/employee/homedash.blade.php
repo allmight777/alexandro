@@ -4,7 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Toolzy | Tableau de bord Employé</title>
+    <title>J-Tools | Tableau de bord Employé</title>
     <!-- base:css -->
     <link rel="stylesheet" href="/vendors1/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="/vendors1/base/vendor.bundle.base.css">

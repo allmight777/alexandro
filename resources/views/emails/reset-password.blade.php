@@ -15,7 +15,7 @@
         <!-- En-tête -->
         <div style="text-align: center; margin-bottom: 30px;">
             <div style="font-size: 32px;">🛠️</div>
-            <h1 style="color: #1e293b; margin: 10px 0 5px;">JASPETools</h1>
+            <h1 style="color: #1e293b; margin: 10px 0 5px;">J-Tools</h1>
             <h2 style="color: #2563eb; font-size: 20px;">Réinitialisation de mot de passe</h2>
         </div>
 

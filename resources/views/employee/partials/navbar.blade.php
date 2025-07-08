@@ -44,7 +44,7 @@
                 <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                     <a class="navbar-brand brand-logo" href="index.html">
                         <i class="fas fa-tools me-2" style="color: var(--primary);"></i>
-                        <span class="logo-text">Jaspe-Tools</span>
+                        <span class="logo-text">J-Tools</span>
                     </a>
                     <a class="navbar-brand brand-logo-mini" href="index.html">
                         <i class="fas fa-tools" style="color: var(--primary);"></i>
