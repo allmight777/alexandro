@@ -183,6 +183,7 @@ class AdminController extends Controller
     $categories = Categorie::all();
     return view("admin.puttools", compact('equipement', 'categories'));
   }
+  
   public function putTool(UpdateEquipementRequest $request, Equipement $equipement)
   {
     $equipement->nom = $request->nom;
@@ -191,14 +192,43 @@ class AdminController extends Controller
     $equipement->description = $request->description;
     $equipement->date_acquisition = $request->date_acquisition;
     $equipement->quantite = $request->quantite_disponible;
+
     if ($request->hasFile('image_path')) {
-      $imagePath = $request->file('image_path')->store('pictures/equipments', 'public');
-      $equipement->image_path = $imagePath;
+      try {
+        $cloudinary = new Cloudinary();
+
+        // Optionnel : supprimer l'ancienne image si public_id est connu
+        // $cloudinary->uploadApi()->destroy($equipement->cloudinary_public_id);
+
+        $result = $cloudinary->uploadApi()->upload(
+          $request->file('image_path')->getRealPath(),
+          [
+            'folder' => 'equipements',
+            'public_id' => 'equipement_' . time() . '_' . $request->nom,
+            'resource_type' => 'image',
+            'transformation' => [
+              'quality' => 'auto',
+              'fetch_format' => 'auto'
+            ]
+          ]
+        );
+
+        $equipement->image_path = $result['secure_url'];
+        // Optionnel : sauvegarder le public_id pour suppression future
+        // $equipement->cloudinary_public_id = $result['public_id'];
+
+      } catch (\Exception $e) {
+        return redirect()->back()
+          ->with('error', 'Erreur lors de l\'upload de l\'image : ' . $e->getMessage())
+          ->withInput();
+      }
     }
+
     $equipement->save();
 
     return redirect()->back()->with('success', 'Équipement mis à jour avec succès.');
   }
+
   public function DeleteTool(Equipement $equipement)
   {
     $equipement->delete();
