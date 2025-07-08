@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.2",
         "ext-bcmath": "*",
+        "ext-gd": "*",
         "ext-pdo_mysql": "*",
         "barryvdh/laravel-dompdf": "^3.1",
         "cloudinary-labs/cloudinary-laravel": "^3.0",
