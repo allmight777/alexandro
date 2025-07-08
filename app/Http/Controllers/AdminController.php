@@ -122,11 +122,30 @@ class AdminController extends Controller
     $equipement->categorie_id = Categorie::where('nom', $request->categorie)->value('id');
     // Gestion de l'image si elle est envoyée
     if ($request->hasFile('image_path')) {
-      $file = $request->file('image_path');
-      $filename = time() . '_' . $file->getClientOriginalName();
-      $file->move(public_path('pictures/equipements'), $filename);
-      $equipement->image_path = 'pictures/equipements/' . $filename;
+      try {
+        $cloudinary = new Cloudinary();
+
+        $result = $cloudinary->uploadApi()->upload(
+          $request->file('image_path')->getRealPath(),
+          [
+            'folder' => 'equipements',
+            'public_id' => 'equipement_' . time() . '_' . $request->nom,
+            'resource_type' => 'image',
+            'transformation' => [
+              'quality' => 'auto',
+              'fetch_format' => 'auto'
+            ]
+          ]
+        );
+
+        $equipement->image_path = $result['secure_url']; // Stocke le lien direct dans la BDD
+      } catch (\Exception $e) {
+        return redirect()->back()
+          ->with('error', 'Erreur lors de l\'upload de l\'image de l\'équipement : ' . $e->getMessage())
+          ->withInput();
+      }
     }
+
     $equipement->save();
 
     $user = Auth::user();
@@ -164,6 +183,7 @@ class AdminController extends Controller
     $categories = Categorie::all();
     return view("admin.puttools", compact('equipement', 'categories'));
   }
+  
   public function putTool(UpdateEquipementRequest $request, Equipement $equipement)
   {
     $equipement->nom = $request->nom;
@@ -172,14 +192,43 @@ class AdminController extends Controller
     $equipement->description = $request->description;
     $equipement->date_acquisition = $request->date_acquisition;
     $equipement->quantite = $request->quantite_disponible;
+
     if ($request->hasFile('image_path')) {
-      $imagePath = $request->file('image_path')->store('pictures/equipments', 'public');
-      $equipement->image_path = $imagePath;
+      try {
+        $cloudinary = new Cloudinary();
+
+        // Optionnel : supprimer l'ancienne image si public_id est connu
+        // $cloudinary->uploadApi()->destroy($equipement->cloudinary_public_id);
+
+        $result = $cloudinary->uploadApi()->upload(
+          $request->file('image_path')->getRealPath(),
+          [
+            'folder' => 'equipements',
+            'public_id' => 'equipement_' . time() . '_' . $request->nom,
+            'resource_type' => 'image',
+            'transformation' => [
+              'quality' => 'auto',
+              'fetch_format' => 'auto'
+            ]
+          ]
+        );
+
+        $equipement->image_path = $result['secure_url'];
+        // Optionnel : sauvegarder le public_id pour suppression future
+        // $equipement->cloudinary_public_id = $result['public_id'];
+
+      } catch (\Exception $e) {
+        return redirect()->back()
+          ->with('error', 'Erreur lors de l\'upload de l\'image : ' . $e->getMessage())
+          ->withInput();
+      }
     }
+
     $equipement->save();
 
     return redirect()->back()->with('success', 'Équipement mis à jour avec succès.');
   }
+
   public function DeleteTool(Equipement $equipement)
   {
     $equipement->delete();
@@ -354,12 +403,12 @@ class AdminController extends Controller
     return view("admin.collaborator_external");
   }
 
-public function HandleCollaborator(Request $request)
-{
+  public function HandleCollaborator(Request $request)
+  {
     $request->validate([
-        'nom' => 'required|string|max:255',
-        'prenom' => 'required|string|max:255',
-        'chemin_carte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+      'nom' => 'required|string|max:255',
+      'prenom' => 'required|string|max:255',
+      'chemin_carte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
 
     $collaborator = new CollaborateurExterne();
@@ -368,35 +417,35 @@ public function HandleCollaborator(Request $request)
 
     // Upload vers Cloudinary au lieu du stockage local
     if ($request->hasFile('chemin_carte')) {
-        try {
-            $cloudinary = new Cloudinary();
-            
-            $result = $cloudinary->uploadApi()->upload(
-                $request->file('chemin_carte')->getRealPath(),
-                [
-                    'folder' => 'cartes_identite',
-                    'public_id' => 'carte_' . time() . '_' . $request->nom,
-                    'resource_type' => 'auto', // Supporte images et PDF
-                    'transformation' => [
-                        'quality' => 'auto',
-                        'fetch_format' => 'auto'
-                    ]
-                ]
-            );
-            
-            // Sauvegarder l'URL Cloudinary dans la BDD
-            $collaborator->carte_chemin = $result['secure_url'];
-            // $collaborator->carte_public_id = $result['public_id']; // Pour pouvoir supprimer plus tard
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Erreur lors de l\'upload du fichier: ' . $e->getMessage())
-                ->withInput();
-        }
+      try {
+        $cloudinary = new Cloudinary();
+
+        $result = $cloudinary->uploadApi()->upload(
+          $request->file('chemin_carte')->getRealPath(),
+          [
+            'folder' => 'cartes_identite',
+            'public_id' => 'carte_' . time() . '_' . $request->nom,
+            'resource_type' => 'auto', // Supporte images et PDF
+            'transformation' => [
+              'quality' => 'auto',
+              'fetch_format' => 'auto'
+            ]
+          ]
+        );
+
+        // Sauvegarder l'URL Cloudinary dans la BDD
+        $collaborator->carte_chemin = $result['secure_url'];
+        // $collaborator->carte_public_id = $result['public_id']; // Pour pouvoir supprimer plus tard
+      } catch (\Exception $e) {
+        return redirect()->back()
+          ->with('error', 'Erreur lors de l\'upload du fichier: ' . $e->getMessage())
+          ->withInput();
+      }
     }
 
     $collaborator->save();
     return redirect()->back()->with('success', 'Collaborateur ajouté avec succès.');
-}
+  }
   public function ShowListCollaborator()
   {
     $collaborateurs = CollaborateurExterne::all();

@@ -37,9 +37,9 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="/{{ $equip->image_path }}" alt="{{ $equip->nom }}"
+                                                <img src="{{ $equip->image_path }}" alt="{{ $equip->nom }}"
                                                     class="equipment-img"
-                                                    onclick="showImagePopup('/{{ $equip->image_path }}', '{{ $equip->nom }}')">
+                                                    onclick="showImagePopup('{{ $equip->image_path }}', '{{ $equip->nom }}')">
                                                 <span>{{ $equip->nom }}</span>
                                             </div>
                                         </td>
