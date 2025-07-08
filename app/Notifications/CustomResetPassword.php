@@ -29,7 +29,7 @@ class CustomResetPassword extends Notification
         ], false));
 
         return (new \Illuminate\Notifications\Messages\MailMessage)
-            ->subject('🔐 Réinitialisation de mot de passe - TOOLZY')
+            ->subject('🔐 Réinitialisation de mot de passe - J-Tools')
             ->view('emails.reset-password', [
                 'url' => $url,
                 'user' => $notifiable,
