@@ -359,14 +359,22 @@ class AdminController extends Controller
       'prenom' => 'required|string|max:255',
       'chemin_carte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
     ]);
+
+    // Nouveau upload via storeOnCloudinary
+    $upload = $request->file('chemin_carte')->storeOnCloudinary('cartes_identite');
+    $uploadedFileUrl = $upload->getSecurePath();
+    $publicId = $upload->getPublicId(); // utile si tu veux supprimer après
+
+    // Sauvegarde
     $collaborator = new CollaborateurExterne();
     $collaborator->nom = $request->nom;
     $collaborator->prenom = $request->prenom;
-    $cheminCarte = $request->file('chemin_carte')->store('cartes_identite', 'public');
-    $collaborator->carte_chemin = $cheminCarte;
+    $collaborator->carte_chemin = $uploadedFileUrl;
     $collaborator->save();
+
     return redirect()->back()->with('success', 'Collaborateur ajouté avec succès.');
   }
+
   public function ShowListCollaborator()
   {
     $collaborateurs = CollaborateurExterne::all();
