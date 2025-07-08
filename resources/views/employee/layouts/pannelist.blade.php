@@ -1,93 +1,143 @@
 @extends('employee.homedash')
-
-@push('styles')
-    <style>
-        .table thead th {
-            background-color: #f1f3f5;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-
-        .table tbody tr:hover {
-            background-color: #f9fcff;
-        }
-
-        .badge-status {
-            font-size: 0.85rem;
-            padding: 0.4em 0.7em;
-            border-radius: 0.375rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .badge-status i {
-            font-size: 1rem;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-        }
-    </style>
-@endpush
-
 @section('content')
 <div class="main-panel">
     <div class="content-wrapper px-4 py-3">
-        <h2 class="fw-bold mb-4 text-primary">📋 Mes pannes signalées</h2>
+        <div class="card shadow-sm">
+            <!-- Header simple et professionnel -->
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0 d-flex align-items-center">
+                    <i class="mdi mdi-alert-circle me-2"></i>
+                    Mes pannes signalées
+                </h4>
+            </div>
 
-        <div class="card dashboard-card shadow-sm p-3">
-            @if ($pannes->count())
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Équipement</th>
-                                <th>Description</th>
-                                <th>Date</th>
-                                <th>Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($pannes as $index => $panne)
-                                <tr>
-                                    <td class="text-muted">{{ $loop->iteration + ($pannes->currentPage() - 1) * $pannes->perPage() }}</td>
-                                    <td class="fw-semibold">{{ $panne->equipement->nom }}</td>
-                                    <td>
-                                        <span title="{{ $panne->description }}">
-                                            {{ Str::limit($panne->description, 50) }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $panne->created_at->format('d/m/Y') }}</td>
-                                    <td>
-                                        <span class="badge-status 
-                                            @if($panne->statut === 'resolu') bg-success
-                                            @else bg-danger
-                                            @endif text-white">
-                                            <i class="mdi {{ $panne->statut === 'resolu' ? 'mdi-check-circle-outline' : 'mdi-alert-circle-outline' }}"></i>
-                                            {{ ucfirst($panne->statut) }}
-                                        </span>
-                                    </td>
+            <div class="card-body">
+                @if ($pannes->count())
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table bg-danger">
+                                <tr> 
+                                    <th scope="col">#</th>
+                                    <th scope="col" class="text-white">
+                                        <i class="mdi mdi-desktop-tower me-1"></i>
+                                        Équipement
+                                    </th>
+                                    <th scope="col"  class="text-white">
+                                        <i class="mdi mdi-text-box-outline me-1"></i>
+                                        Description
+                                    </th>
+                                    <th scope="col"  class="text-white">
+                                        <i class="mdi mdi-calendar me-1"></i>
+                                        Date
+                                    </th>
+                                    <th scope="col"  class="text-white">
+                                        <i class="mdi mdi-alert-octagon me-1"></i>
+                                        Statut
+                                    </th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                @foreach ($pannes as $index => $panne)
+                                    <tr class="
+                                        bg
+                                    ">
+                                        <td class="fw-bold">
+                                            {{ $loop->iteration + ($pannes->currentPage() - 1) * $pannes->perPage() }}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-2">
+                                                    <i class="mdi mdi-desktop-tower text-danger fs-5"></i>
+                                                </div>
+                                                <span class="fw-semibold">{{ $panne->equipement->nom }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="text-dark" title="{{ $panne->description }}">
+                                                {{ Str::limit($panne->description, 50) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="text-dark">
+                                                <i class="mdi mdi-clock-outline me-1"></i>
+                                               <span class="fw-semibold"> {{ $panne->created_at->format('d/m/Y') }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if($panne->statut === 'resolu')
+                                                <span class="badge bg-success fs-6 px-3 py-2">
+                                                    <i class="mdi mdi-check-circle me-1"></i>
+                                                    Résolu
+                                                </span>
+                                            @else
+                                                <span class="badge bg-danger fs-6 px-3 py-2">
+                                                    <i class="mdi mdi-alert-circle me-1"></i>
+                                                    En panne
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
 
-                <!-- Pagination -->
-                <div class="mt-3 d-flex justify-content-center">
-                    {{ $pannes->links('pagination::bootstrap-5') }}
-                </div>
-            @else
-                <div class="no-data text-center">
-                    <i class="mdi mdi-bug-outline fs-1 text-muted"></i>
-                    <p class="text-muted">Aucune panne signalée pour le moment.</p>
-                </div>
-            @endif
+                    <!-- Pagination simple -->
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $pannes->links('pagination::bootstrap-5') }}
+                    </div>
+                @else
+                    <!-- Message vide avec contexte de panne -->
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="mdi mdi-wrench-outline text-danger" style="font-size: 4rem;"></i>
+                        </div>
+                        <h5 class="text-muted mb-2">Aucune panne signalée</h5>
+                        <p class="text-muted">Parfait ! Aucun incident technique à signaler pour le moment.</p>
+                        <button class="btn btn-danger mt-3">
+                            <i class="mdi mdi-plus me-2"></i>
+                            Signaler une nouvelle panne
+                        </button>
+                    </div>
+                @endif
+            </div>
         </div>
-
     </div>
 </div>
+
+<style>
+/* Styles Bootstrap personnalisés pour le contexte pannes */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, .02);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(220, 53, 69, .1) !important;
+}
+
+.table-warning {
+    background-color: rgba(255, 193, 7, .1) !important;
+}
+
+.table-success {
+    background-color: rgba(25, 135, 84, .1) !important;
+}
+
+.card-header.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.badge {
+    font-weight: 600;
+}
+
+.table th {
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+}
+
+.table td {
+    vertical-align: middle;
+}
+</style>
 @endsection
