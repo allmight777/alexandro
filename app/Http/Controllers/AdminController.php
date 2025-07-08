@@ -122,11 +122,28 @@ class AdminController extends Controller
     $equipement->categorie_id = Categorie::where('nom', $request->categorie)->value('id');
     // Gestion de l'image si elle est envoyée
     if ($request->hasFile('image_path')) {
-      $uploadedFileUrl = cloudinary()->upload($request->file('image_path')->getRealPath(), [
-        'folder' => 'equipements'
-      ])->getSecurePath();
+      try {
+        $cloudinary = new Cloudinary();
 
-      $equipement->image_path = $uploadedFileUrl;
+        $result = $cloudinary->uploadApi()->upload(
+          $request->file('image_path')->getRealPath(),
+          [
+            'folder' => 'equipements',
+            'public_id' => 'equipement_' . time() . '_' . $request->nom,
+            'resource_type' => 'image',
+            'transformation' => [
+              'quality' => 'auto',
+              'fetch_format' => 'auto'
+            ]
+          ]
+        );
+
+        $equipement->image_path = $result['secure_url']; // Stocke le lien direct dans la BDD
+      } catch (\Exception $e) {
+        return redirect()->back()
+          ->with('error', 'Erreur lors de l\'upload de l\'image de l\'équipement : ' . $e->getMessage())
+          ->withInput();
+      }
     }
 
     $equipement->save();
