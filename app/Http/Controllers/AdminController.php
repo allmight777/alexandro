@@ -118,7 +118,7 @@ class AdminController extends Controller
     $equipement->marque = $request->marque;
     $equipement->description = $request->description;
     $equipement->date_acquisition = $request->date_acquisition;
-    $equipement->quantite = $request->quantite;
+    $equipement->quantite = $request->quantite_disponible;
     $equipement->categorie_id = Categorie::where('nom', $request->categorie)->value('id');
     // Gestion de l'image si elle est envoyée
     if ($request->hasFile('image_path')) {
@@ -183,7 +183,7 @@ class AdminController extends Controller
     $categories = Categorie::all();
     return view("admin.puttools", compact('equipement', 'categories'));
   }
-  
+
   public function putTool(UpdateEquipementRequest $request, Equipement $equipement)
   {
     $equipement->nom = $request->nom;
