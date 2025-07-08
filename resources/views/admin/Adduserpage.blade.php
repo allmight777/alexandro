@@ -85,32 +85,43 @@
                                     <label for="poste" class="form-label required-label">Poste</label>
                                     <select class="form-select" id="poste" required name="poste">
                                         <option value="" selected disabled>Sélectionnez un poste</option>
-                                        <option value="developpeur">Développeur</option>
-                                        <option value="designer">Designer</option>
-                                        <option value="chef_projet">Chef de projet</option>
-                                        <option value="support">Support technique</option>
-                                        <option value="rh">Ressources Humaines</option>
+                                        <option value="stagiaire">Stagiaire</option>
+                                        <option value="technicien">Technicien</option>
+                                        <option value="electricien">Électricien</option>
+                                        <option value="rigger">Rigger</option>
+                                        <option value="support_technique">Support technique</option>
+                                        <option value="secretariat">Secrétariat</option>
+                                        <option value="comptabilite">Comptabilité</option>
+                                        <option value="team_leader">Team Leader</option>
+                                        <option value="directeur_technique">Directeur Technique</option>
+                                        <option value="directeur_general">Directeur Général</option>
                                     </select>
                                     @error('poste')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
+
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="service" class="form-label required-label">Service</label>
                                     <select class="form-select" id="service" required name="service">
                                         <option value="" selected disabled>Sélectionnez un service</option>
-                                        <option value="informatique">Informatique</option>
-                                        <option value="marketing">Marketing</option>
-                                        <option value="commercial">Commercial</option>
-                                        <option value="production">Production</option>
-                                        <option value="rh">Ressources Humaines</option>
+                                        <option value="secretariat">Secrétariat</option>
+                                        <option value="comptabilite">Comptabilité</option>
+                                        <option value="deploiement_ftth">Déploiement FTTH</option>
+                                        <option value="deploiement_fttr">Déploiement FTTR</option>
+                                        <option value="deploiement_reseaux">Déploiement Réseaux</option>
+                                        <option value="deploiement_securise_video">Déploiement Sécurisé et Vidéo
+                                            Surveillance</option>
+                                        <option value="service_informatique">Service Informatique</option>
+                                        <option value="direction">Direction</option>
                                     </select>
                                     @error('service')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
+
                             </div>
                         </div>
 
