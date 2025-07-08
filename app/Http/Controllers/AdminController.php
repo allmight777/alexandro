@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Cloudinary\Cloudinary;
 
 class AdminController extends Controller
 {
@@ -352,9 +353,6 @@ class AdminController extends Controller
 
     return view("admin.collaborator_external");
   }
- <?php
-
-use Cloudinary\Cloudinary;
 
 public function HandleCollaborator(Request $request)
 {
