@@ -1,7 +1,7 @@
 @extends('employee.homedash')
 
 @section('content')
-<div class="container mt-5">
+<div class="container" style="margin-top:74px;">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">Mes équipements assignés</h5>

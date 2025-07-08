@@ -14,10 +14,10 @@
         </div>
     @endif
 
-    <div class="container-fluid mt-4">
+    <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12 col-md-10 col-lg-8">
-                <div class="card shadow-lg">
+                <div class="card shadow-lg "style="margin-top:75px;">
                     <div class="card-header bg-danger text-white">
                         <h4 class="mb-0">Signaler une Panne</h4>
                     </div>

@@ -28,22 +28,27 @@
                 <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-toggle="dropdown"
                     aria-expanded="false">
                     <div class="d-flex align-items-center">
-                        <div class="profile-initials">{{$initials}}</div>
+                        <div class="profile-initials">{{ $initials }}</div>
                         <div class="nav-profile-text">
                             <p class="mb-1 text-black">{{ auth()->user()->nom }} {{ auth()->user()->prenom }}</p>
                         </div>
                     </div>
                 </a>
                 <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-                    <a class="dropdown-item" href="#">
+                    {{-- <a class="dropdown-item" href="#">
                         <i class="mdi mdi-cached mr-2 text-success"></i>
                         Journal d'activité
-                    </a>
+                    </a> --}}
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">
-                        <i class="mdi mdi-logout mr-2 text-primary"></i>
-                        Déconnexion
-                    </a>
+                    <form action="{{ route('logout') }}" method="POST" >
+                        @csrf
+                        <button type="submit" style="background: none; border: none;">
+                            <a class="dropdown-item">
+                                <i class="mdi mdi-logout mr-2 text-primary"></i>
+                                Déconnexion
+                            </a>
+                        </button>
+                    </form>
                 </div>
             </li>
 

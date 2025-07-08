@@ -3,10 +3,10 @@
     <div class="content-wrapper">
         <div class="row justify-content-center">
             <div class="col-md-10 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card mt-5">
+                    <div class="card-body" style="padding-top: 1.5rem;">
                         <h4 class="card-title">Faire une demande d'équipement</h4>
-                        {{-- ✅ Message de succès --}}
+                        {{--  Message de succès --}}
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 {{ session('success') }}
