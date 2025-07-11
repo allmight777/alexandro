@@ -108,7 +108,7 @@ class AdminController extends Controller
   }
   public function addToolpage()
   {
-    $categories = Categorie::all();
+    $categories = Categorie::toBase()->get();
 
     return view("admin.addtool", compact("categories"));
   }
