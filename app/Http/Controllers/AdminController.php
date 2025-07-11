@@ -38,6 +38,17 @@ class AdminController extends Controller
       $nbr_user = User::count();
       $nbr_affect = Affectation::sum('quantite_affectee');
       $nbr_panne = Panne::count();
+      $now=Carbon::now();
+      //processus de recuperation du pourcentage d'augmentation des users
+      $user_this_month=User::whereMonth('created_at',$now->month)
+                              ->whereYear('created_at',$now->year)
+                              ->count();
+      $user_before_month=User::where('created_at','<',$now->startOfMonth())->count();
+      
+      $growth=0;
+      if($nbr_user>0){
+        $growth=(($user_this_month-$user_before_month)/$nbr_user)*100;
+      }
 
       // Statistiques par mois
       $statsParMois = [];
@@ -53,7 +64,7 @@ class AdminController extends Controller
         return ['label' => $cat->nom, 'count' => $cat->equipements_count];
       });
 
-      return compact('nbr_equipement', 'nbr_user', 'nbr_affect', 'nbr_panne', 'statsParMois', 'distribution');
+      return compact('nbr_equipement', 'nbr_user', 'nbr_affect', 'nbr_panne', 'statsParMois', 'distribution','growth');
     });
 
     // Injecte dans la vue
