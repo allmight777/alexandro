@@ -28,6 +28,7 @@ class EmployeController extends Controller
         ->whereHas('equipement', function ($query) {
             $query->where('etat', 'usagé'); // ou 'usagé' selon l'orthographe exacte dans ta DB
         })
+        ->orderBy('created_at','desc')
         ->take(4)
         ->get();
         $pannes = Panne::with("equipement")->where('user_id', "=", $user->id)->get();
@@ -125,7 +126,7 @@ class EmployeController extends Controller
     public function equipementsAssignes()
     {
         $user = Auth::user();
-        $equipements = $user->equipements;
+        $equipements = $user->equipements()->where('etat', 'usag')->paginate(4); // pagination réelle des équipements
         return view("employee.layouts.assign", compact("user", "equipements"));
     }
     public function Helppage()

@@ -171,7 +171,6 @@
                                             <th>Nom</th>
                                             <th>Catégorie</th>
                                             <th>Date d'affectation</th>
-                                            <th>État</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -181,12 +180,13 @@
                                                 <td>{{ $affectation->equipement->categorie->nom ?? 'Non défini' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($affectation->created_at)->format('d/m/Y') }}
                                                 </td>
-                                                <td>
+                                                {{-- <td>
                                                     @php
                                                         $etat = $affectation->equipement->etat;
-                                                        $retourDepasse = \Carbon\Carbon::parse(
-                                                            $affectation->date_retour,
-                                                        )->lt(\Carbon\Carbon::now());
+                                                          $retourDepasse =  $affectation->date_retour > now()
+                                                        // $retourDepasse = \Carbon\Carbon::parse(
+                                                        //     $affectation->date_retour,
+                                                        // )->lt(\Carbon\Carbon::now());
                                                     @endphp
 
                                                     <span
@@ -197,10 +197,10 @@
                                                         @elseif ($etat === 'maintenance') bg-info text-dark
                                                         @else bg-secondary @endif
                                                     ">
-                                                        {{ $retourDepasse ? 'À retourner' : ucfirst($etat) }}
+                                                        {{ $retourDepasse  ? 'À retourner' : ucfirst($etat) }}
                                                     </span>
 
-                                                </td>
+                                                </td> --}}
                                             </tr>
                                         @endforeach
                                     </tbody>

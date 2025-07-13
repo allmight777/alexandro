@@ -134,7 +134,7 @@
     }
 
     .table {
-        border-collapse: separate;
+        border-collapse: collapse;
         border-spacing: 0 8px;
     }
 
