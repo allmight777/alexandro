@@ -267,13 +267,7 @@ class AdminController extends Controller
   public function Showaffectation()
   {
     $equipements_groupes = Categorie::with(['equipements' => function ($query) {
-      $query->where('etat', 'disponible')
-        ->where(function ($q) {
-          $q->whereHas('affectations', function ($q2) {
-            $q2->whereNull('date_retour');
-          })
-            ->orDoesntHave('affectations');
-        });
+      $query->where('etat',"=" ,'disponible');
     }])->get();
 
     $employes = User::where("role", "=", "employé")->get();
@@ -536,6 +530,12 @@ class AdminController extends Controller
   {
     $panne->statut = "resolu";
     $panne->save();
+    $equipement_panne=$panne->equipement;
+    if($equipement_panne){
+        $equipement_panne->etat="usagé";
+        $equipement_panne->save();
+    }
+    /// lorsque la pannne est resolue on rend l'equipement au user
     return redirect()->back();
   }
   public function DestroyAffect(Affectation $affectation)

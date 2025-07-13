@@ -85,7 +85,7 @@ class EmployeController extends Controller
     public function signalerPanne()
     {
         $user = Auth::user();
-        $equipements_user = $user->equipements->where('etat', "=", "disponible");
+        $equipements_user = $user->equipements->where('etat', "=", "usagé");
         return view("employee.layouts.panne", compact("user", "equipements_user"));
     }
 
@@ -126,7 +126,7 @@ class EmployeController extends Controller
     public function equipementsAssignes()
     {
         $user = Auth::user();
-        $equipements = $user->equipements()->where('etat', 'usag')->paginate(4); // pagination réelle des équipements
+        $equipements = $user->equipements()->where('etat', 'usagé')->paginate(4); // pagination réelle des équipements
         return view("employee.layouts.assign", compact("user", "equipements"));
     }
     public function Helppage()
