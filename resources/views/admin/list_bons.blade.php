@@ -1,5 +1,27 @@
 @extends('admin.layouts.adminlay')
 
+@push('styles')
+<style>
+    table th, table td {
+        border-right: 1px solid #dee2e6;
+        border-left: 1px solid #dee2e6;
+    }
+
+    table th:last-child,
+    table td:last-child {
+        border-right: none;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+    table thead th {
+        background-color: #f8f9fa;
+    }
+</style>
+@endpush
+
 @section('content')
     <h4 class="mb-4">Liste des Bons</h4>
 
@@ -11,7 +33,7 @@
                     <th>Date de création</th>
                     <th>Type</th>
                     <th>Téléchargement</th>
-                    <th>Action</th> {{-- Colonne pour supprimer --}}
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,4 +67,5 @@
             </tbody>
         </table>
     </div>
+    <div class="mt-2">{{ $bons->links() }}</div>
 @endsection

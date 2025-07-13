@@ -27,8 +27,7 @@
                                         <td>{{ $panne->user->nom }} {{ $panne->user->prenom }}</td>
                                         <td>{{ $panne->created_at->format('d/m/Y H:i') }}</td>
                                         <td class="text-center">
-                                                <form action="{{ route('pannes.resolu', $panne->id) }}" method="POST"
-                                                    onsubmit="return confirm('Marquer cette panne comme résolue ?');">
+                                                <form action="{{ route('pannes.resolu', $panne->id) }}" method="POST">
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit" class="btn btn-sm btn-success">
@@ -41,6 +40,7 @@
 
                             </tbody>
                         </table>
+                        <div class="mt-2">{{$pannes->links()}}</div>
                     </div>
                 @else
                     <div class="alert alert-info text-center">

@@ -3,7 +3,7 @@
 @push('styles')
     <style>
         .table thead th {
-            background-color: #f1f3f5;
+            background-color: rgb(93, 161, 93);
             font-weight: 600;
             text-transform: uppercase;
             font-size: 0.85rem;
@@ -35,19 +35,18 @@
 @section('content')
 <div class="main-panel">
     <div class="content-wrapper px-4 py-3">
-        <h2 class="fw-bold mb-4 text-primary">📄 Mes demandes d’équipement</h2>
 
         <div class="card dashboard-card shadow-sm p-3">
             @if ($demandes->count())
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover align-middle">
-                        <thead>
+                        <thead >
                             <tr>
-                                <th>#</th>
-                                <th>Motif</th>
-                                <th>Lieu</th>
-                                <th>Date</th>
-                                <th>Statut</th>
+                                <th class="text-white">#</th>
+                                <th class="text-white">Motif</th>
+                                <th class="text-white">Lieu</th>
+                                <th class="text-white">Date</th>
+                                <th class="text-white">Statut</th>
                             </tr>
                         </thead>
                         <tbody>

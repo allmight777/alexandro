@@ -34,6 +34,7 @@
                     </tbody>
                 </table>
             </div>
+           <div class="mt-2">{{ $rapports->links() }}</div>
         @endif
     </div>
 @endsection

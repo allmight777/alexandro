@@ -108,7 +108,7 @@ class AdminController extends Controller
   }
   public function addToolpage()
   {
-    $categories = Categorie::all();
+    $categories = Categorie::toBase()->get();
 
     return view("admin.addtool", compact("categories"));
   }
@@ -263,30 +263,6 @@ class AdminController extends Controller
     $demande->save();
     return redirect()->back();
   }
-  //   public function Showaffectation()
-  //   {
-  //     //formulaire avec select employée, select pour equipements,motif text area,date de retour
-  //     //recuperer la liste des employées && equipements
-  //     //pour l'insertion il faut les tables:affectations,bon,equipement(MAJ),
-  //     $categories = Categorie::with(['equipements' => function ($query) {
-  //       $query->where('etat', 'disponible')
-  //         ->where(function ($q) {
-  //           $q->whereHas('affectations', function ($q2) {
-  //             $q2->whereNull('date_retour');
-  //           })
-  //             ->orWhereDoesntHave('affectations', function ($q3) {
-  //               $q3->whereNull('date_retour');
-  //             });
-  //         });
-  //     }])->get();
-
-
-  //     $employes = User::where("role", "=", "employé")->get();
-  //     return view("admin.affectation", [
-  //         'equipements_groupes' => $categories,
-  //         'employes' => $employes
-  //     ]); 
-  //  }
 
   public function Showaffectation()
   {
@@ -314,17 +290,14 @@ class AdminController extends Controller
       'equipements.required' => 'le champ equipement est requis',
       'quantites.required' => 'le champ quantité est requis'
     ]);
-
-
     set_time_limit(120);
     DB::beginTransaction();
     $user = Auth::user();
-
     try {
       // Charger les équipements en bulk
       $equipementIds = $request->equipements;
       $equipements = Equipement::whereIn('id', $equipementIds)->get()->keyBy('id');
-      $affectationsDetails = [];
+      // $affectationsDetails = [];
       foreach ($request->equipements as $index => $equipement_id) {
         $quantite = $request->quantites[$index] ?? 1;
         $rawDate = $request->dates_retour[$index] ?? null;
@@ -350,11 +323,11 @@ class AdminController extends Controller
         $equipement->quantite -= $quantite;
         $equipement->etat = ($equipement->quantite > 0) ? "disponible" : "usagé";
         $equipement->save();
-        $affectationsDetails[] = [
-          'nom' => $equipement->nom,
-          'reference' => $equipement->reference ?? '',
-          'quantite' => $quantite,
-        ];
+        // $affectationsDetails[] = [
+        //   'nom' => $equipement->nom,
+        //   'reference' => $equipement->reference ?? '',
+        //   'quantite' => $quantite,
+        // ];
       }
 
       $bon = new Bon();
@@ -378,7 +351,7 @@ class AdminController extends Controller
         'motif' => $request->motif,
         'numero_bon' => $bon->id,
         'type' => $bon->statut,
-        'equipements' => $affectationsDetails,
+        // 'equipements' => $affectationsDetails,
       ]);
       $pdf->setPaper('A5', 'portrait');
 
@@ -398,13 +371,13 @@ class AdminController extends Controller
 
   public function Showpannes()
   {
-    $pannes = Panne::with(['equipement', 'user'])->where("statut", "=", "en_attente")->latest()->get();
+    $pannes = Panne::with(['equipement', 'user'])->where("statut", "=", "en_attente")->latest()->paginate(4);
     return view("admin.pannelist", compact('pannes'));
   }
   public function ShowToollost()
   {
     $equipement_lost = Affectation::with(['equipement', 'user'])
-      ->where('date_retour', '<=', now()->startOfDay()) // pour ignorer l'heure
+      ->where('date_retour', '<', now()->startOfDay()) // pour ignorer l'heure
       ->get();
     return view("admin.lost_tools", compact("equipement_lost"));
   }
@@ -459,7 +432,7 @@ class AdminController extends Controller
   }
   public function ShowListCollaborator()
   {
-    $collaborateurs = CollaborateurExterne::all();
+    $collaborateurs = CollaborateurExterne::paginate(4);
     return view("admin.list_collaborator", compact('collaborateurs'));
   }
   public function destroy(CollaborateurExterne $CollaborateurExterne)
@@ -470,7 +443,7 @@ class AdminController extends Controller
   public function ShowBons()
   {
 
-    $bons = Bon::all();
+    $bons = Bon::paginate(7);
     return view("admin.list_bons", compact('bons'));
   }
   public function CreateBon()
@@ -544,7 +517,7 @@ class AdminController extends Controller
   }
   public function Showlistaffectation()
   {
-    $affectations = Affectation::with(['equipement', 'user'])->latest()->get();
+    $affectations = Affectation::with(['equipement', 'user'])->latest()->paginate(4);
     return view("admin.affectlist", compact("affectations"));
   }
   public function LoadingAsk(Demande $demande)
@@ -555,7 +528,7 @@ class AdminController extends Controller
   }
   public function ShowRapport()
   {
-    $rapports = Rapport::orderBy('created_at', 'desc')->get();
+    $rapports = Rapport::orderBy('created_at', 'desc')->paginate(4);
     return view("admin.list_rapport", compact("rapports"));
   }
 

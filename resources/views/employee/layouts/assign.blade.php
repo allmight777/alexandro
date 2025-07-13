@@ -1,5 +1,4 @@
 @extends('employee.homedash')
-
 @section('content')
 <div class="container" style="margin-top:74px;">
     <div class="card shadow-sm">
@@ -63,5 +62,6 @@
             @endforeach
         </div>
     </div>
+    <div class="mt-2">{{$equipements->links()}}</div>
 </div>
 @endsection
