@@ -247,7 +247,7 @@ class AdminController extends Controller
   }
   public function ShowAllAsk()
   {
-    $demandes = Demande::with('equipements')->where("statut", "=", "en_attente")->latest()->get();
+    $demandes = Demande::with('equipements')->where("statut", "=", "en_attente")->latest()->paginate(7);
     return view("admin.asklist", compact("demandes"));
   }
   public function CheckAsk(Demande $demande)

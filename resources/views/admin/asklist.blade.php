@@ -98,8 +98,10 @@
                         <td colspan="4" class="text-center text-muted">Aucune demande pour le moment.</td>
                     </tr>
                 @endforelse
+
             </tbody>
         </table>
+        <div class="mt-2">{{$demandes->links()}}</div>
     </div>
 </div>
 @endsection

@@ -31,7 +31,10 @@ class EmployeController extends Controller
         ->orderBy('created_at','desc')
         ->take(4)
         ->get();
-        $pannes = Panne::with("equipement")->where('user_id', "=", $user->id)->get();
+        $pannes = Panne::with("equipement")->where('user_id', "=", $user->id)
+                          ->orderBy('created_at','desc')
+                          ->take(2)
+                          ->get();
 
         return view('employee.layouts.main', [
             'user' => $user,

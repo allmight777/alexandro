@@ -41,7 +41,6 @@
                                         <option value="disponible">Disponible</option>
                                         <option value="usagé">Usagé</option>
                                         <option value="en panne">En panne</option>
-                                        <option value="réparé">Réparé</option>
                                     </select>
                                     @error('etat')
                                         <div class="text-danger small">{{ $message }}</div>
