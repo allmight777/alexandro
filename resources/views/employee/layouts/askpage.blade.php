@@ -43,10 +43,18 @@
                                         <label>Équipement</label>
                                         <select name="equipements[]" class="form-control" required>
                                             <option value="">-- Sélectionner un équipement --</option>
-                                            @foreach ($equipements as $equipement)
-                                                <option value="{{ $equipement->id }}">{{ $equipement->nom }}</option>
+                                            @foreach ($equipements_par_categorie as $categorie)
+                                              @if ($categorie->equipements->count())
+                                                <optgroup label="{{ $categorie->nom }}">
+                                                    @foreach ($categorie->equipements as $equipement)
+                                                        <option value="{{ $equipement->id }}">{{ $equipement->nom }}
+                                                        </option>
+                                                    @endforeach
+                                                </optgroup>
+                                              @endif
                                             @endforeach
                                         </select>
+
                                         @error('equipements')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -99,8 +107,12 @@
                     <label>Équipement</label>
                     <select name="equipements[]" class="form-control" required>
                         <option value="">-- Sélectionner un équipement --</option>
-                        @foreach ($equipements as $equipement)
-                            <option value="{{ $equipement->id }}">{{ $equipement->nom }}</option>
+                        @foreach ($equipements_par_categorie as $categorie)
+                            <optgroup label="{{ $categorie->nom }}">
+                                @foreach ($categorie->equipements as $equipement)
+                                    <option value="{{ $equipement->id }}">{{ $equipement->nom }}</option>
+                                @endforeach
+                            </optgroup>
                         @endforeach
                     </select>
                 </div>

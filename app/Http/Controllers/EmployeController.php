@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Affectation;
+use App\Models\Categorie;
 use App\Models\Demande;
 use App\Models\Equipement;
 use App\Models\EquipementDemandé;
@@ -31,7 +32,10 @@ class EmployeController extends Controller
         ->orderBy('created_at','desc')
         ->take(4)
         ->get();
-        $pannes = Panne::with("equipement")->where('user_id', "=", $user->id)->get();
+        $pannes = Panne::with("equipement")->where('user_id', "=", $user->id)
+                          ->orderBy('created_at','desc')
+                          ->take(2)
+                          ->get();
 
         return view('employee.layouts.main', [
             'user' => $user,
@@ -42,9 +46,9 @@ class EmployeController extends Controller
     }
     public function ShowAskpage()
     {
-        $equipements = Equipement::all();
+        $equipements_par_categorie=Categorie::with("equipements")->get();
         $user = Auth::user();
-        return view("employee.layouts.askpage", compact('user', 'equipements'));
+        return view("employee.layouts.askpage", compact('user', 'equipements_par_categorie'));
     }
     public function SubmitAsk(Request $request)
     {
@@ -85,7 +89,7 @@ class EmployeController extends Controller
     public function signalerPanne()
     {
         $user = Auth::user();
-        $equipements_user = $user->equipements->where('etat', "=", "disponible");
+        $equipements_user = $user->equipements->where('etat', "=", "usagé");
         return view("employee.layouts.panne", compact("user", "equipements_user"));
     }
 
@@ -126,7 +130,7 @@ class EmployeController extends Controller
     public function equipementsAssignes()
     {
         $user = Auth::user();
-        $equipements = $user->equipements()->where('etat', 'usag')->paginate(4); // pagination réelle des équipements
+        $equipements = $user->equipements()->where('etat', 'usagé')->paginate(4); // pagination réelle des équipements
         return view("employee.layouts.assign", compact("user", "equipements"));
     }
     public function Helppage()

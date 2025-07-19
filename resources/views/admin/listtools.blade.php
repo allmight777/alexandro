@@ -28,7 +28,9 @@
                                     <th>Nom</th>
                                     <th>Description</th>
                                     <th>Catégorie</th>
+                                    <th>Qte</th>
                                     <th>Statut</th>
+                                    <th>Stock</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -45,9 +47,29 @@
                                         </td>
                                         <td>{{ $equip->description }}</td>
                                         <td>{{ $equip->categorie->nom }}</td>
+                                        <td>{{ $equip->quantite }}</td>
                                         <td>
                                             <span class="status-badge status-available">{{ $equip->etat }}</span>
                                         </td>
+                                        <td>
+                                            @php
+                                                $qte = $equip->quantite;
+                                                if ($qte <= 2) {
+                                                    $status = ['Insuffisant', 'danger']; // rouge
+                                                } elseif ($qte <= 4) {
+                                                    $status = ['Faible', 'warning']; // orange
+                                                } elseif ($qte <= 10) {
+                                                    $status = ['Moyen', 'info']; // bleu clair
+                                                } else {
+                                                    $status = ['Suffisant', 'success']; // vert
+                                                }
+                                            @endphp
+
+                                            <span class="badge badge-{{ $status[1] }}">
+                                                {{ $status[0] }}
+                                            </span>
+                                        </td>
+
                                         <td>
                                             <a href="{{ route('putToolpage', $equip->id) }}">
                                                 <i class="mdi mdi-pencil edit-icon action-icon" title="Modifier"></i>
