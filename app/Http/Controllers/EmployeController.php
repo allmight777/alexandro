@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Affectation;
+use App\Models\Categorie;
 use App\Models\Demande;
 use App\Models\Equipement;
 use App\Models\EquipementDemandé;
@@ -45,9 +46,9 @@ class EmployeController extends Controller
     }
     public function ShowAskpage()
     {
-        $equipements = Equipement::all();
+        $equipements_par_categorie=Categorie::with("equipements")->get();
         $user = Auth::user();
-        return view("employee.layouts.askpage", compact('user', 'equipements'));
+        return view("employee.layouts.askpage", compact('user', 'equipements_par_categorie'));
     }
     public function SubmitAsk(Request $request)
     {
