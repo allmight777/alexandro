@@ -22,16 +22,20 @@
                         @endif
                         <form method="POST" action="{{ route('demande.soumise') }}">
                             @csrf
-
                             <div class="row g-3">
                                 <div class="form-group col-12 col-md-6">
                                     <label for="lieu">Lieu</label>
                                     <input type="text" name="lieu" class="form-control" required>
+                                    @error('lieu')
+                                        <span class="text-danger mt-2">{{ $message }}</span>
+                                    @enderror
                                 </div>
-
                                 <div class="form-group col-12 col-md-6">
                                     <label for="motif">Usage</label>
                                     <textarea name="motif" class="form-control" rows="3" required></textarea>
+                                    @error('motif')
+                                        <span class="text-danger mt-2">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
 

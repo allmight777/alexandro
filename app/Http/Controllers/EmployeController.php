@@ -55,9 +55,11 @@ class EmployeController extends Controller
         $request->validate([
             'lieu' => 'required',
             'motif' => 'required',
-            'quantites' => 'required|array',
-            'equipements' => 'required|array'
+            'quantites' => 'required',
+            'equipements' => 'required'
         ], [
+            'lieu.required' => 'Le lieu est requis',
+            'motif.required' => 'Le motif est requis',
             'quantites.required' => 'Une quanitée est requise pour votre demande',
             'equipements.required' => 'Un equipements est requis pour la demande'
         ]);
