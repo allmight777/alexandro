@@ -32,7 +32,6 @@ class AdminController extends Controller
   {
     // Cache global de 5 minutes (300 sec) pour toute la data statistique
     $cacheKey = 'home_page_stats';
-
     $data = Cache::remember($cacheKey, 300, function () {
       $nbr_equipement = Equipement::count();
       $nbr_user = User::count();
