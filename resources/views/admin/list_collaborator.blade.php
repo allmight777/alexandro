@@ -51,7 +51,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-2">{{ $affectations->links() }}</div>
+                    <div class="mt-2">{{ $collaborateurs->links() }}</div>
                 @endif
             </div>
         </div>

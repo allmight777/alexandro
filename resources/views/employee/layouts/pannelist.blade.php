@@ -95,7 +95,7 @@
                         <h5 class="text-muted mb-2">Aucune panne signalée</h5>
                         <p class="text-muted">Parfait ! Aucun incident technique à signaler pour le moment.</p>
                         <button class="btn btn-danger mt-3">
-                            <i class="mdi mdi-plus me-2"></i>
+                            <i class="mdi mdi-plus me-2"> <a href="{{route('signaler.panne')}}"></a></i>
                             Signaler une nouvelle panne
                         </button>
                     </div>
