@@ -180,27 +180,7 @@
                                                 <td>{{ $affectation->equipement->categorie->nom ?? 'Non défini' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($affectation->created_at)->format('d/m/Y') }}
                                                 </td>
-                                                {{-- <td>
-                                                    @php
-                                                        $etat = $affectation->equipement->etat;
-                                                          $retourDepasse =  $affectation->date_retour > now()
-                                                        // $retourDepasse = \Carbon\Carbon::parse(
-                                                        //     $affectation->date_retour,
-                                                        // )->lt(\Carbon\Carbon::now());
-                                                    @endphp
-
-                                                    <span
-                                                                                                            class="badge 
-                                                        @if ($retourDepasse) bg-warning text-dark
-                                                        @elseif ($etat === 'fonctionnel') bg-success
-                                                        @elseif ($etat === 'en panne') bg-danger
-                                                        @elseif ($etat === 'maintenance') bg-info text-dark
-                                                        @else bg-secondary @endif
-                                                    ">
-                                                        {{ $retourDepasse  ? 'À retourner' : ucfirst($etat) }}
-                                                    </span>
-
-                                                </td> --}}
+                                             
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -240,7 +220,7 @@
                                                     <span
                                                         class="badge
                                     @if ($demande->statut === 'acceptee') bg-success
-                                    @elseif($demande->statut === 'refusee') bg-danger
+                                    @elseif($demande->statut === 'rejetee') bg-danger
                                     @else bg-warning text-dark @endif
                                 ">
                                                         {{ ucfirst($demande->statut) }}
