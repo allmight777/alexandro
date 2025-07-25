@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Equipement extends Model
 {
-    protected $fillable = ['nom', 'etat', 'marque', 'description', 'date_acquisition', 'image_path', 'categorie_id'];
+    protected $fillable = ['nom', 'etat', 'marque', 'description', 'date_acquisition', 'image_path', 'categorie_id','quantite'];
 
     // Relation avec les demandes (via la table pivot)
     public function categorie()

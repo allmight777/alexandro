@@ -69,7 +69,7 @@ Route::middleware('auth')->group(function () {
 Route::prefix("dashboard")->middleware(['auth', AdminOuGestionnaire::class])->group(function () {
     Route::get("/add_tool", [AdminController::class, "addToolpage"])
         ->name('addToolpage');
-    Route::post('/addtool', [AdminController::class, "addTool"])
+    Route::post("/add-tool_post", [AdminController::class, "addTool"])
         ->name('addTool');
     Route::get('/list_equip', [AdminController::class, "ShowToolpage"])
         ->name("ShowToolpage");

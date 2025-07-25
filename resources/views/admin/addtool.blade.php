@@ -22,8 +22,8 @@
 
                     <div class="card-body">
                         <form method="POST" action="{{ route('addTool') }}" enctype="multipart/form-data">
+                            @method('post')
                             @csrf
-
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="equipmentName" class="form-label required-label">Nom de l'équipement</label>
@@ -40,7 +40,8 @@
                                         <option value="" selected disabled>Choisissez l'état</option>
                                         <option value="disponible">Disponible</option>
                                         <option value="usagé">Usagé</option>
-                                        <option value="en panne">En panne</option>
+                                        <option value="en_panne">En panne</option>
+                                        <option value="retourné">A retourner</option>                                
                                     </select>
                                     @error('etat')
                                         <div class="text-danger small">{{ $message }}</div>
@@ -50,7 +51,7 @@
                                 <div class="col-md-6">
                                     <label for="equipmentBrand" class="form-label">Marque</label>
                                     <input type="text" class="form-control" name="marque" id="equipmentBrand"
-                                        placeholder="Ex: Dell, HP, Lenovo">
+                                        placeholder="Ex: Dell, HP, Lenovo" required>
                                     @error('marque')
                                         <div class="text-danger small">{{ $message }}</div>
                                     @enderror
@@ -72,7 +73,7 @@
                                 <div class="col-md-12">
                                     <label for="equipmentDescription" class="form-label">Description</label>
                                     <textarea class="form-control" name="description" id="equipmentDescription" rows="3"
-                                        placeholder="Ex: Ordinateur portable Core i5, 8Go RAM, SSD 256Go"></textarea>
+                                        placeholder="Ex: Ordinateur portable Core i5, 8Go RAM, SSD 256Go" required></textarea>
                                     @error('description')
                                         <div class="text-danger small">{{ $message }}</div>
                                     @enderror
@@ -80,7 +81,7 @@
 
                                 <div class="col-md-6">
                                     <label for="acquisitionDate" class="form-label">Date d'acquisition</label>
-                                    <input type="date" class="form-control" name="date_acquisition" id="acquisitionDate">
+                                    <input type="date" class="form-control" name="date_acquisition" id="acquisitionDate" required>
                                     @error('date_acquisition')
                                         <div class="text-danger small">{{ $message }}</div>
                                     @enderror
@@ -122,6 +123,8 @@
             </div>
         </div>
     </div>
+
+
 @endsection
 
 @push('scripts')
@@ -138,3 +141,4 @@
         </script>
     @endif
 @endpush
+

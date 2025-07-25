@@ -34,7 +34,7 @@
                                             <img src="/{{ $eq->image_path }}" alt="Photo" class="img-fluid rounded shadow-sm" style="max-width: 80px;">
                                         </a>
                                     </td>
-                                    <td>{{ $eq->pivot->date_retour ?? 'Aucune date de retour' }}</td>
+                                   <td>{{ $eq->pivot->date_retour ? $eq->pivot->date_retour->format('d/m/Y') : 'Aucune date de retour' }}</td> 
                                 </tr>
                             @endforeach
                         </tbody>

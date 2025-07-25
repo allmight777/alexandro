@@ -82,9 +82,9 @@ class AdminController extends Controller
 
   public function deleteuser(User $user)
   {
-    $user_del_message= $user->nom ." ". $user->prenom ." a été supprimée";
+    $user_del_message = $user->nom . " " . $user->prenom . " a été supprimée";
     $user->delete();
-    return redirect()->back()->with("deleted",$user_del_message);
+    return redirect()->back()->with("deleted", $user_del_message);
   }
 
   //
@@ -115,14 +115,42 @@ class AdminController extends Controller
   public function addTool(Request $request)
   {
     $request->validate([
-      'nom' => 'required|string|max:255',
-      'etat' => 'required|in:disponible,usagé,en panne,réparé',
-      'marque' => 'string|max:255',
+      'nom' => 'required|string',
+      'etat' => 'required',
+      'marque' => 'required|min:2',
       'categorie' => 'required|string|exists:categories,nom',
       'description' => 'required|string',
       'date_acquisition' => 'required|date',
       'image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+      'quantite_disponible'=>'required|integer|min:1'
+    ], [
+        'nom.required' => 'Le nom de l\'équipement est requis.',
+        'nom.string' => 'Le nom de l\'équipement doit être une chaîne de caractères.',
+        
+        'etat.required' => 'Veuillez sélectionner l\'état de l\'équipement.',
+        
+        'marque.required' => 'La marque de l\'équipement est requise.',
+        'marque.min' => 'La marque doit contenir au moins :min caractères.',
+        
+        'categorie.required' => 'La catégorie est requise.',
+        'categorie.exists' => 'La catégorie sélectionnée est invalide.',
+        
+        'description.required' => 'La description est obligatoire.',
+        'description.string' => 'La description doit être une chaîne de caractères.',
+        
+        'date_acquisition.required' => 'La date d\'acquisition est requise.',
+        'date_acquisition.date' => 'La date d\'acquisition doit être une date valide.',
+        
+        'image_path.required' => 'L\'image de l\'équipement est requise.',
+        'image_path.image' => 'Le fichier doit être une image.',
+        'image_path.mimes' => 'Le fichier doit être de type jpeg, png, jpg ou gif.',
+        'image_path.max' => 'L\'image ne doit pas dépasser 2 Mo.',
+        
+        'quantite_disponible.required' => 'La quantité disponible est requise.',
+        'quantite_disponible.integer' => 'La quantité doit être un nombre entier.',
+        'quantite_disponible.min' => 'La quantité minimale est 1.'
     ]);
+   
     $equipement = new Equipement();
     $equipement->nom = $request->nom;
     $equipement->etat = $request->etat;
@@ -149,15 +177,17 @@ class AdminController extends Controller
           ]
         );
 
-        $equipement->image_path = $result['secure_url']; // Stocke le lien direct dans la BDD
+       $equipement->image_path = $result['secure_url']; // Stocke le lien direct dans la BDD
       } catch (\Exception $e) {
         return redirect()->back()
           ->with('error', 'Erreur lors de l\'upload de l\'image de l\'équipement : ' . $e->getMessage())
           ->withInput();
       }
     }
+ 
 
     $equipement->save();
+
 
     $user = Auth::user();
     $bon = new Bon();
@@ -242,9 +272,9 @@ class AdminController extends Controller
 
   public function DeleteTool(Equipement $equipement)
   {
-    $equip_del=$equipement->nom;
+    $equip_del = $equipement->nom;
     $equipement->delete();
-    return  redirect()->back()->with("deleted","L'equipement " . $equip_del . " a été supprimer avec succès " );
+    return  redirect()->back()->with("deleted", "L'equipement " . $equip_del . " a été supprimer avec succès ");
   }
   public function ShowAllAsk()
   {
@@ -254,7 +284,7 @@ class AdminController extends Controller
   public function CheckAsk(Demande $demande)
 
   {
-    $demande->statut ="acceptee";
+    $demande->statut = "acceptee";
     $demande->save();
     return redirect()->back()->with("success", "La demande a été validée avec succès");
   }
@@ -268,7 +298,7 @@ class AdminController extends Controller
   public function Showaffectation()
   {
     $equipements_groupes = Categorie::with(['equipements' => function ($query) {
-      $query->where('etat', "=", 'disponible');
+      $query->whereIn('etat', ['disponible', 'retourné']);
     }])->get();
 
     $employes = User::where("role", "=", "employé")->get();
@@ -316,7 +346,7 @@ class AdminController extends Controller
         $affectation->save();
 
         $equipement->quantite -= $quantite;
-        $equipement->etat = ($equipement->quantite > 0) ? "disponible" : "usagé";
+        $equipement->etat = ($equipement->quantite > 0) ? "disponible" : "usagé"; ////warning:
         $equipement->save();
         // $affectationsDetails[] = [
         //   'nom' => $equipement->nom,
@@ -372,8 +402,17 @@ class AdminController extends Controller
   public function ShowToollost()
   {
     $equipement_lost = Affectation::with(['equipement', 'user'])
-      ->where('date_retour', '<', now()->startOfDay()) // pour ignorer l'heure
+      ->whereDate('date_retour', '<=', today())
+      ->whereHas('equipement', function ($query) {
+        $query->where('etat', '!=', 'retourné');
+      })
+      ->whereIn('id', function ($query) {
+        $query->selectRaw('MAX(id)')
+          ->from('affectations')
+          ->groupBy('equipement_id');
+      })
       ->get();
+
     return view("admin.lost_tools", compact("equipement_lost"));
   }
   public function CollaboratorsPage()
@@ -485,7 +524,7 @@ class AdminController extends Controller
 
     $equipement = $affectation->equipement;
     $equipement->quantite += $affectation->quantite_affectee;
-    $equipement->etat = "disponible";
+    $equipement->etat = "retourné";
     $equipement->save();
     $user = $affectation->user;
 
@@ -511,7 +550,7 @@ class AdminController extends Controller
       Storage::delete($bon->fichier_pdf);
     }
     $bon->delete();
-    return redirect()->back()->with("remove","le bon a été supprimer ");
+    return redirect()->back()->with("remove", "le bon a été supprimer ");
   }
   public function Showlistaffectation()
   {
