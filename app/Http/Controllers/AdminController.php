@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Http\Requests\EditRequest;
 use App\Http\Requests\UpdateEquipementRequest;
 use App\Models\Affectation;
@@ -254,13 +252,13 @@ class AdminController extends Controller
   {
     $demande->statut = "acceptee";
     $demande->save();
-    return redirect()->back();
+    return redirect()->back()->with("success","La demande a été acceptée avec succès");
   }
   public function CancelAsk(Demande $demande)
   {
     $demande->statut ="rejetee";
     $demande->save();
-    return redirect()->back();
+    return redirect()->back()->with("error","La demande a été refusée avec succès");
   }
 
   public function Showaffectation()
