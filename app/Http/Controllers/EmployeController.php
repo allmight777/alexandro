@@ -70,6 +70,7 @@ class EmployeController extends Controller
             $demande->lieu = $request->lieu;
             $demande->motif = $request->motif;
             $demande->user_id = $user->id;
+            $demande->statut="en_attente";
             $demande->save();
             $equipements = $request->equipements;
             $quantity = $request->quantites;
