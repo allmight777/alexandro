@@ -258,7 +258,7 @@ class AdminController extends Controller
   }
   public function CancelAsk(Demande $demande)
   {
-    $demande->statut = "rejetee";
+    $demande->statut = "refusee";
     $demande->save();
     return redirect()->back();
   }
