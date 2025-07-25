@@ -17,6 +17,16 @@
 
     <div class="row">
         <div class="col-12">
+            @if (session('deleted'))
+                <div
+                    class="alert alert-success shadow-sm d-flex align-items-center justify-content-between px-4 py-3 rounded mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="mdi mdi-check-circle-outline fs-4 me-2 text-success"></i>
+                        <span class="text-success fw-semibold">{{ session('deleted') }}</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                </div>
+            @endif
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Liste des équipements</h4>
@@ -89,6 +99,7 @@
                             </tbody>
                         </table>
                     </div>
+
                     @if ($equipements->count())
                         <div class="row mt-4">
                             <div class="col-12 col-md-6 text-center text-md-start mb-2 mb-md-0">

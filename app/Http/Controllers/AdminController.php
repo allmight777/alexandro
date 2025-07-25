@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Http\Requests\EditRequest;
 use App\Http\Requests\UpdateEquipementRequest;
 use App\Models\Affectation;
@@ -35,16 +37,16 @@ class AdminController extends Controller
       $nbr_user = User::count();
       $nbr_affect = Affectation::sum('quantite_affectee');
       $nbr_panne = Panne::count();
-      $now=Carbon::now();
+      $now = Carbon::now();
       //processus de recuperation du pourcentage d'augmentation des users
-      $user_this_month=User::whereMonth('created_at',$now->month)
-                              ->whereYear('created_at',$now->year)
-                              ->count();
-      $user_before_month=User::where('created_at','<',$now->startOfMonth())->count();
-      
-      $growth=0;
-      if($nbr_user>0){
-        $growth=(($user_this_month-$user_before_month)/$nbr_user)*100;
+      $user_this_month = User::whereMonth('created_at', $now->month)
+        ->whereYear('created_at', $now->year)
+        ->count();
+      $user_before_month = User::where('created_at', '<', $now->startOfMonth())->count();
+
+      $growth = 0;
+      if ($nbr_user > 0) {
+        $growth = (($user_this_month - $user_before_month) / $nbr_user) * 100;
       }
 
       // Statistiques par mois
@@ -61,7 +63,7 @@ class AdminController extends Controller
         return ['label' => $cat->nom, 'count' => $cat->equipements_count];
       });
 
-      return compact('nbr_equipement', 'nbr_user', 'nbr_affect', 'nbr_panne', 'statsParMois', 'distribution','growth');
+      return compact('nbr_equipement', 'nbr_user', 'nbr_affect', 'nbr_panne', 'statsParMois', 'distribution', 'growth');
     });
 
     // Injecte dans la vue
@@ -80,8 +82,9 @@ class AdminController extends Controller
 
   public function deleteuser(User $user)
   {
+    $user_del_message= $user->nom ." ". $user->prenom ." a été supprimée";
     $user->delete();
-    return redirect()->back();
+    return redirect()->back()->with("deleted",$user_del_message);
   }
 
   //
@@ -239,8 +242,9 @@ class AdminController extends Controller
 
   public function DeleteTool(Equipement $equipement)
   {
+    $equip_del=$equipement->nom;
     $equipement->delete();
-    return  redirect()->back();
+    return  redirect()->back()->with("deleted","L'equipement " . $equip_del . " a été supprimer avec succès " );
   }
   public function ShowAllAsk()
   {
@@ -250,21 +254,21 @@ class AdminController extends Controller
   public function CheckAsk(Demande $demande)
 
   {
-    $demande->statut = "acceptee";
+    $demande->statut ="acceptee";
     $demande->save();
-    return redirect()->back()->with("success","La demande a été acceptée avec succès");
+    return redirect()->back()->with("success", "La demande a été validée avec succès");
   }
   public function CancelAsk(Demande $demande)
   {
-    $demande->statut ="rejetee";
+    $demande->statut = "rejetee";
     $demande->save();
-    return redirect()->back()->with("error","La demande a été refusée avec succès");
+    return redirect()->back()->with("error", "La demande a été rejetée avec succès");
   }
 
   public function Showaffectation()
   {
     $equipements_groupes = Categorie::with(['equipements' => function ($query) {
-      $query->where('etat',"=" ,'disponible');
+      $query->where('etat', "=", 'disponible');
     }])->get();
 
     $employes = User::where("role", "=", "employé")->get();
@@ -429,7 +433,7 @@ class AdminController extends Controller
   public function destroy(CollaborateurExterne $CollaborateurExterne)
   {
     $CollaborateurExterne->delete();
-    return redirect()->back();
+    return redirect()->back()->with("remove", "le collaborateur a été supprimée");
   }
   public function ShowBons()
   {
@@ -503,8 +507,11 @@ class AdminController extends Controller
   }
   public function DeleteBon(Bon $bon)
   {
+    if ($bon->fichier_pdf && Storage::exists($bon->fichier_pdf)) {
+      Storage::delete($bon->fichier_pdf);
+    }
     $bon->delete();
-    return redirect()->back();
+    return redirect()->back()->with("remove","le bon a été supprimer ");
   }
   public function Showlistaffectation()
   {
@@ -515,7 +522,7 @@ class AdminController extends Controller
   {
     $demande->statut = "en_attente";
     $demande->save();
-    return redirect()->back();
+    return redirect()->back()->with("hold", "Demande mise en attente");
   }
   public function ShowRapport()
   {
@@ -527,17 +534,17 @@ class AdminController extends Controller
   {
     $panne->statut = "resolu";
     $panne->save();
-    $equipement_panne=$panne->equipement;
-    if($equipement_panne){
-        $equipement_panne->etat="usagé";
-        $equipement_panne->save();
+    $equipement_panne = $panne->equipement;
+    if ($equipement_panne) {
+      $equipement_panne->etat = "usagé";
+      $equipement_panne->save();
     }
     /// lorsque la pannne est resolue on rend l'equipement au user
-    return redirect()->back();
+    return redirect()->back()->with("success", "La panne a été resolue avec succès");
   }
   public function DestroyAffect(Affectation $affectation)
   {
     $affectation->delete();
-    return redirect()->back();
+    return redirect()->back()->with("remove", " l'affectation a été supprimée");
   }
 }

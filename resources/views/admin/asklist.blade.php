@@ -1,4 +1,14 @@
 @extends('admin.layouts.adminlay')
+@push('styles')
+<style>
+    .alert-hold {
+        background-color: #fffbe6;
+        border: 1px solid #ffe58f;
+        color: #664d03;
+    }
+</style>
+@endpush
+
 @section('content')
     <div class="container mt-4">
         @if (session('success'))
@@ -16,6 +26,17 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
             </div>
         @endif
+        @if (session('hold'))
+            <div
+                class="alert alert-hold shadow-sm d-flex align-items-center justify-content-between px-4 py-3 rounded mb-4 bg-warning">
+                <div class="d-flex align-items-center">
+                    <i class="mdi mdi-timer-sand fs-4 me-2 text-dark"></i>
+                    <span class="text-dark fw-semibold">{{ session('hold') }}</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+            </div>
+        @endif
+
         <h4 class="mb-4 fw-bold text-primary">Liste des demandes d’équipement</h4>
 
         <div class="table-responsive">
@@ -23,7 +44,7 @@
                 <thead class="table-primary">
                     <tr>
                         <th>Date</th>
-                        <th>Équipement(s) demandés</th>
+                        <th>Équipement(s) demandés(Quantité)</th>
                         <th>Motif</th>
                         <th class="text-center">Actions</th>
                     </tr>
@@ -33,9 +54,9 @@
                         <tr>
                             <td>{{ $demande->created_at->format('d/m/Y H:i') }}</td>
                             <td>
-                                @foreach ($demande->equipements as $equipement)
+                                 @foreach ($demande->equipements as $equipement)
                                     {{ $equipement->nom }} ({{ $equipement->pivot->nbr_equipement }})<br>
-                                @endforeach
+                                 @endforeach
                             </td>
                             <td>{{ $demande->motif }}</td>
                             <td class="text-center">

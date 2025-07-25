@@ -2,6 +2,13 @@
 
 @section('content')
     <div class="container mt-5">
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="mdi mdi-check-circle-outline me-2"></i>
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+            </div>
+        @endif
         <div class="card shadow-lg">
             <div class="card-header bg-dark text-white">
                 <h4 class="mb-0">Liste des Pannes Signalées</h4>
@@ -27,20 +34,20 @@
                                         <td>{{ $panne->user->nom }} {{ $panne->user->prenom }}</td>
                                         <td>{{ $panne->created_at->format('d/m/Y H:i') }}</td>
                                         <td class="text-center">
-                                                <form action="{{ route('pannes.resolu', $panne->id) }}" method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button type="submit" class="btn btn-sm btn-success">
-                                                        Résolu
-                                                    </button>
-                                                </form>
+                                            <form action="{{ route('pannes.resolu', $panne->id) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    Résolu
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @endforeach
 
                             </tbody>
                         </table>
-                        <div class="mt-2">{{$pannes->links()}}</div>
+                        <div class="mt-2">{{ $pannes->links() }}</div>
                     </div>
                 @else
                     <div class="alert alert-info text-center">
