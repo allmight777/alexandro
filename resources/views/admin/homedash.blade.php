@@ -37,7 +37,7 @@
                         <i class="mdi mdi-account-check mdi-24px float-right"></i>
                     </h4>
                     <h2 class="mb-5"> {{$nbr_affect}}</h2>
-                     <h6 class="card-text"> {{number_format(($nbr_affect/$nbr_equipement)*100,0) }}% du total des équipements</h6>
+                     <h6 class="card-text"> {{$nbr_affect===0?0:number_format(($nbr_affect/$nbr_equipement)*100,0) }}% du total des équipements</h6>
                 </div>
             </div>
         </div>
