@@ -67,8 +67,10 @@
                                     <label for="role" class="form-label required-label">Rôle</label>
                                     <select class="form-select" id="role" required name="role">
                                         <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>admin</option>
-                                        <option value="gestionnaire" {{ $user->role == 'gestionnaire' ? 'selected' : '' }}>gestionnaire</option>
-                                        <option value="employé" {{ $user->role == 'employé' ? 'selected' : '' }}>employé</option>
+                                        <option value="gestionnaire" {{ $user->role == 'gestionnaire' ? 'selected' : '' }}>
+                                            gestionnaire</option>
+                                        <option value="employé" {{ $user->role == 'employé' ? 'selected' : '' }}>employé
+                                        </option>
                                     </select>
                                     @error('role')
                                         <span class="text-danger">{{ $message }}</span>
@@ -82,10 +84,14 @@
                                 <div class="mb-3">
                                     <label for="poste" class="form-label required-label">Poste</label>
                                     <select class="form-select" id="poste" required name="poste">
-                                        <option value="developpeur" {{ $user->poste == 'developpeur' ? 'selected' : '' }}>developpeur</option>
-                                        <option value="designer" {{ $user->poste == 'designer' ? 'selected' : '' }}>designer</option>
-                                        <option value="chef_projet" {{ $user->poste == 'chef_projet' ? 'selected' : '' }}>chef_projet</option>
-                                        <option value="support" {{ $user->poste == 'support' ? 'selected' : '' }}>support</option>
+                                        <option value="developpeur" {{ $user->poste == 'developpeur' ? 'selected' : '' }}>
+                                            developpeur</option>
+                                        <option value="designer" {{ $user->poste == 'designer' ? 'selected' : '' }}>
+                                            designer</option>
+                                        <option value="chef_projet" {{ $user->poste == 'chef_projet' ? 'selected' : '' }}>
+                                            chef_projet</option>
+                                        <option value="support" {{ $user->poste == 'support' ? 'selected' : '' }}>support
+                                        </option>
                                     </select>
                                     @error('poste')
                                         <span class="text-danger">{{ $message }}</span>
@@ -96,10 +102,14 @@
                                 <div class="mb-3">
                                     <label for="service" class="form-label required-label">Service</label>
                                     <select class="form-select" id="service" required name="service">
-                                        <option value="informatique" {{ $user->service == 'informatique' ? 'selected' : '' }}>informatique</option>
-                                        <option value="marketing" {{ $user->service == 'marketing' ? 'selected' : '' }}>marketing</option>
-                                        <option value="commercial" {{ $user->service == 'commercial' ? 'selected' : '' }}>commercial</option>
-                                        <option value="production" {{ $user->service == 'production' ? 'selected' : '' }}>production</option>
+                                        <option value="informatique"
+                                            {{ $user->service == 'informatique' ? 'selected' : '' }}>informatique</option>
+                                        <option value="marketing" {{ $user->service == 'marketing' ? 'selected' : '' }}>
+                                            marketing</option>
+                                        <option value="commercial" {{ $user->service == 'commercial' ? 'selected' : '' }}>
+                                            commercial</option>
+                                        <option value="production" {{ $user->service == 'production' ? 'selected' : '' }}>
+                                            production</option>
                                         <option value="rh" {{ $user->service == 'rh' ? 'selected' : '' }}>rh</option>
                                     </select>
                                     @error('service')
@@ -120,16 +130,16 @@
                                             <i class="mdi mdi-eye"></i>
                                         </button>
                                     </div>
-                                    @if ($errors->has('password') && !str_contains($errors->first('password'), 'confirmation'))
-                                        <span class="text-danger">{{ $errors->first('password') }}</span>
-                                    @endif
+                                    @error('password')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-footer">
-                            <div class="d-flex justify-content-end">
-                                <button type="reset" class="btn btn-reset me-3">
+                            <div class="d-flex flex-column flex-md-row justify-content-end gap-2">
+                                <button type="reset" class="btn btn-reset">
                                     <i class="mdi mdi-refresh me-1"></i> Réinitialiser
                                 </button>
                                 <button type="submit" class="btn btn-submit">
@@ -137,6 +147,7 @@
                                 </button>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -144,18 +155,18 @@
     </div>
 @endsection
 @push('scripts')
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
 
-        togglePassword.addEventListener('click', function () {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
 
-            this.querySelector('i').classList.toggle('mdi-eye');
-            this.querySelector('i').classList.toggle('mdi-eye-off');
+                this.querySelector('i').classList.toggle('mdi-eye');
+                this.querySelector('i').classList.toggle('mdi-eye-off');
+            });
         });
-    });
-</script>
+    </script>
 @endpush

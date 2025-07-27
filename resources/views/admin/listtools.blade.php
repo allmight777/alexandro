@@ -1,4 +1,38 @@
 @extends('admin.layouts.adminlay')
+@push('styles')
+    <style>
+        /* Supprimer tout effet de focus visuel */
+        a:focus,
+        a:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Pour tous les liens contenant uniquement des icônes */
+        .action-icon {
+            color: inherit;
+            /* garder la couleur normale */
+            text-decoration: none;
+            /* enlever tout soulignement */
+            transition: color 0.2s ease-in-out;
+            font-size: 18px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .action-icon:hover {
+            color: #007bff;
+            /* couleur au survol */
+        }
+
+        /* Supprime la bordure bleue sur icône quand on clique */
+        .action-icon:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    </style>
+@endpush
+
 @section('content')
     <div class="page-header">
         <h3 class="page-title">
@@ -17,6 +51,16 @@
 
     <div class="row">
         <div class="col-12">
+            @if (session('deleted'))
+                <div
+                    class="alert alert-success shadow-sm d-flex align-items-center justify-content-between px-4 py-3 rounded mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="mdi mdi-check-circle-outline fs-4 me-2 text-success"></i>
+                        <span class="text-success fw-semibold">{{ session('deleted') }}</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                </div>
+            @endif
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Liste des équipements</h4>
@@ -39,7 +83,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="{{ $equip->image_path }}" alt="{{ $equip->nom }}"
+                                                <img src="/{{ $equip->image_path }}" alt="{{ $equip->nom }}"
                                                     class="equipment-img"
                                                     onclick="showImagePopup('{{ $equip->image_path }}', '{{ $equip->nom }}')">
                                                 <span>{{ $equip->nom }}</span>
@@ -71,13 +115,20 @@
                                         </td>
 
                                         <td>
-                                            <a href="{{ route('putToolpage', $equip->id) }}">
-                                                <i class="mdi mdi-pencil edit-icon action-icon" title="Modifier"></i>
-                                            </a>
-                                            <a href="{{ route('DeleteTool', $equip->id) }}">
-                                                <i class="mdi mdi-delete delete-icon action-icon" title="Supprimer"></i>
-                                            </a>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <a href="{{ route('putToolpage', $equip->id) }}"
+                                                    class="text-decoration-none">
+                                                    <i class="mdi mdi-pencil edit-icon action-icon fs-5"
+                                                        title="Modifier"></i>
+                                                </a>
+                                                <a href="{{ route('DeleteTool', $equip->id) }}"
+                                                    class="text-decoration-none">
+                                                    <i class="mdi mdi-delete delete-icon action-icon fs-5"
+                                                        title="Supprimer"></i>
+                                                </a>
+                                            </div>
                                         </td>
+
                                     </tr>
                                 @empty
                                     <tr>
@@ -89,6 +140,7 @@
                             </tbody>
                         </table>
                     </div>
+
                     @if ($equipements->count())
                         <div class="row mt-4">
                             <div class="col-12 col-md-6 text-center text-md-start mb-2 mb-md-0">

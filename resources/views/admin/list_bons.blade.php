@@ -1,30 +1,40 @@
 @extends('admin.layouts.adminlay')
 
 @push('styles')
-<style>
-    table th, table td {
-        border-right: 1px solid #dee2e6;
-        border-left: 1px solid #dee2e6;
-    }
+    <style>
+        table th,
+        table td {
+            border-right: 1px solid #dee2e6;
+            border-left: 1px solid #dee2e6;
+        }
 
-    table th:last-child,
-    table td:last-child {
-        border-right: none;
-    }
+        table th:last-child,
+        table td:last-child {
+            border-right: none;
+        }
 
-    table {
-        border-collapse: collapse;
-    }
+        table {
+            border-collapse: collapse;
+        }
 
-    table thead th {
-        background-color: #f8f9fa;
-    }
-</style>
+        table thead th {
+            background-color: #f8f9fa;
+        }
+    </style>
 @endpush
 
 @section('content')
+    @if (session('remove'))
+        <div
+            class="alert alert-danger alert-dismissible fade show d-flex justify-content-between align-items-center px-4 py-3 rounded mb-4 shadow-sm">
+            <div class="d-flex align-items-center">
+                <i class="mdi mdi-delete-forever-outline fs-4 me-2 text-danger"></i>
+                <span class="fw-semibold text-danger">{{ session('remove') }}</span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+    @endif
     <h4 class="mb-4">Liste des Bons</h4>
-
     <div class="table-responsive">
         <table class="table table-striped table-hover align-middle">
             <thead>
@@ -44,7 +54,8 @@
                         <td>{{ $bon->statut }}</td>
                         <td>
                             @if ($bon->fichier_pdf)
-                                <a href="{{ asset('storage/' . $bon->fichier_pdf) }}" class="btn btn-sm btn-primary" download>
+                                <a href="{{ asset('storage/' . $bon->fichier_pdf) }}" class="btn btn-sm btn-primary"
+                                    download>
                                     Télécharger
                                 </a>
                             @else

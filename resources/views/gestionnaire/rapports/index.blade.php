@@ -1,5 +1,4 @@
 @extends('admin.layouts.adminlay')
-
 @section('content')
     <div class="container-fluid py-4">
         <!-- Titre -->
@@ -85,7 +84,7 @@
                                                     </a>
                                                 </td>
                                                 <td class="px-4 py-3 text-center">
-                                                    <form action="{{ route('rapports.destroy', $rapport->id) }}"
+                                                    <form action="{{ route('gestionnaire.rapports.destroy', $rapport->id) }}"
                                                         method="POST"
                                                         onsubmit="return confirm('Voulez-vous vraiment supprimer ce rapport ?');">
                                                         @csrf

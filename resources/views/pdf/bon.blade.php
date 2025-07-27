@@ -152,8 +152,38 @@
         <div class="info-section">
             <p><strong>Date :</strong> {{ $date ?? now()->format('d/m/Y') }}</p>
             <p><strong>Numéro :</strong> {{ $numero_bon ?? '...' }}</p>
-            <p><strong style="display:inline-block; min-width:130px;">Nom & Prénoms:</strong><span style="display:inline-block;">{{ ($nom ?? 'Nom') . ' ' . ($prenom ?? '') }}</span></p>
+            <p><strong style="display:inline-block; min-width:130px;">Nom & Prénoms:</strong><span
+                    style="display:inline-block;">{{ ($nom ?? 'Nom') . ' ' . ($prenom ?? '') }}</span></p>
         </div>
+
+        <!-- ... autres sections du bon -->
+
+        @if (!empty($equipements) && count($equipements) > 0)
+            <h3 style="margin-top: 20px;">Détails des équipements affectés</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #aaa; padding: 5px; background: #eee;">N°</th>
+                        <th style="border: 1px solid #aaa; padding: 5px; background: #eee;">Désignation</th>
+                        <th style="border: 1px solid #aaa; padding: 5px; background: #eee;">Quantité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($equipements as $index => $eq)
+                        <tr>
+                            <td style="border: 1px solid #ccc; padding: 4px;">{{ $index + 1 }}</td>
+                            <td style="border: 1px solid #ccc; padding: 4px;">{{ $eq['nom'] ?? 'Inconnu' }}</td>
+                            <td style="border: 1px solid #ccc; padding: 4px; text-align:center;">
+                                {{ $eq['quantite'] ?? '' }}
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+
+        <!-- ... suite du bon -->
+
 
         <!-- Motif -->
         <div class="info-section">

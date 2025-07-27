@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <!-- Required meta tags -->
     <base href="/public">
@@ -65,7 +66,7 @@
         <script src="js/template.js"></script>
         <!-- endinject -->
         <!-- Custom js for this page-->
-         @stack('scripts')
+        @stack('scripts')
         <script src="js/dashboard.js"></script>
         <script>
             // Personnalisation des graphiques pour Toolzy
@@ -284,16 +285,23 @@
 
 
                 // Gestion de la recherche dans la navbar
+                const searchBtn = document.getElementById('navbar-search-btn');
                 const searchInput = document.getElementById('navbar-search');
-                searchInput.addEventListener('keyup', function() {
-                    const searchTerm = this.value.toLowerCase();
+
+                searchBtn.addEventListener('click', function() {
+                    const searchTerm = searchInput.value.toLowerCase().trim();
                     const rows = document.querySelectorAll('tbody tr');
 
                     rows.forEach(row => {
-                        const text = row.textContent.toLowerCase();
+                        const equipementName = row.querySelector(
+                        'td:nth-child(2)'); // 2ème colonne = nom de l'équipement
+                        const text = equipementName ? equipementName.textContent.toLowerCase() : '';
+
                         row.style.display = text.includes(searchTerm) ? '' : 'none';
                     });
                 });
+
+
             });
         </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

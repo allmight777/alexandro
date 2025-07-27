@@ -23,19 +23,21 @@ class EmployeController extends Controller
     {
         // ou toute autre variable que tu veux passer
         $user = Auth::user();
-        $demandes = Demande::orderBy('created_at', 'desc')->get()->take(3);
-         $affectations = Affectation::with('equipement')
-        ->where('user_id', $user->id)
-        ->whereHas('equipement', function ($query) {
-            $query->where('etat', 'usagé'); // ou 'usagé' selon l'orthographe exacte dans ta DB
-        })
-        ->orderBy('created_at','desc')
-        ->take(4)
-        ->get();
+        $demandes = Demande::orderBy('created_at', 'desc')
+            ->where('user_id', '=', $user->id)
+            ->get()->take(3);
+        $affectations = Affectation::with('equipement')
+            ->where('user_id', $user->id)
+            ->whereHas('equipement', function ($query) {
+                $query->where('etat', 'usagé'); // ou 'usagé' selon l'orthographe exacte dans ta DB
+            })
+            ->orderBy('created_at', 'desc')
+            ->take(4)
+            ->get();
         $pannes = Panne::with("equipement")->where('user_id', "=", $user->id)
-                          ->orderBy('created_at','desc')
-                          ->take(2)
-                          ->get();
+            ->orderBy('created_at', 'desc')
+            ->take(2)
+            ->get();
 
         return view('employee.layouts.main', [
             'user' => $user,
@@ -46,7 +48,7 @@ class EmployeController extends Controller
     }
     public function ShowAskpage()
     {
-        $equipements_par_categorie=Categorie::with("equipements")->get();
+        $equipements_par_categorie = Categorie::with("equipements")->get();
         $user = Auth::user();
         return view("employee.layouts.askpage", compact('user', 'equipements_par_categorie'));
     }
@@ -55,9 +57,11 @@ class EmployeController extends Controller
         $request->validate([
             'lieu' => 'required',
             'motif' => 'required',
-            'quantites' => 'required|array',
-            'equipements' => 'required|array'
+            'quantites' => 'required',
+            'equipements' => 'required'
         ], [
+            'lieu.required' => 'Le lieu est requis',
+            'motif.required' => 'Le motif est requis',
             'quantites.required' => 'Une quanitée est requise pour votre demande',
             'equipements.required' => 'Un equipements est requis pour la demande'
         ]);
@@ -68,6 +72,7 @@ class EmployeController extends Controller
             $demande->lieu = $request->lieu;
             $demande->motif = $request->motif;
             $demande->user_id = $user->id;
+            $demande->statut = "en_attente";
             $demande->save();
             $equipements = $request->equipements;
             $quantity = $request->quantites;
@@ -107,7 +112,7 @@ class EmployeController extends Controller
         // Mettre à jour l'état de l'équipement à 'panne'
         $equipement = Equipement::find($request->equipement_id);
         if ($equipement) {
-            $equipement->etat = 'en panne';
+            $equipement->etat = 'en_panne';
             $equipement->save();
         }
 
@@ -130,8 +135,11 @@ class EmployeController extends Controller
     public function equipementsAssignes()
     {
         $user = Auth::user();
-        $equipements = $user->equipements()->where('etat', 'usagé')->paginate(4); // pagination réelle des équipements
-        return view("employee.layouts.assign", compact("user", "equipements"));
+        $affectation = Affectation::with("equipement")
+            ->where('user_id',"=",$user->id)
+            ->paginate(4)
+            ; // pagination réelle des équipements
+        return view("employee.layouts.assign", compact("user", "affectation"));
     }
     public function Helppage()
     {
@@ -189,6 +197,6 @@ class EmployeController extends Controller
             ->orderByDesc('created_at')
             ->paginate(5);
 
-        return view("employee.layouts.list_demandes",compact('user','demandes'));
+        return view("employee.layouts.list_demandes", compact('user', 'demandes'));
     }
 }

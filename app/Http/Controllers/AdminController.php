@@ -32,22 +32,21 @@ class AdminController extends Controller
   {
     // Cache global de 5 minutes (300 sec) pour toute la data statistique
     $cacheKey = 'home_page_stats';
-
     $data = Cache::remember($cacheKey, 300, function () {
       $nbr_equipement = Equipement::count();
       $nbr_user = User::count();
       $nbr_affect = Affectation::sum('quantite_affectee');
-      $nbr_panne = Panne::count();
-      $now=Carbon::now();
+      $nbr_panne = Equipement::where('etat', "=", "en_panne")->count();
+      $now = Carbon::now();
       //processus de recuperation du pourcentage d'augmentation des users
-      $user_this_month=User::whereMonth('created_at',$now->month)
-                              ->whereYear('created_at',$now->year)
-                              ->count();
-      $user_before_month=User::where('created_at','<',$now->startOfMonth())->count();
-      
-      $growth=0;
-      if($nbr_user>0){
-        $growth=(($user_this_month-$user_before_month)/$nbr_user)*100;
+      $user_this_month = User::whereMonth('created_at', $now->month)
+        ->whereYear('created_at', $now->year)
+        ->count();
+      $user_before_month = User::where('created_at', '<', $now->startOfMonth())->count();
+
+      $growth = 0;
+      if ($nbr_user > 0) {
+        $growth = (($user_this_month - $user_before_month) / $nbr_user) * 100;
       }
 
       // Statistiques par mois
@@ -64,7 +63,7 @@ class AdminController extends Controller
         return ['label' => $cat->nom, 'count' => $cat->equipements_count];
       });
 
-      return compact('nbr_equipement', 'nbr_user', 'nbr_affect', 'nbr_panne', 'statsParMois', 'distribution','growth');
+      return compact('nbr_equipement', 'nbr_user', 'nbr_affect', 'nbr_panne', 'statsParMois', 'distribution', 'growth');
     });
 
     // Injecte dans la vue
@@ -83,8 +82,9 @@ class AdminController extends Controller
 
   public function deleteuser(User $user)
   {
+    $user_del_message = $user->nom . " " . $user->prenom . " a été supprimée";
     $user->delete();
-    return redirect()->back();
+    return redirect()->back()->with("deleted", $user_del_message);
   }
 
   //
@@ -115,14 +115,42 @@ class AdminController extends Controller
   public function addTool(Request $request)
   {
     $request->validate([
-      'nom' => 'required|string|max:255',
-      'etat' => 'required|in:disponible,usagé,en panne,réparé',
-      'marque' => 'string|max:255',
+      'nom' => 'required|string',
+      'etat' => 'required',
+      'marque' => 'required|min:2',
       'categorie' => 'required|string|exists:categories,nom',
       'description' => 'required|string',
       'date_acquisition' => 'required|date',
       'image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+      'quantite_disponible' => 'required|integer|min:1'
+    ], [
+      'nom.required' => 'Le nom de l\'équipement est requis.',
+      'nom.string' => 'Le nom de l\'équipement doit être une chaîne de caractères.',
+
+      'etat.required' => 'Veuillez sélectionner l\'état de l\'équipement.',
+
+      'marque.required' => 'La marque de l\'équipement est requise.',
+      'marque.min' => 'La marque doit contenir au moins :min caractères.',
+
+      'categorie.required' => 'La catégorie est requise.',
+      'categorie.exists' => 'La catégorie sélectionnée est invalide.',
+
+      'description.required' => 'La description est obligatoire.',
+      'description.string' => 'La description doit être une chaîne de caractères.',
+
+      'date_acquisition.required' => 'La date d\'acquisition est requise.',
+      'date_acquisition.date' => 'La date d\'acquisition doit être une date valide.',
+
+      'image_path.required' => 'L\'image de l\'équipement est requise.',
+      'image_path.image' => 'Le fichier doit être une image.',
+      'image_path.mimes' => 'Le fichier doit être de type jpeg, png, jpg ou gif.',
+      'image_path.max' => 'L\'image ne doit pas dépasser 2 Mo.',
+
+      'quantite_disponible.required' => 'La quantité disponible est requise.',
+      'quantite_disponible.integer' => 'La quantité doit être un nombre entier.',
+      'quantite_disponible.min' => 'La quantité minimale est 1.'
     ]);
+
     $equipement = new Equipement();
     $equipement->nom = $request->nom;
     $equipement->etat = $request->etat;
@@ -132,6 +160,21 @@ class AdminController extends Controller
     $equipement->quantite = $request->quantite_disponible;
     $equipement->categorie_id = Categorie::where('nom', $request->categorie)->value('id');
     // Gestion de l'image si elle est envoyée
+    // if ($request->hasFile('image_path')) {
+    //   $file = $request->file('image_path');
+
+    //   // Nettoyer et formater le nom de l’équipement pour le nom du fichier
+    //   $nomNettoye = preg_replace('/[^a-zA-Z0-9-_]/', '', strtolower(str_replace(' ', '-', $request->nom)));
+
+    //   // Construire le nom du fichier
+    //   $imageName = time() . '_' . $nomNettoye . '.' . $file->getClientOriginalExtension();
+
+    //   // Déplacer dans le dossier public/pictures/equipements
+    //   $file->move(public_path('pictures/equipements'), $imageName);
+
+    //   // Stocker le chemin relatif dans la base de données
+    //   $equipement->image_path = 'pictures/equipements/' . $imageName;
+    // }
     if ($request->hasFile('image_path')) {
       try {
         $cloudinary = new Cloudinary();
@@ -157,7 +200,9 @@ class AdminController extends Controller
       }
     }
 
+
     $equipement->save();
+
 
     $user = Auth::user();
     $bon = new Bon();
@@ -185,7 +230,7 @@ class AdminController extends Controller
   public function ShowToolpage()
   {
     // $equipements = Equipement::with('categorie')->paginate(2);
-    $equipements = Equipement::with('categorie')->paginate(10);
+    $equipements = Equipement::with('categorie')->paginate(7);
 
     return view("admin.listtools", compact("equipements"));
   }
@@ -242,8 +287,9 @@ class AdminController extends Controller
 
   public function DeleteTool(Equipement $equipement)
   {
+    $equip_del = $equipement->nom;
     $equipement->delete();
-    return  redirect()->back();
+    return  redirect()->back()->with("deleted", "L'equipement " . $equip_del . " a été supprimer avec succès ");
   }
   public function ShowAllAsk()
   {
@@ -255,19 +301,19 @@ class AdminController extends Controller
   {
     $demande->statut = "acceptee";
     $demande->save();
-    return redirect()->back();
+    return redirect()->back()->with("success", "La demande a été validée avec succès");
   }
   public function CancelAsk(Demande $demande)
   {
     $demande->statut = "rejetee";
     $demande->save();
-    return redirect()->back();
+    return redirect()->back()->with("error", "La demande a été rejetée avec succès");
   }
 
   public function Showaffectation()
   {
     $equipements_groupes = Categorie::with(['equipements' => function ($query) {
-      $query->where('etat',"=" ,'disponible');
+      $query->whereIn('etat', ['disponible', 'retourné']);
     }])->get();
 
     $employes = User::where("role", "=", "employé")->get();
@@ -291,7 +337,6 @@ class AdminController extends Controller
       // Charger les équipements en bulk
       $equipementIds = $request->equipements;
       $equipements = Equipement::whereIn('id', $equipementIds)->get()->keyBy('id');
-      // $affectationsDetails = [];
       foreach ($request->equipements as $index => $equipement_id) {
         $quantite = $request->quantites[$index] ?? 1;
         $rawDate = $request->dates_retour[$index] ?? null;
@@ -315,13 +360,13 @@ class AdminController extends Controller
         $affectation->save();
 
         $equipement->quantite -= $quantite;
-        $equipement->etat = ($equipement->quantite > 0) ? "disponible" : "usagé";
+        $equipement->etat = ($equipement->quantite > 0) ? "disponible" : "usagé"; ////warning:
         $equipement->save();
-        // $affectationsDetails[] = [
-        //   'nom' => $equipement->nom,
-        //   'reference' => $equipement->reference ?? '',
-        //   'quantite' => $quantite,
-        // ];
+        $affectationsDetails[] = [
+          'nom' => $equipement->nom,
+          'reference' => $equipement->reference ?? '',
+          'quantite' => $quantite,
+        ];
       }
 
       $bon = new Bon();
@@ -345,7 +390,7 @@ class AdminController extends Controller
         'motif' => $request->motif,
         'numero_bon' => $bon->id,
         'type' => $bon->statut,
-        // 'equipements' => $affectationsDetails,
+        'equipements' => $affectationsDetails,
       ]);
       $pdf->setPaper('A5', 'portrait');
 
@@ -371,8 +416,11 @@ class AdminController extends Controller
   public function ShowToollost()
   {
     $equipement_lost = Affectation::with(['equipement', 'user'])
-      ->where('date_retour', '<', now()->startOfDay()) // pour ignorer l'heure
+      ->whereDate('date_retour', '<=', today())
+      ->where('statut',"!=","retourné")
+      ->orWhereNull('statut')
       ->get();
+
     return view("admin.lost_tools", compact("equipement_lost"));
   }
   public function CollaboratorsPage()
@@ -432,7 +480,7 @@ class AdminController extends Controller
   public function destroy(CollaborateurExterne $CollaborateurExterne)
   {
     $CollaborateurExterne->delete();
-    return redirect()->back();
+    return redirect()->back()->with("remove", "le collaborateur a été supprimée");
   }
   public function ShowBons()
   {
@@ -479,9 +527,8 @@ class AdminController extends Controller
   }
   public function BackTool(Affectation $affectation)
   {
-    $affectation->date_retour = now();
+    $affectation->statut="retourné";
     $affectation->save();
-
     $equipement = $affectation->equipement;
     $equipement->quantite += $affectation->quantite_affectee;
     $equipement->etat = "disponible";
@@ -506,8 +553,11 @@ class AdminController extends Controller
   }
   public function DeleteBon(Bon $bon)
   {
+    if ($bon->fichier_pdf && Storage::exists($bon->fichier_pdf)) {
+      Storage::delete($bon->fichier_pdf);
+    }
     $bon->delete();
-    return redirect()->back();
+    return redirect()->back()->with("remove", "le bon a été supprimer ");
   }
   public function Showlistaffectation()
   {
@@ -518,7 +568,7 @@ class AdminController extends Controller
   {
     $demande->statut = "en_attente";
     $demande->save();
-    return redirect()->back();
+    return redirect()->back()->with("hold", "Demande mise en attente");
   }
   public function ShowRapport()
   {
@@ -530,17 +580,26 @@ class AdminController extends Controller
   {
     $panne->statut = "resolu";
     $panne->save();
-    $equipement_panne=$panne->equipement;
-    if($equipement_panne){
-        $equipement_panne->etat="usagé";
-        $equipement_panne->save();
+    $equipement_panne = $panne->equipement;
+    if ($equipement_panne) {
+      $equipement_panne->etat = "usagé";
+      $equipement_panne->save();
     }
     /// lorsque la pannne est resolue on rend l'equipement au user
-    return redirect()->back();
+    return redirect()->back()->with("success", "La panne a été resolue avec succès");
   }
   public function DestroyAffect(Affectation $affectation)
   {
     $affectation->delete();
-    return redirect()->back();
+    return redirect()->back()->with("remove", " l'affectation a été supprimée");
   }
+  // public function rechercher(Request $request)
+  // {
+  //   $query = $request->input('query');
+
+  //   $resultats = Equipement::where('nom', 'like', "%$query%")
+  //     ->get();
+
+  //   return view('equipements.resultats', compact('resultats', 'query'));
+  // }
 }

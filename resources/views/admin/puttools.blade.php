@@ -47,7 +47,7 @@
                                             {{ $equipement->etat == 'disponible' ? 'selected' : '' }}>Disponible</option>
                                         <option value="usagé" {{ $equipement->etat == 'usagé' ? 'selected' : '' }}>Usagé
                                         </option>
-                                        <option value="en panne" {{ $equipement->etat == 'en panne' ? 'selected' : '' }}>En
+                                        <option value="en_panne" {{ $equipement->etat == 'en_panne' ? 'selected' : '' }}>En
                                             panne</option>
                                         <option value="réparé" {{ $equipement->etat == 'réparé' ? 'selected' : '' }}>Réparé
                                         </option>
