@@ -1,5 +1,4 @@
 @extends('admin.layouts.adminlay')
-
 @section('content')
     <div class="container-fluid mt-4 px-4">
         <div class="row justify-content-center">
@@ -40,8 +39,7 @@
                                         <option value="" selected disabled>Choisissez l'état</option>
                                         <option value="disponible">Disponible</option>
                                         <option value="usagé">Usagé</option>
-                                        <option value="en_panne">En panne</option>
-                                        <option value="retourné">A retourner</option>                                
+                                        <option value="en_panne">En panne</option>                               
                                     </select>
                                     @error('etat')
                                         <div class="text-danger small">{{ $message }}</div>

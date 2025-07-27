@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\GestionnaireController;
 use App\Http\Middleware\AdminOuGestionnaire;
+use Database\Seeders\AdminSeeder;
+
 Route::prefix('gestionnaire')->middleware(['auth', GestionnaireMiddleware::class])->group(function () {
 
     Route::get('/rapports/create', [RapportController::class, 'create'])
@@ -118,6 +120,8 @@ Route::prefix("dashboard")->middleware(['auth', AdminOuGestionnaire::class])->gr
     Route::delete("/delete/{bon}",[AdminController::class,"DeleteBon"])
            ->name("delete.bon");
     Route::delete("/delete_affect/{affectation}",[AdminController::class,"DestroyAffect"])->name("affectations.destroy");
+    Route::get('/equipements/recherche', [AdminController::class, 'rechercher'])->name('equipement.recherche');
+
 });
 Route::prefix("dashboard")->middleware(['auth',IsAdmin::class])->group(function(){
      Route::get('/list_users', [AdminController::class, "showusers"])

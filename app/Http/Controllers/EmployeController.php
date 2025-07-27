@@ -112,7 +112,7 @@ class EmployeController extends Controller
         // Mettre à jour l'état de l'équipement à 'panne'
         $equipement = Equipement::find($request->equipement_id);
         if ($equipement) {
-            $equipement->etat = 'en panne';
+            $equipement->etat = 'en_panne';
             $equipement->save();
         }
 
@@ -135,9 +135,11 @@ class EmployeController extends Controller
     public function equipementsAssignes()
     {
         $user = Auth::user();
-        $equipements = $user->equipements()->whereIn('etat', ['usagé', 'disponible'])
-            ->paginate(4); // pagination réelle des équipements
-        return view("employee.layouts.assign", compact("user", "equipements"));
+        $affectation = Affectation::with("equipement")
+            ->where('user_id',"=",$user->id)
+            ->paginate(4)
+            ; // pagination réelle des équipements
+        return view("employee.layouts.assign", compact("user", "affectation"));
     }
     public function Helppage()
     {

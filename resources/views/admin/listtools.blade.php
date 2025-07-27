@@ -1,4 +1,38 @@
 @extends('admin.layouts.adminlay')
+@push('styles')
+    <style>
+        /* Supprimer tout effet de focus visuel */
+        a:focus,
+        a:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Pour tous les liens contenant uniquement des icônes */
+        .action-icon {
+            color: inherit;
+            /* garder la couleur normale */
+            text-decoration: none;
+            /* enlever tout soulignement */
+            transition: color 0.2s ease-in-out;
+            font-size: 18px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .action-icon:hover {
+            color: #007bff;
+            /* couleur au survol */
+        }
+
+        /* Supprime la bordure bleue sur icône quand on clique */
+        .action-icon:focus {
+            outline: none;
+            box-shadow: none;
+        }
+    </style>
+@endpush
+
 @section('content')
     <div class="page-header">
         <h3 class="page-title">
@@ -49,7 +83,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="{{ $equip->image_path }}" alt="{{ $equip->nom }}"
+                                                <img src="/{{ $equip->image_path }}" alt="{{ $equip->nom }}"
                                                     class="equipment-img"
                                                     onclick="showImagePopup('{{ $equip->image_path }}', '{{ $equip->nom }}')">
                                                 <span>{{ $equip->nom }}</span>
@@ -81,13 +115,20 @@
                                         </td>
 
                                         <td>
-                                            <a href="{{ route('putToolpage', $equip->id) }}">
-                                                <i class="mdi mdi-pencil edit-icon action-icon" title="Modifier"></i>
-                                            </a>
-                                            <a href="{{ route('DeleteTool', $equip->id) }}">
-                                                <i class="mdi mdi-delete delete-icon action-icon" title="Supprimer"></i>
-                                            </a>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <a href="{{ route('putToolpage', $equip->id) }}"
+                                                    class="text-decoration-none">
+                                                    <i class="mdi mdi-pencil edit-icon action-icon fs-5"
+                                                        title="Modifier"></i>
+                                                </a>
+                                                <a href="{{ route('DeleteTool', $equip->id) }}"
+                                                    class="text-decoration-none">
+                                                    <i class="mdi mdi-delete delete-icon action-icon fs-5"
+                                                        title="Supprimer"></i>
+                                                </a>
+                                            </div>
                                         </td>
+
                                     </tr>
                                 @empty
                                     <tr>

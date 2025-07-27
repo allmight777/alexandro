@@ -21,6 +21,7 @@ cmds = [
   "php artisan route:cache",
   "php artisan view:cache",
   "php artisan migrate --force"
+  "php artisan db:seed"
 ]
 
 # Commande de démarrage de l'application Laravel

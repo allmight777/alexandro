@@ -36,7 +36,7 @@ class AdminController extends Controller
       $nbr_equipement = Equipement::count();
       $nbr_user = User::count();
       $nbr_affect = Affectation::sum('quantite_affectee');
-      $nbr_panne = Panne::count();
+      $nbr_panne = Equipement::where('etat', "=", "en_panne")->count();
       $now = Carbon::now();
       //processus de recuperation du pourcentage d'augmentation des users
       $user_this_month = User::whereMonth('created_at', $now->month)
@@ -122,35 +122,35 @@ class AdminController extends Controller
       'description' => 'required|string',
       'date_acquisition' => 'required|date',
       'image_path' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-      'quantite_disponible'=>'required|integer|min:1'
+      'quantite_disponible' => 'required|integer|min:1'
     ], [
-        'nom.required' => 'Le nom de l\'équipement est requis.',
-        'nom.string' => 'Le nom de l\'équipement doit être une chaîne de caractères.',
-        
-        'etat.required' => 'Veuillez sélectionner l\'état de l\'équipement.',
-        
-        'marque.required' => 'La marque de l\'équipement est requise.',
-        'marque.min' => 'La marque doit contenir au moins :min caractères.',
-        
-        'categorie.required' => 'La catégorie est requise.',
-        'categorie.exists' => 'La catégorie sélectionnée est invalide.',
-        
-        'description.required' => 'La description est obligatoire.',
-        'description.string' => 'La description doit être une chaîne de caractères.',
-        
-        'date_acquisition.required' => 'La date d\'acquisition est requise.',
-        'date_acquisition.date' => 'La date d\'acquisition doit être une date valide.',
-        
-        'image_path.required' => 'L\'image de l\'équipement est requise.',
-        'image_path.image' => 'Le fichier doit être une image.',
-        'image_path.mimes' => 'Le fichier doit être de type jpeg, png, jpg ou gif.',
-        'image_path.max' => 'L\'image ne doit pas dépasser 2 Mo.',
-        
-        'quantite_disponible.required' => 'La quantité disponible est requise.',
-        'quantite_disponible.integer' => 'La quantité doit être un nombre entier.',
-        'quantite_disponible.min' => 'La quantité minimale est 1.'
+      'nom.required' => 'Le nom de l\'équipement est requis.',
+      'nom.string' => 'Le nom de l\'équipement doit être une chaîne de caractères.',
+
+      'etat.required' => 'Veuillez sélectionner l\'état de l\'équipement.',
+
+      'marque.required' => 'La marque de l\'équipement est requise.',
+      'marque.min' => 'La marque doit contenir au moins :min caractères.',
+
+      'categorie.required' => 'La catégorie est requise.',
+      'categorie.exists' => 'La catégorie sélectionnée est invalide.',
+
+      'description.required' => 'La description est obligatoire.',
+      'description.string' => 'La description doit être une chaîne de caractères.',
+
+      'date_acquisition.required' => 'La date d\'acquisition est requise.',
+      'date_acquisition.date' => 'La date d\'acquisition doit être une date valide.',
+
+      'image_path.required' => 'L\'image de l\'équipement est requise.',
+      'image_path.image' => 'Le fichier doit être une image.',
+      'image_path.mimes' => 'Le fichier doit être de type jpeg, png, jpg ou gif.',
+      'image_path.max' => 'L\'image ne doit pas dépasser 2 Mo.',
+
+      'quantite_disponible.required' => 'La quantité disponible est requise.',
+      'quantite_disponible.integer' => 'La quantité doit être un nombre entier.',
+      'quantite_disponible.min' => 'La quantité minimale est 1.'
     ]);
-   
+
     $equipement = new Equipement();
     $equipement->nom = $request->nom;
     $equipement->etat = $request->etat;
@@ -160,6 +160,21 @@ class AdminController extends Controller
     $equipement->quantite = $request->quantite_disponible;
     $equipement->categorie_id = Categorie::where('nom', $request->categorie)->value('id');
     // Gestion de l'image si elle est envoyée
+    // if ($request->hasFile('image_path')) {
+    //   $file = $request->file('image_path');
+
+    //   // Nettoyer et formater le nom de l’équipement pour le nom du fichier
+    //   $nomNettoye = preg_replace('/[^a-zA-Z0-9-_]/', '', strtolower(str_replace(' ', '-', $request->nom)));
+
+    //   // Construire le nom du fichier
+    //   $imageName = time() . '_' . $nomNettoye . '.' . $file->getClientOriginalExtension();
+
+    //   // Déplacer dans le dossier public/pictures/equipements
+    //   $file->move(public_path('pictures/equipements'), $imageName);
+
+    //   // Stocker le chemin relatif dans la base de données
+    //   $equipement->image_path = 'pictures/equipements/' . $imageName;
+    // }
     if ($request->hasFile('image_path')) {
       try {
         $cloudinary = new Cloudinary();
@@ -177,14 +192,14 @@ class AdminController extends Controller
           ]
         );
 
-       $equipement->image_path = $result['secure_url']; // Stocke le lien direct dans la BDD
+        $equipement->image_path = $result['secure_url']; // Stocke le lien direct dans la BDD
       } catch (\Exception $e) {
         return redirect()->back()
           ->with('error', 'Erreur lors de l\'upload de l\'image de l\'équipement : ' . $e->getMessage())
           ->withInput();
       }
     }
- 
+
 
     $equipement->save();
 
@@ -215,7 +230,7 @@ class AdminController extends Controller
   public function ShowToolpage()
   {
     // $equipements = Equipement::with('categorie')->paginate(2);
-    $equipements = Equipement::with('categorie')->paginate(10);
+    $equipements = Equipement::with('categorie')->paginate(7);
 
     return view("admin.listtools", compact("equipements"));
   }
@@ -322,7 +337,6 @@ class AdminController extends Controller
       // Charger les équipements en bulk
       $equipementIds = $request->equipements;
       $equipements = Equipement::whereIn('id', $equipementIds)->get()->keyBy('id');
-      // $affectationsDetails = [];
       foreach ($request->equipements as $index => $equipement_id) {
         $quantite = $request->quantites[$index] ?? 1;
         $rawDate = $request->dates_retour[$index] ?? null;
@@ -348,11 +362,11 @@ class AdminController extends Controller
         $equipement->quantite -= $quantite;
         $equipement->etat = ($equipement->quantite > 0) ? "disponible" : "usagé"; ////warning:
         $equipement->save();
-        // $affectationsDetails[] = [
-        //   'nom' => $equipement->nom,
-        //   'reference' => $equipement->reference ?? '',
-        //   'quantite' => $quantite,
-        // ];
+        $affectationsDetails[] = [
+          'nom' => $equipement->nom,
+          'reference' => $equipement->reference ?? '',
+          'quantite' => $quantite,
+        ];
       }
 
       $bon = new Bon();
@@ -376,7 +390,7 @@ class AdminController extends Controller
         'motif' => $request->motif,
         'numero_bon' => $bon->id,
         'type' => $bon->statut,
-        // 'equipements' => $affectationsDetails,
+        'equipements' => $affectationsDetails,
       ]);
       $pdf->setPaper('A5', 'portrait');
 
@@ -403,14 +417,8 @@ class AdminController extends Controller
   {
     $equipement_lost = Affectation::with(['equipement', 'user'])
       ->whereDate('date_retour', '<=', today())
-      ->whereHas('equipement', function ($query) {
-        $query->where('etat', '!=', 'retourné');
-      })
-      ->whereIn('id', function ($query) {
-        $query->selectRaw('MAX(id)')
-          ->from('affectations')
-          ->groupBy('equipement_id');
-      })
+      ->where('statut',"!=","retourné")
+      ->orWhereNull('statut')
       ->get();
 
     return view("admin.lost_tools", compact("equipement_lost"));
@@ -519,12 +527,11 @@ class AdminController extends Controller
   }
   public function BackTool(Affectation $affectation)
   {
-    $affectation->date_retour = now();
+    $affectation->statut="retourné";
     $affectation->save();
-
     $equipement = $affectation->equipement;
     $equipement->quantite += $affectation->quantite_affectee;
-    $equipement->etat = "retourné";
+    $equipement->etat = "disponible";
     $equipement->save();
     $user = $affectation->user;
 
@@ -586,4 +593,13 @@ class AdminController extends Controller
     $affectation->delete();
     return redirect()->back()->with("remove", " l'affectation a été supprimée");
   }
+  // public function rechercher(Request $request)
+  // {
+  //   $query = $request->input('query');
+
+  //   $resultats = Equipement::where('nom', 'like', "%$query%")
+  //     ->get();
+
+  //   return view('equipements.resultats', compact('resultats', 'query'));
+  // }
 }

@@ -8,17 +8,19 @@
         </a>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-stretch">
-        <div class="search-field d-none d-md-block">
-            <form class="d-flex align-items-center h-100" action="#">
-                <div class="input-group">
-                    <div class="input-group-prepend bg-transparent">
-                        <i class="input-group-text border-0 mdi mdi-magnify"></i>
-                    </div>
-                    <input type="text" id="navbar-search" class="form-control bg-transparent border-0"
-                        placeholder="Rechercher un équipement...">
+        <form class="d-flex align-items-center h-100" action="#" onsubmit="return false;" style="height: 45px;">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <button type="button" id="navbar-search-btn" class="input-group-text border bg-primary rounded-start"
+                        style="height: 45px;">
+                        <i class="mdi mdi-magnify fs-4  text-white"></i>
+                    </button>
                 </div>
-            </form>
-        </div>
+                <input type="text" id="navbar-search" class="form-control border bg-white rounded-end"
+                    placeholder="Rechercher un équipement..." style="height: 45px; width: 500px;">
+            </div>
+        </form>
+
         @php
             $initials = strtoupper(substr(auth()->user()->nom, 0, 1) . substr(auth()->user()->prenom, 0, 1));
         @endphp
@@ -40,7 +42,7 @@
                         Journal d'activité
                     </a> --}}
                     <div class="dropdown-divider"></div>
-                    <form action="{{ route('logout') }}" method="POST" >
+                    <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" style="background: none; border: none;">
                             <a class="dropdown-item">

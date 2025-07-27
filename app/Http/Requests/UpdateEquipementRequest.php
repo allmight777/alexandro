@@ -24,7 +24,7 @@ class UpdateEquipementRequest extends FormRequest
         return [
             //
             'nom' => 'required|string|max:255',
-            'etat' => 'required|in:disponible,usagé,en panne,réparé',
+            'etat' => 'required|in:disponible,usagé,en_panne,réparé',
             'marque' => 'required|string|max:255',
             'categorie_id' => 'required|exists:categories,id',
             'description' => 'required|string',
