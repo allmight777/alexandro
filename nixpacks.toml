@@ -1,6 +1,7 @@
 # Active les bonnes extensions PHP (GD, DOM, mbstring)
 [phases.setup]
 nixPkgs = [
+  "composer",
   "php82", 
   "php82Extensions.gd", 
   "php82Extensions.dom", 
