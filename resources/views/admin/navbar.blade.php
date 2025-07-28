@@ -24,6 +24,19 @@
                     placeholder="Rechercher un équipement..." style="height: 45px;">
             </div>
         </form>
+        {{-- Barre de recherche mobile (visible uniquement en mobile) --}}
+        <form class="d-flex d-md-none w-100 justify-content-center my-2" onsubmit="return false;">
+            <div class="input-group" style="max-width: 100%; width: 100%;">
+                <span
+                    class="input-group-text border bg-primary rounded-start d-flex align-items-center justify-content-center"
+                    style="width: 45px; padding: 0;" id="search-icon-mobile">
+                    <i class="mdi mdi-magnify text-white" style="font-size: 18px;"></i>
+                </span>
+                <input type="text" id="navbar-search-mobile" class="form-control border bg-white rounded-end"
+                    placeholder="Rechercher un équipement..." style="height: 45px;">
+            </div>
+        </form>
+
 
         {{-- Profil utilisateur --}}
         @php
@@ -61,7 +74,6 @@
         </button>
     </div>
 
-    {{-- Menu mobile : barre de recherche avec bouton --}}
-   
+
 
 </nav>
