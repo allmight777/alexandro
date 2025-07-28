@@ -121,7 +121,7 @@
                         <i class="mdi mdi-desktop-mac stat-icon"></i>
                         <div>
                             <h5>Équipements assignés</h5>
-                            <h3>{{ $affectations->count() }}</h3>
+                            <h3>{{$nbr_assign}}</h3>
                         </div>
                     </div>
                 </div>
@@ -130,7 +130,7 @@
                         <i class="mdi mdi-file-document stat-icon"></i>
                         <div>
                             <h5>Demandes en attente</h5>
-                            <h3>{{ $demandes->where('statut', 'en_attente')->count() }}</h3>
+                            <h3>{{ $nbr_en_attente }}</h3>
                         </div>
                     </div>
                 </div>
@@ -139,7 +139,7 @@
                         <i class="mdi mdi-check-circle stat-icon"></i>
                         <div>
                             <h5>Demandes acceptées</h5>
-                            <h3>{{ $demandes->where('statut', 'acceptee')->count() }}</h3>
+                            <h3>{{ $nbr_accept }}</h3>
                         </div>
                     </div>
                 </div>
@@ -148,7 +148,7 @@
                         <i class="mdi mdi-bug stat-icon"></i>
                         <div>
                             <h5>Pannes non résolues</h5>
-                            <h3>{{ $pannes->where('statut', '!=', 'resolu')->count() }}</h3>
+                            <h3>{{$nbr_non_resolue}}</h3>
                         </div>
                     </div>
                 </div>

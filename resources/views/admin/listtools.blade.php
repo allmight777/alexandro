@@ -78,7 +78,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="equip-table-body">
                                 @forelse ($equipements as $equip)
                                     <tr>
                                         <td>
@@ -169,4 +169,43 @@
             <div class="image-popup-title" id="popupImageTitle"></div>
         </div>
     </div>
+@endpush
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableBody = document.getElementById('equip-table-body');
+
+        const searchDesktopInput = document.getElementById('navbar-search');
+        const searchMobileInput = document.getElementById('navbar-search-mobile');
+
+        const searchIconDesktop = document.getElementById('search-icon-desktop');
+        const searchIconMobile = document.getElementById('search-icon-mobile');
+
+        function filterEquipments(term) {
+            const rows = tableBody.getElementsByTagName('tr');
+            const query = term.toLowerCase().trim();
+
+            Array.from(rows).forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        if (searchIconDesktop) {
+            searchIconDesktop.addEventListener('click', function () {
+                const term = searchDesktopInput?.value || '';
+                filterEquipments(term);
+            });
+        }
+
+        if (searchIconMobile) {
+            searchIconMobile.addEventListener('click', function () {
+                const term = searchMobileInput?.value || '';
+                filterEquipments(term);
+            });
+        }
+    });
+</script>
+
+
 @endpush

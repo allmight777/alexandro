@@ -6,7 +6,7 @@
                 <h4 class="mb-0">Matériels non retournés</h4>
             </div>
             <div class="card-body">
-                  @if (session('success'))
+                @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show">
                         {{ session('success') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
@@ -32,7 +32,7 @@
                                         <td>{{ $affectation->user->nom ?? '-' }} {{ $affectation->user->prenom ?? '' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($affectation->date_retour)->format('d/m/Y') }}</td>
                                         <td>
-                                            <form action="{{route("affectation.retourner", $affectation->id)}}"
+                                            <form action="{{ route('affectation.retourner', $affectation->id) }}"
                                                 method="POST">
                                                 @csrf
                                                 @method('POST')
@@ -47,15 +47,18 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $equipement_lost->links() }}
+                    </div>
                 @endif
             </div>
         </div>
     </div>
 @endsection
 @push('scripts')
-    @if(session('pdf'))
+    @if (session('pdf'))
         <script>
-            window.onload = function () {
+            window.onload = function() {
                 const link = document.createElement('a');
                 link.href = "{{ session('pdf') }}";
                 link.download = "";
@@ -66,4 +69,3 @@
         </script>
     @endif
 @endpush
-
