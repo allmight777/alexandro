@@ -294,7 +294,7 @@
 
                     rows.forEach(row => {
                         const equipementName = row.querySelector(
-                        'td:nth-child(2)'); // 2ème colonne = nom de l'équipement
+                            'td:nth-child(2)'); // 2ème colonne = nom de l'équipement
                         const text = equipementName ? equipementName.textContent.toLowerCase() : '';
 
                         row.style.display = text.includes(searchTerm) ? '' : 'none';
@@ -304,6 +304,20 @@
 
             });
         </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const sidebar = document.getElementById('sidebar');
+                const hamburgerButton = document.querySelector('.navbar-toggler');
+
+                hamburgerButton.addEventListener('click', function() {
+                    if (window.innerWidth < 992) { // lg breakpoint Bootstrap
+                        sidebar.classList.toggle('active');
+                    }
+                });
+            });
+        </script>
+
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
         <!-- End custom js for this page-->
