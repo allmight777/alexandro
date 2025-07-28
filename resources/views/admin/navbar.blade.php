@@ -62,18 +62,6 @@
     </div>
 
     {{-- Menu mobile : barre de recherche avec bouton --}}
-    <div class="collapse navbar-collapse d-md-none px-3 pt-2" id="mobileMenu">
-        <form onsubmit="return false;">
-            <div class="input-group w-100">
-                <span
-                    class="input-group-text border bg-primary rounded-start d-flex align-items-center justify-content-center"
-                    style="width: 45px; padding: 0;" id="search-icon-mobile">
-                    <i class="mdi mdi-magnify text-white" id="search-icon-mobile" style="font-size: 18px;"></i>
-                </span>
-                <input type="text" id="navbar-search-mobile" class="form-control border bg-white"
-                    placeholder="Rechercher un équipement..." style="height: 45px;">
-            </div>
-        </form>
-    </div>
+   
 
 </nav>
