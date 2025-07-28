@@ -72,7 +72,7 @@ class AdminController extends Controller
 
   public function showusers()
   {
-    $users = User::where("role", "!=", "admin")->get();
+    $users = User::where("role", "!=", "admin")->paginate(5);
     return view("admin.listuserpage", compact("users"));
   }
   public function edituserpage(User $user)
@@ -416,11 +416,10 @@ class AdminController extends Controller
   public function ShowToollost()
   {
     $equipement_lost = Affectation::with(['equipement', 'user'])
-      ->whereDate('date_retour', '<=', today())
-      ->where('statut',"!=","retourné")
-      ->orWhereNull('statut')
-      ->get();
-
+        ->whereDate('date_retour', '<=', now())    // date de retour dépassée
+        ->whereNull('statut')                      // statut non retourné
+        ->whereNotNull('date_retour')              // on s'assure que la date de retour est bien définie
+        ->paginate(7);
     return view("admin.lost_tools", compact("equipement_lost"));
   }
   public function CollaboratorsPage()

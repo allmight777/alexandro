@@ -24,13 +24,24 @@ class EmployeController extends Controller
         // ou toute autre variable que tu veux passer
         $user = Auth::user();
         $demandes = Demande::orderBy('created_at', 'desc')
-            ->where('user_id', '=', $user->id)
+            ->where('user_id','=', $user->id)
             ->get()->take(3);
+        $nbr_accept=Demande::where('user_id','=', $user->id)
+            ->where('statut',"=",'acceptee')
+            ->count();
+        $nbr_en_attente=Demande::where('user_id', '=', $user->id)
+            ->where('statut',"=",'en_attente')
+            ->count();
+        $nbr_non_resolue=Panne::where('user_id', '=', $user->id)
+                               ->where('statut','!=','resolu')
+                               ->count()
+                               ;
+        $nbr_assign= Affectation::with('equipement')
+            ->where('user_id',"=", $user->id)
+            ->count();
+
         $affectations = Affectation::with('equipement')
-            ->where('user_id', $user->id)
-            ->whereHas('equipement', function ($query) {
-                $query->where('etat', 'usagé'); // ou 'usagé' selon l'orthographe exacte dans ta DB
-            })
+            ->where('user_id',"=", $user->id)
             ->orderBy('created_at', 'desc')
             ->take(4)
             ->get();
@@ -38,12 +49,17 @@ class EmployeController extends Controller
             ->orderBy('created_at', 'desc')
             ->take(2)
             ->get();
+        
 
         return view('employee.layouts.main', [
             'user' => $user,
             'demandes' => $demandes,
             'affectations' => $affectations,
-            'pannes' => $pannes
+            'pannes' => $pannes,
+            'nbr_accept'=>$nbr_accept,
+            'nbr_en_attente'=>$nbr_en_attente,
+            'nbr_non_resolue'=>$nbr_non_resolue,
+            'nbr_assign'=> $nbr_assign
         ]);
     }
     public function ShowAskpage()
@@ -94,7 +110,11 @@ class EmployeController extends Controller
     public function signalerPanne()
     {
         $user = Auth::user();
-        $equipements_user = $user->equipements->where('etat', "=", "usagé");
+        $equipements_user = Affectation::where('user_id', $user->id)
+        ->whereNull('statut') // optionnel si on veut exclure les équipements déjà retournés
+        ->with('equipement')
+        ->get()
+        ->pluck('equipement');
         return view("employee.layouts.panne", compact("user", "equipements_user"));
     }
 

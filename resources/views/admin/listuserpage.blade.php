@@ -3,9 +3,10 @@
 @section('content')
     <div class="row">
         <!-- Message de succès -->
-        @if(session('deleted'))
+        @if (session('deleted'))
             <div class="col-lg-12">
-                <div class="alert alert-success shadow-sm d-flex align-items-center justify-content-between px-4 py-3 rounded mb-4">
+                <div
+                    class="alert alert-success shadow-sm d-flex align-items-center justify-content-between px-4 py-3 rounded mb-4">
                     <div class="d-flex align-items-center">
                         <i class="mdi mdi-check-circle fs-4 me-2 text-success"></i>
                         <span class="text-success fw-semibold">{{ session('deleted') }}</span>
@@ -42,10 +43,12 @@
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->poste }}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('edituser', $user->id) }}" class="btn btn-sm btn-outline-primary" title="Éditer">
+                                            <a href="{{ route('edituser', $user->id) }}"
+                                                class="btn btn-sm btn-outline-primary" title="Éditer">
                                                 <i class="mdi mdi-pencil"></i>
                                             </a>
-                                            <a href="{{ route('deleteuser', $user->id) }}" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                            <a href="{{ route('deleteuser', $user->id) }}"
+                                                class="btn btn-sm btn-outline-danger" title="Supprimer">
                                                 <i class="mdi mdi-delete"></i>
                                             </a>
                                         </td>
@@ -53,6 +56,9 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $users->links() }}
                     </div>
                 </div>
             </div>
