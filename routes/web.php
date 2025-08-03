@@ -117,10 +117,6 @@ Route::prefix("dashboard")->middleware(['auth', AdminOuGestionnaire::class])->gr
          ->name("HandleBon");
     Route::post("/back_tool/{affectation}",[AdminController::class,"BackTool"])
            ->name("affectation.retourner");
-    Route::delete("/delete/{bon}",[AdminController::class,"DeleteBon"])
-           ->name("delete.bon");
-    Route::delete("/delete_affect/{affectation}",[AdminController::class,"DestroyAffect"])->name("affectations.destroy");
-    Route::get('/equipements/recherche', [AdminController::class, 'rechercher'])->name('equipement.recherche');
 
 });
 Route::prefix("dashboard")->middleware(['auth',IsAdmin::class])->group(function(){
@@ -152,8 +148,6 @@ Route::prefix("employee")->middleware(['auth', Isemp::class])->group(function ()
          ->name("page.aide");
     Route::post("/post-aide",[EmployeController::class,"HandleHelp"])
          ->name("send.aide");
-    Route::get('/delete_affect/{affectation}',[EmployeController::class,"DeleteAffect"])
-        ->name('delete.affect');
     Route::delete("/delete_ask/{demande}",[EmployeController::class,"DeleteAsk"])->name("delete.ask");
     Route::get('/panne_listes',[EmployeController::class,"ShowPannes"])->name('historique.pannes');
     Route::get('/demandes_list',[EmployeController::class,"ShowDemandes"])->name("listes.demandes");
