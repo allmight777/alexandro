@@ -121,10 +121,8 @@
             </div>
         </div>
     </div>
-
-
 @endsection
-
+{{-- telechargement automatique du pdf--}}
 @push('scripts')
     @if (session('pdf'))
         <script>
