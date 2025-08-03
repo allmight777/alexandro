@@ -33,7 +33,7 @@
                                 @endif
                                 <th class="text-center">Date</th>
                                 <th class="text-center">date_retour</th>
-                                <th class="text-center">Supprimer</th>
+    
                             </tr>
                         </thead>
                         <tbody>
@@ -49,14 +49,6 @@
                                     @endif
                                     <td class="text-nowrap">{{ $affectation->created_at->format('d/m/Y') }}</td>
                                     <td>{{ $affectation->date_retour ? $affectation->date_retour->format('d/m/Y') : 'Aucune date de retour enregistrée ou équipement non concerné par un retour.' }}
-                                    </td>
-                                    <td class="text-nowrap">
-                                        <form action="{{ route('affectations.destroy', $affectation->id) }}"
-                                            method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                                        </form>
                                     </td>
                                 </tr>
                             @empty

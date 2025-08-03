@@ -160,45 +160,45 @@ class AdminController extends Controller
     $equipement->quantite = $request->quantite_disponible;
     $equipement->categorie_id = Categorie::where('nom', $request->categorie)->value('id');
     // Gestion de l'image si elle est envoyée
-    // if ($request->hasFile('image_path')) {
-    //   $file = $request->file('image_path');
-
-    //   // Nettoyer et formater le nom de l’équipement pour le nom du fichier
-    //   $nomNettoye = preg_replace('/[^a-zA-Z0-9-_]/', '', strtolower(str_replace(' ', '-', $request->nom)));
-
-    //   // Construire le nom du fichier
-    //   $imageName = time() . '_' . $nomNettoye . '.' . $file->getClientOriginalExtension();
-
-    //   // Déplacer dans le dossier public/pictures/equipements
-    //   $file->move(public_path('pictures/equipements'), $imageName);
-
-    //   // Stocker le chemin relatif dans la base de données
-    //   $equipement->image_path = 'pictures/equipements/' . $imageName;
-    // }
     if ($request->hasFile('image_path')) {
-      try {
-        $cloudinary = new Cloudinary();
+      $file = $request->file('image_path');
 
-        $result = $cloudinary->uploadApi()->upload(
-          $request->file('image_path')->getRealPath(),
-          [
-            'folder' => 'equipements',
-            'public_id' => 'equipement_' . time() . '_' . $request->nom,
-            'resource_type' => 'image',
-            'transformation' => [
-              'quality' => 'auto',
-              'fetch_format' => 'auto'
-            ]
-          ]
-        );
+      //   // Nettoyer et formater le nom de l’équipement pour le nom du fichier
+      $nomNettoye = preg_replace('/[^a-zA-Z0-9-_]/', '', strtolower(str_replace(' ', '-', $request->nom)));
 
-        $equipement->image_path = $result['secure_url']; // Stocke le lien direct dans la BDD
-      } catch (\Exception $e) {
-        return redirect()->back()
-          ->with('error', 'Erreur lors de l\'upload de l\'image de l\'équipement : ' . $e->getMessage())
-          ->withInput();
-      }
+      //   // Construire le nom du fichier
+      $imageName = time() . '_' . $nomNettoye . '.' . $file->getClientOriginalExtension();
+
+      //   // Déplacer dans le dossier public/pictures/equipements
+      $file->move(public_path('pictures/equipements'), $imageName);
+
+      //   // Stocker le chemin relatif dans la base de données
+      $equipement->image_path = 'pictures/equipements/' . $imageName;
     }
+    // if ($request->hasFile('image_path')) {
+    //   try {
+    //     $cloudinary = new Cloudinary();
+
+    //     $result = $cloudinary->uploadApi()->upload(
+    //       $request->file('image_path')->getRealPath(),
+    //       [
+    //         'folder' => 'equipements',
+    //         'public_id' => 'equipement_' . time() . '_' . $request->nom,
+    //         'resource_type' => 'image',
+    //         'transformation' => [
+    //           'quality' => 'auto',
+    //           'fetch_format' => 'auto'
+    //         ]
+    //       ]
+    //     );
+
+    //     $equipement->image_path = $result['secure_url']; // Stocke le lien direct dans la BDD
+    //   } catch (\Exception $e) {
+    //     return redirect()->back()
+    //       ->with('error', 'Erreur lors de l\'upload de l\'image de l\'équipement : ' . $e->getMessage())
+    //       ->withInput();
+    //   }
+    // }
 
 
     $equipement->save();
@@ -416,10 +416,10 @@ class AdminController extends Controller
   public function ShowToollost()
   {
     $equipement_lost = Affectation::with(['equipement', 'user'])
-        ->whereDate('date_retour', '<=', now())    // date de retour dépassée
-        ->whereNull('statut')                      // statut non retourné
-        ->whereNotNull('date_retour')              // on s'assure que la date de retour est bien définie
-        ->paginate(7);
+      ->whereDate('date_retour', '<=', now())    // date de retour dépassée
+      ->whereNull('statut')                      // statut non retourné
+      ->whereNotNull('date_retour')              // on s'assure que la date de retour est bien définie
+      ->paginate(7);
     return view("admin.lost_tools", compact("equipement_lost"));
   }
   public function CollaboratorsPage()
@@ -441,32 +441,48 @@ class AdminController extends Controller
     $collaborator->prenom = $request->prenom;
 
     // Upload vers Cloudinary au lieu du stockage local
+    // if ($request->hasFile('chemin_carte')) {
+    //   try {
+    //     $cloudinary = new Cloudinary();
+
+    //     $result = $cloudinary->uploadApi()->upload(
+    //       $request->file('chemin_carte')->getRealPath(),
+    //       [
+    //         'folder' => 'cartes_identite',
+    //         'public_id' => 'carte_' . time() . '_' . $request->nom,
+    //         'resource_type' => 'auto', // Supporte images et PDF
+    //         'transformation' => [
+    //           'quality' => 'auto',
+    //           'fetch_format' => 'auto'
+    //         ]
+    //       ]
+    //     );
+
+    //     // Sauvegarder l'URL Cloudinary dans la BDD
+    //     $collaborator->carte_chemin = $result['secure_url'];
+    //     // $collaborator->carte_public_id = $result['public_id']; // Pour pouvoir supprimer plus tard
+    //   } catch (\Exception $e) {
+    //     return redirect()->back()
+    //       ->with('error', 'Erreur lors de l\'upload du fichier: ' . $e->getMessage())
+    //       ->withInput();
+    //   }
+    // }
+    // Upload en local dans /public/collaborateurs/cartes
     if ($request->hasFile('chemin_carte')) {
-      try {
-        $cloudinary = new Cloudinary();
+      $file = $request->file('chemin_carte');
 
-        $result = $cloudinary->uploadApi()->upload(
-          $request->file('chemin_carte')->getRealPath(),
-          [
-            'folder' => 'cartes_identite',
-            'public_id' => 'carte_' . time() . '_' . $request->nom,
-            'resource_type' => 'auto', // Supporte images et PDF
-            'transformation' => [
-              'quality' => 'auto',
-              'fetch_format' => 'auto'
-            ]
-          ]
-        );
+      // Génère un nom de fichier unique
+      $filename = 'carte_' . time() . '_' . preg_replace('/\s+/', '_', $request->nom) . '.' . $file->getClientOriginalExtension();
 
-        // Sauvegarder l'URL Cloudinary dans la BDD
-        $collaborator->carte_chemin = $result['secure_url'];
-        // $collaborator->carte_public_id = $result['public_id']; // Pour pouvoir supprimer plus tard
-      } catch (\Exception $e) {
-        return redirect()->back()
-          ->with('error', 'Erreur lors de l\'upload du fichier: ' . $e->getMessage())
-          ->withInput();
-      }
+      // Déplace le fichier dans public/collaborateurs/cartes
+      $file->move(public_path('collaborateurs/cartes'), $filename);
+
+      // Sauvegarde le chemin relatif dans la base de données
+      $collaborator->carte_chemin = 'collaborateurs/cartes/' . $filename;
     }
+
+    // Sauvegarder l'enregistrement dans la base de données
+    $collaborator->save();
 
     $collaborator->save();
     return redirect()->back()->with('success', 'Collaborateur ajouté avec succès.');
@@ -526,7 +542,7 @@ class AdminController extends Controller
   }
   public function BackTool(Affectation $affectation)
   {
-    $affectation->statut="retourné";
+    $affectation->statut = "retourné";
     $affectation->save();
     $equipement = $affectation->equipement;
     $equipement->quantite += $affectation->quantite_affectee;
@@ -549,14 +565,6 @@ class AdminController extends Controller
     return redirect()->back()
       ->with('success', 'Retour du matériel effectué. Un PDF de confirmation a été généré.')
       ->with('pdf', asset('storage/' . $pdfPath));
-  }
-  public function DeleteBon(Bon $bon)
-  {
-    if ($bon->fichier_pdf && Storage::exists($bon->fichier_pdf)) {
-      Storage::delete($bon->fichier_pdf);
-    }
-    $bon->delete();
-    return redirect()->back()->with("remove", "le bon a été supprimer ");
   }
   public function Showlistaffectation()
   {
@@ -587,18 +595,4 @@ class AdminController extends Controller
     /// lorsque la pannne est resolue on rend l'equipement au user
     return redirect()->back()->with("success", "La panne a été resolue avec succès");
   }
-  public function DestroyAffect(Affectation $affectation)
-  {
-    $affectation->delete();
-    return redirect()->back()->with("remove", " l'affectation a été supprimée");
-  }
-  // public function rechercher(Request $request)
-  // {
-  //   $query = $request->input('query');
-
-  //   $resultats = Equipement::where('nom', 'like', "%$query%")
-  //     ->get();
-
-  //   return view('equipements.resultats', compact('resultats', 'query'));
-  // }
 }

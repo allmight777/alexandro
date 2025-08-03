@@ -43,7 +43,6 @@
                     <th>Date de création</th>
                     <th>Type</th>
                     <th>Téléchargement</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,13 +60,6 @@
                             @else
                                 <span class="text-muted">Non disponible</span>
                             @endif
-                        </td>
-                        <td>
-                            <form action="{{ route('delete.bon', $bon->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger">Supprimer</button>
-                            </form>
                         </td>
                     </tr>
                 @empty
